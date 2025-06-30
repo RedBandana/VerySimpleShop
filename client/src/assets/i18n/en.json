@@ -1,0 +1,32 @@
+{
+  "pages": {
+    "footer": {
+      "policies": "Policies",
+      "privacyPolicy": "Privacy Policy",
+      "termsOfUse": "Terms of Use",
+      "contactUs": "Contact Us",
+      "mission": "Our Mission",
+      "missionText": "Provide quality services in the field of early childhood with innovative solutions"
+    },
+    "privacyPolicy": {
+      "meta": {
+        "title": "VSS - Privacy Policy",
+        "description": "Read our privacy policy to understand how we protect your personal data and respect your privacy.",
+        "keywords": "privacy policy, personal data, data protection, VSS, privacy"
+      },
+      "title": "VSS Privacy Policy",
+      "subtitle": "Curious about what you're consenting to? Everything you need to know is below, but if you have a question, please let us know.",
+      "lastUpdated": "Last updated May 31, 2024"
+    },
+    "termsOfUse": {
+      "meta": {
+        "title": "VSS - Terms of Use",
+        "description": "Review our terms of use to understand the rules and conditions applicable to the use of our services.",
+        "keywords": "terms of use, terms, rules, services, VSS, usage"
+      },
+      "title": "VSS Terms of Use",
+      "subtitle": "Curious about what you're consenting to? Everything you need to know is below, but if you have a question, please let us know.",
+      "lastUpdated": "Last updated May 31, 2024"
+    }
+  }
+}

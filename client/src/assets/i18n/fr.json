@@ -1,0 +1,49 @@
+{
+  "pages": {
+    "footer": {
+      "policies": "Politiques",
+      "privacyPolicy": "Politiques de confidentialité",
+      "termsOfUse": "Conditions d'utilisation",
+      "contactUs": "Contactez-nous",
+      "mission": "Notre mission",
+      "missionText": "Fournir des services de qualité dans le domaine de la petite enfance avec des solutions innovantes"
+    },
+    "privacyPolicy": {
+      "meta": {
+        "title": "VSS - Politique de confidentialité",
+        "description": "Lisez notre politique de confidentialité pour comprendre comment nous protégeons vos données personnelles et respectons votre vie privée.",
+        "keywords": "politique de confidentialité, données personnelles, protection des données, VSS, confidentialité"
+      },
+      "title": "Politique de confidentialité de VSS",
+      "subtitle": "Curieux de savoir à quoi vous consentez ? Tout ce que vous devez savoir est ci-dessous, mais si vous avez une question, faites-le nous savoir.",
+      "lastUpdated": "Dernière mise à jour le 31 mai 2024"
+    },
+    "termsOfUse": {
+      "meta": {
+        "title": "VSS - Conditions d'utilisation",
+        "description": "Consultez nos conditions d'utilisation pour comprendre les règles et conditions applicables à l'utilisation de nos services.",
+        "keywords": "conditions d'utilisation, termes, règles, services, VSS, utilisation"
+      },
+      "title": "Conditions d'utilisation de VSS",
+      "subtitle": "Curieux de savoir à quoi vous consentez ? Tout ce que vous devez savoir est ci-dessous, mais si vous avez une question, faites-le nous savoir.",
+      "lastUpdated": "Dernière mise à jour le 31 mai 2024"
+    },
+    "try": {
+      "meta": {
+        "title": "VSS - Essayez gratuitement",
+        "description": "Essayez gratuitement VSS pour simplifier la gestion de votre CPE. Découvrez nos forfaits et fonctionnalités.",
+        "keywords": "VSS, cpe, garderie, bureau coordonnateur, bc, centre de la petite enfance, garderie familiale, canada, québec, ontario, essai gratuit"
+      },
+      "title": "Essayer VSS",
+      "subtitle": "Simplifiez la gestion dans votre CPE",
+      "success": "Merci pour votre demande d'essai. Nous allons vous contacter prochainement.\n\nVous pouvez à présent fermer cette page.",
+      "form": {
+        "centerName": "Nom du centre",
+        "centerAddress": "Adresse du centre",
+        "numberOfChildren": "Nombre d'enfants",
+        "callToAction": "Essayer maintenant",
+        "annualPlan": "Je souhaite avoir un forfait annuel et bénéficier du rabais de 33%."
+      }
+    }
+  }
+}

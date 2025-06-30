@@ -1,0 +1,45 @@
+.home-container,
+.home-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.home-header-action {
+    height: 25vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+.home-header-panel {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.home-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap02);
+    margin: var(--gap02) auto;
+    padding: 0 var(--gap02);
+    max-width: var(--width-page);
+}
+
+.home-trending-container,
+.home-products-container
+{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.home-trending-container {
+    gap: var(--gap00);
+}
+
+.home-products-container {
+    gap: var(--gap02);
+    justify-content: space-around;
+}

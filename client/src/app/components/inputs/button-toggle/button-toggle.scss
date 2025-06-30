@@ -1,0 +1,11 @@
+.button-toggle-container {
+    border: 1px solid black;
+    padding: var(--gap01);
+    border-radius: var(--radius);
+}
+
+.button-toggle-container:hover,
+.button-toggle-container:focus {
+    color: white;
+    background-color: black;
+}

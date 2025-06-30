@@ -1,0 +1,19 @@
+.navbar-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--gap00) var(--gap02);
+    border-bottom: 1px solid black;
+}
+
+.navbar-action {
+    display: flex;
+    flex-direction: row;
+    gap: var(--gap02);
+    font-size: var(--font-size-h2);
+}
+
+.navbar-logo {
+    max-height: 44px;
+}

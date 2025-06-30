@@ -1,0 +1,73 @@
+@import '@fortawesome/fontawesome-free/css/all.css';
+@import 'variables.scss';
+@import 'reset-styles.scss';
+
+* {
+    font-family: var(--font-family-text);
+}
+
+.remove {
+    display: none;
+}
+
+.hide {
+    opacity: 0;
+}
+
+.markdown-text {
+    h2 {
+        padding: var(--gap01) 0;
+    }
+
+    p,
+    br {
+        margin: var(--gap00) 0;
+    }
+
+    a {
+        color: var(--color-text-hover);
+    }
+}
+
+.markdown-page {
+    iframe {
+        width: 100%;
+        max-width: 560px;
+        height: 35vw;
+        max-height: 315px;
+        margin: var(--gap02) auto;
+    }
+
+    h1 {
+        padding: var(--gap02) 0;
+        padding-bottom: 0;
+    }
+
+    h2 {
+        padding: var(--gap02) 0;
+        padding-top: var(--gap03);
+    }
+
+    h3,
+    h4 {
+        padding: var(--gap02) 0;
+    }
+
+    p,
+    br {
+        margin: var(--gap01) 0;
+    }
+
+    a {
+        color: var(--color-text-hover);
+    }
+
+    ol,
+    ul {
+        margin-left: var(--gap02);
+    }
+
+    li {
+        padding: var(--gap00);
+    }
+}

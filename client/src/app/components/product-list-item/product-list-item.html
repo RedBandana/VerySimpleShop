@@ -1,0 +1,7 @@
+<a class="product-list-item-container" routerLink="/product">
+    <img class="pli-image" [src]="product.imageUrls[0]" />
+    <div class="pli-text-container">
+        <div class="pli-title">{{product.name}}</div>
+        <div class="pli-price">${{product.price}}.00</div>
+    </div>
+</a>

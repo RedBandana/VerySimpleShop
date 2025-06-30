@@ -1,0 +1,17 @@
+.product-list-item-container {
+    display: flex;
+    flex-direction: column;
+    width: 150px;
+    gap: var(--gap01);
+}
+
+.pli-image {
+    width: 150px;
+    height: auto;
+}
+
+.pli-text-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap00);
+}

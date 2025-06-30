@@ -1,0 +1,58 @@
+<div class="product-container">
+    <nav class="product-navbar">
+        <button class="product-navbar-direction">
+            <i class="fa-solid fa-chevron-left"></i>
+            <div class="product-navbar-text">Previous</div>
+        </button>
+        <button class="product-navbar-direction">
+            <div class="product-navbar-text">Next</div>
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+    </nav>
+
+    <div class="product-header">
+        <h1 class="product-header-title">{{product.name}}</h1>
+        <div class="product-header-category">{{collections}}</div>
+        <div class="product-header-price">${{product.price}}.00</div>
+    </div>
+
+    <div class="product-image">
+        <div class="product-image-slides-container">
+            @for (url of product.imageUrls; track $index) {
+            <img class="product-image-slide" [src]="url" />
+            }
+        </div>
+        <div class="product-image-choices-container">
+            @for (url of product.imageUrls; track $index) {
+            <button class="product-image-choice">
+                <img class="product-image-choice-content" [src]="url" />
+            </button>
+            }
+        </div>
+    </div>
+
+    @for (option of product.options; track $index) {
+    <div class="product-options">
+        <h1 class="product-options-title">Select a {{option.name}}</h1>
+        <div class="product-options-container">
+            @for (value of option.values; track $index) {
+            <button class="product-option-choice">
+                <img class="product-option-choice-content" [src]="value.imageUrl" />
+                <div class="product-option-choice-text">{{value.value}}</div>
+            </button>
+            }
+        </div>
+    </div>
+    }
+
+    <div class="product-description markdown-text">
+        <markdown [data]="product.description"></markdown>
+    </div>
+</div>
+<div class="product-cta-container">
+    <div class="product-cta-qty">
+        <label for="product-cta-qty-input">Quantity</label>
+        <input class="product-cta-input" type="number" value="1" id="product-cta-qty-input" name="product-cta-qty-input" />
+    </div>
+    <button class="product-cta">Add to Bag</button>
+</div>

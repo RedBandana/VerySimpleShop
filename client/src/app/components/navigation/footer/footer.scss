@@ -1,0 +1,41 @@
+.footer-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap04);
+    margin: var(--gap05) auto;
+    padding: var(--gap04) var(--gap02);
+    max-width: var(--width-page);
+    border-top: 1px solid black;
+}
+
+.footer-action {
+    display: flex;
+    flex-direction: row;
+    gap: var(--gap03);
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.fb-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap01);
+}
+
+.fb-title {
+    font-size: var(--font-size-text);
+    color: var(--color-text-light);
+}
+
+.fb-item {
+    font-size: var(--font-size-tiny);
+    color: var(--color-secondary);
+}
+
+.fb-mission {
+    max-width: 200px;
+}
+
+.footer-rights {
+    margin: auto;
+}

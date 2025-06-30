@@ -1,0 +1,20 @@
+.policy-container {
+  max-width: var(--width-page);
+  padding: var(--gap01) var(--gap02);
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap04);
+}
+
+.policy-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap02);
+  align-items: center;
+  text-align: center;
+}
+
+.policy-update {
+  font-style: italic;
+}
