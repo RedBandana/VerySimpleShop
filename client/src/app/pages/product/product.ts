@@ -25,7 +25,7 @@ export class Product {
       {
         id: "color",
         name: "Color",
-        values: [
+        choices: [
           {
             id: "jet_black",
             value: "Jet Black",

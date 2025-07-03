@@ -1,0 +1,66 @@
+{
+  "common": {
+    "app": "VSS",
+    "success": "The operation was successful.",
+    "hello": "A business is a life project, VSS help you make it right."
+  },
+  "enums": {
+    "businessTypes": {
+      "childcare": "Sole Proprietorship",
+      "coordinatingOffice": "Corporation"
+    },
+    "packageTypes": {
+      "none": "None",
+      "starter": "Starter",
+      "pro": "Pro",
+      "premium": "Premium"
+    },
+    "productsCatalog": {
+      "none": "None",
+      "spStarter": "Sole Proprietorship Starter Package",
+      "spPro": "Sole Proprietorship Pro Package",
+      "spPremium": "Sole Proprietorship Premium Package",
+      "cStarter": "Corporation Starter Package",
+      "cPro": "Corporation Pro Package",
+      "cPremium": "Corporation Premium Package",
+      "xPrioritySupport": "24 Hours Delay for Support",
+      "xPriorityFilling": "Fastest Filling Speed",
+      "xGstQstRegistration": "GST/HST and QST Registration",
+      "xClassShareCapital": "Multiple Class Share Capital",
+      "xShareholdersAgreement": "Shareholders' Agreement",
+      "xTransferAgreement": "Intellectual Property Transfer Agreement"
+    },
+    "packageFeatures": {
+      "registration": "Legal Business Formation",
+      "gstQstRegistration": "GST/HST and QST Registration",
+      "multipleClassShareCapital": "Multiple Class Share Capital",
+      "priorityFilling": "Fastest Filling Speed",
+      "prioritySupport": "24 Hours Delay for Support",
+      "shareholdersAgreement": "Shareholders' Agreement",
+      "intellectualPropertyTransferAgreement": "Intellectual Property Transfer Agreement",
+      "virtualOfficeAddress": "Virtual Office Address",
+      "virtualPhoneNumber": "Virtual Phone Number"
+    }
+  },
+  "errors": {
+    "invalidCredentials": "The provided credentials are invalid.",
+    "invalidToken": "The provided token is invalid.",
+    "unauthorized": "You are not authorized to perform this action.",
+    "forbidden": "You do not have permission to access this resource.",
+    "badRequest": "Something went wrong. Please try again later.",
+    "internalError": "An internal server error occurred. Please try again later.",
+    "notFound": "{model} could not be found."
+  },
+  "user": {
+    "forgotPasswordDone": "If a user with that email exists, they have been sent an email with password reset instructions.",
+    "invalidPassword": "The password is invalid.",
+    "resetPasswordSuccess": "Password reset successfully.",
+    "accountAlreadyVerified": "Your account has already been verified.",
+    "emailAlreadyExists": "An account with this email already exists.",
+    "verificationSuccess": "Account verified successfully.",
+    "verificationMailSent": "A verification email has been sent."
+  },
+  "relationship": {
+    "alreadyExists": "A person in charge with this email is already linked to the child."
+  }
+}

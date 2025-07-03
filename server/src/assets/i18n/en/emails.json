@@ -1,0 +1,100 @@
+{
+  "common": {
+    "websiteUrl": "https://vss.bstarter.ca",
+    "footerImgSrc": "https://vss.bstarter.ca/assets/images/logoText.png",
+    "ignoreEmail": "If you do not have a VSS account, you can disregard this email. It's possible someone entered your email address incorrectly.",
+    "possibleMistake": "If you think there has been a mistake, please reach out to VSS support by responding to this email."
+  },
+  "fields": {
+    "userName": "User Name:",
+    "userId": "User Id:",
+    "userEmail": "User Email:",
+    "companyName": "Company Name:",
+    "companyId": "Company Id:",
+    "companyType": "Company Type:",
+    "packageType": "Package:",
+    "packageFeatures": "Package Features:",
+    "product": "Product:",
+    "ticketEmail": "Ticket Email:",
+    "subject": "Subject:",
+    "firstName": "First Name:",
+    "lastName": "Last Name:",
+    "email": "Email:",
+    "phone": "Phone:",
+    "centerName": "Center Name:",
+    "centerAddress": "Center Address:",
+    "annualPlan": "Annual Billing:",
+    "numberOfChildren": "Number of Children:"
+  },
+  "passwordReset": {
+    "subject": "VSS Reset Password",
+    "header": "Reset your password",
+    "callToAction": "Reset Password",
+    "p1": "You requested to reset your VSS password. Please click on the button below to do so."
+  },
+  "verifyAccount": {
+    "subject": "VSS Account Verfication",
+    "header": "Verify your email address",
+    "callToAction": "Verify Account",
+    "p1": "To complete the setup of your VSS account, we must confirm the ownership of this email address. Please click on the button below."
+  },
+  "majorUpdate": {
+    "subject": "VSS Account Update",
+    "header": "Your account has been updated",
+    "p1": "Some major updates have been made to your VSS Account. <b>Your password or email address changed.</b> If you are not responsible for these changes, please contact VSS support by replying to this email."
+  },
+  "majorUpdateVerify": {
+    "subject": "VSS Account Update",
+    "header": "Your account has been updated",
+    "callToAction": "Verify Account",
+    "p1": "Some major updates have been made to your VSS Account. <b>Your password or email address changed.</b> To complete the setup of your VSS account, we must confirm the ownership of this email address. Please click on the button below."
+  },
+  "contactSupport": {
+    "subject": "VSS Support Request",
+    "header": "Support request from {userName}"
+  },
+  "orderCompleted": {
+    "subject": "VSS Payment Successful",
+    "header": "Payment successful",
+    "p1": "Payment was successful for your VSS company <b>{companyName}</b> with the <b>{packageType}</b> package. We will now start delivering <b>{product}</b> services.",
+    "p2": "Here is a summary of all the features you benefit from:"
+  },
+  "orderPaymentFailed": {
+    "subject": "VSS Payment Not Received",
+    "header": "Payment not received",
+    "p1": "Payment for your VSS company <b>{companyName}</b> has not been received. Services for this company will be suspended until the outstanding balance is settled."
+  },
+  "orderToProcess": {
+    "subject": "VSS New Order",
+    "header": "New order from {userName}"
+  },
+  "surveyStarts": {
+    "subject": "VSS New survey",
+    "header": "New survey to answer",
+    "p1": "You were assigned to answer a survey",
+    "callToAction": "Answer the survey"
+  },
+  "surveyEnds": {
+    "subject": "VSS End of survey",
+    "header": "End of the period to answer a survey",
+    "p1": "The period to answer a survey that you were assigned is over",
+    "callToAction": "See my answers"
+  },
+  "relationshipAdded": {
+    "subject": "Child Added to Your VSS Account",
+    "header": "Child Added to Your VSS Account",
+    "callToAction": "Login",
+    "p1": "A child, <b>{childName}</b>, has been added to your VSS account at <b>{childcareCenterName}</b> daycare. You can log in now to manage the child's information."
+  },
+  "relationshipAddedAndPassword": {
+    "subject": "Creation of Your VSS Account",
+    "header": "Your VSS Account Has Been Created",
+    "callToAction": "Login",
+    "p1": "A VSS account has been created for you at <b>{childcareCenterName}</b> daycare so you can manage the child <b>{childName}</b>.",
+    "p2": "You can log in now using the following credentials:<br><br>Email: <b>{userMail}</b><br>Password: <b>{userPassword}</b>"
+  },
+  "demoRequest": {
+    "subject": "VSS Demo Request",
+    "header": "Demo Request from {firstName} {lastName}"
+  }
+}

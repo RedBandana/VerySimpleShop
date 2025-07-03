@@ -1,5 +1,4 @@
 export interface IProduct {
-    id: string;
     name: string;
     description: string;
     price: number;
@@ -10,19 +9,16 @@ export interface IProduct {
 }
 
 export interface IProductOption {
-    id: string;
     name: string; // e.g., "Color" or "Size"
-    values: IProductOptionValue[];
+    choices: IProductOptionChoice[];
 }
 
-export interface IProductOptionValue {
-    id: string;
+export interface IProductOptionChoice {
     value: string; // e.g., "Red" or "M"
     imageUrl?: string;
 }
 
 export interface IProductVariant {
-    id: string;
     sku?: string;
     attributes: { [key: string]: string }; // e.g., { size: "M", color: "Red" }
     imageUrls: string[];

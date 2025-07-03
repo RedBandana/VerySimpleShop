@@ -1,11 +1,11 @@
-import { Injectable, RawBodyRequest } from '@nestjs/common';
 import 'dotenv/config';
+import { Injectable, Logger, RawBodyRequest } from '@nestjs/common';
 import Stripe from 'stripe';
 import { Response } from 'express';
-import { StripeItem } from './stripe.interface';
 
 @Injectable()
 export class StripeService {
+    private readonly logger = new Logger(StripeService.name);
 
     private readonly WEBHOOK_KEY: string = process.env.STRIPE_WEBHOOK_KEY || "";
     private readonly BASE_URL: string = process.env.FRONTEND_URL || "";
@@ -17,7 +17,7 @@ export class StripeService {
         });
     }
 
-    async createCheckoutSession(items: StripeItem[], metadata?: Stripe.MetadataParam) {
+    async createCheckoutSession(items: any[], metadata?: Stripe.MetadataParam) {
         const session = await this.stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             line_items: items.map(item => ({
@@ -74,17 +74,19 @@ export class StripeService {
                     break;
                 }
             default:
-                console.log(`Unhandled event type ${event.type}`);
+                this.logger.warn(`Unhandled event type ${event.type}`);
         }
 
         res.json({ received: true });
     }
 
     private async handleSuccessfulCheckout(session: Stripe.Checkout.Session) {
-        console.log('Successful checkout:', session.id);
+        this.logger.log('Successful checkout:', session.id);
+        // Create an order
     }
 
     private async handleSuccessfulPayment(paymentIntent: Stripe.PaymentIntent) {
-        console.log('Successful payment:', paymentIntent.id);
+        this.logger.log('Successful payment:', paymentIntent.id);
+        // Create an order
     }
 }

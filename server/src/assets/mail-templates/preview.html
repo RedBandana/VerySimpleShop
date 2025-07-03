@@ -1,0 +1,26 @@
+<html lang='{{i18nLang}}'>
+
+<head>
+  <meta charset='UTF-8' />
+  <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+  <title>{{t 'emails.verifyAccount.subject'}}</title>
+</head>
+
+<body style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 16px; color: #000; padding: 0; margin: 0;">
+  <div class='container' style="padding: 40px;">
+    <div class='main' style="padding: 0; margin: 0;">
+      <div class='header' style="font-size: 32px; margin-bottom: 20px;">{{t 'emails.verifyAccount.header'}}</div>
+      <p style="padding: 0; margin: 0 0 20px 0;">{{t 'emails.verifyAccount.p1'}}</p>
+      <p style="padding: 0; margin: 0 0 20px 0;">{{t 'emails.common.ignoreEmail'}}</p>
+      <a class='button-base' href='{{actionUrl}}' style="display: block; background-color: #4f6edb; font-weight: 600; font-size: 16px; text-align: center; cursor: pointer; border-radius: 8px; transition: background-color 0.25s ease-in-out; padding: 12px 20px; width: 250px; color: white; letter-spacing: 1px; margin-bottom: 20px; text-decoration: none;">{{t 'emails.verifyAccount.callToAction'}}</a>
+    </div>
+
+    <div class='footer' style="margin-top: 20px;">
+      <a class='footer-link' href='{{t "emails.common.websiteUrl"}}' style="text-decoration: none; color: #000; padding: 0; margin: 0;">
+        <div class='footer-title' style="font-size: 24px; padding: 0; margin: 0;">{{t 'general.common.app'}}</div>
+      </a>
+    </div>
+  </div>
+</body>
+
+</html>
