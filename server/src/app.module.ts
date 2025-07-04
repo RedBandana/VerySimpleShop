@@ -21,7 +21,7 @@ import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(process.env.MONGODB_CONNECTION_STRING || ""),
+    MongooseModule.forRoot(process.env.MONGODB_CONNECTION_STRING ?? ""),
     I18nModule.forRoot({
       fallbackLanguage: DEFAULT_LANGUAGE,
       loaderOptions: {

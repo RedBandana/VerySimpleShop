@@ -1,3 +1,4 @@
+export const DAY_IN_YEAR = 365;
 export const HOURS_IN_DAY = 24;
 export const MIN_IN_HOUR = 60;
 export const SEC_IN_MIN = 60;

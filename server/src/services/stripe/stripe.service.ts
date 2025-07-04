@@ -7,12 +7,12 @@ import { Response } from 'express';
 export class StripeService {
     private readonly logger = new Logger(StripeService.name);
 
-    private readonly WEBHOOK_KEY: string = process.env.STRIPE_WEBHOOK_KEY || "";
-    private readonly BASE_URL: string = process.env.FRONTEND_URL || "";
+    private readonly WEBHOOK_KEY: string = process.env.STRIPE_WEBHOOK_KEY ?? "";
+    private readonly BASE_URL: string = process.env.FRONTEND_URL ?? "";
     private stripe: Stripe;
 
     constructor() {
-        this.stripe = new Stripe(process.env.STRIPE_API_KEY || "", {
+        this.stripe = new Stripe(process.env.STRIPE_API_KEY ?? "", {
             apiVersion: "2025-05-28.basil"
         });
     }
@@ -54,7 +54,7 @@ export class StripeService {
         let event: Stripe.Event;
 
         try {
-            event = this.stripe.webhooks.constructEvent(req.rawBody || '', sig, this.WEBHOOK_KEY);
+            event = this.stripe.webhooks.constructEvent(req.rawBody ?? "", sig, this.WEBHOOK_KEY);
         } catch (err) {
             console.error(`Webhook Error: ${err.message}`);
             return res.status(400).send(`Webhook Error: ${err.message}`);

@@ -1,6 +1,5 @@
 export enum UserTypes {
   GUEST = 'guest',
-  NORMAL = 'user',
+  NORMAL = 'normal',
   PREMIUM = 'premium',
-  APPLICATION = 'application',
 }

@@ -4,6 +4,10 @@ import { ProductVariant, ProductVariantSchema } from "./product-variant.schema";
 import { DatabaseModel } from "src/common/enums/database-model.enum";
 
 export interface Product extends Document {
+    _id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    
     name: string;
     description: string;
     price: number;
@@ -11,8 +15,6 @@ export interface Product extends Document {
     collections: string[];
     options: ProductOption[];
     variants: ProductVariant[];
-    createdAt: Date;
-    updatedAt: Date;
 }
 
 export const ProductSchema = new Schema<Product>(

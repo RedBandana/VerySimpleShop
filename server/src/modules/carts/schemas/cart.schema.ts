@@ -3,12 +3,14 @@ import { CartItemSchema, CartItem } from "./cart-item.schema";
 import { DatabaseModel } from "src/common/enums/database-model.enum";
 
 export interface Cart extends Document {
+    _id: string;
+    createdAt: Date;
+    updatedAt: Date;
+
     customerId: string;
     orderId?: string;
     items: CartItem[];
     totalPrice: number;
-    createdAt: Date;
-    updatedAt: Date;
 }
 
 export const CartSchema = new Schema<Cart>(

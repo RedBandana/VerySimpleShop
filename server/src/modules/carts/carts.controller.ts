@@ -12,17 +12,17 @@ export class CartsController {
 
     @Post('add')
     addToCart(@Body() addToCartDto: AddToCartDto) {
-        this.logger.verbose(addToCartDto);
+        this.logger.log(addToCartDto);
     }
 
     @Post('remove')
     removeFromCart(@Body() removeFromCartDto: RemoveFromCartDto) {
-        this.logger.verbose(removeFromCartDto);
+        this.logger.log(removeFromCartDto);
     }
 
     @Put('update')
     updateCart(@Body() updateCartDto: UpdateCartDto) {
-        this.logger.verbose(updateCartDto);
+        this.logger.log(updateCartDto);
     }
 
     @Post('checkout')

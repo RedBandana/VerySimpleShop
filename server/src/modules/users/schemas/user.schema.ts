@@ -6,8 +6,13 @@ import { INPUT_LENGTH } from "src/common/constants/input.constant";
 import { UserTypes } from "src/common/enums/user-types.enum";
 import { emailValidator } from "src/common/utils/functions.utils";
 import { Address, AddressSchema } from "./address.schema";
+import { UserPermissions } from 'src/common/enums/user-permissions.enum';
 
 export interface User extends Document {
+    _id: string;
+    createdAt: Date;
+    updatedAt: Date;
+
     firstName: string;
     lastName: string;
     email: string;
@@ -16,8 +21,7 @@ export interface User extends Document {
     password: string;
     type: UserTypes;
     isVerified: boolean;
-    createdAt: Date;
-    updatedAt: Date;
+    permissions: UserPermissions[];
 }
 
 export const UserSchema = new Schema(
@@ -68,6 +72,7 @@ export const UserSchema = new Schema(
         },
         address: { type: AddressSchema },
         isVerified: { type: Boolean },
+        permissions: { type: [String], enum: UserPermissions, default: [] },
     },
     {
         timestamps: true,

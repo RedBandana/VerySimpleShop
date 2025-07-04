@@ -3,11 +3,13 @@ import { OrderStatus } from "src/common/enums/order-status.enum";
 import { DatabaseModel } from "src/common/enums/database-model.enum";
 
 export interface Order extends Document {
+    _id: string;
+    createdAt: Date;
+    updatedAt: Date;
+
     customerId: string;
     cartId: string;
     status: OrderStatus;
-    createdAt: Date;
-    updatedAt: Date;
 }
 
 export const OrderSchema = new Schema<Order>(

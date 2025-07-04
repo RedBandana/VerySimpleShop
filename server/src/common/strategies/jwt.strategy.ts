@@ -7,6 +7,7 @@ import { UsersService } from 'src/modules/users/users.service';
 import { TokensService } from 'src/modules/tokens/tokens.service';
 import { DatabaseModel } from '../enums/database-model.enum';
 import { SESSION_COOKIE_NAME } from '../constants/general.constant';
+import { User } from 'src/modules/users/schemas/user.schema';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -27,10 +28,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super(strategyOptions);
   }
 
-  async validate(req: Request, payload: any) {
+  async validate(req: Request, payload: any): Promise<User> {
     const authToken = this.extractJwtFromRequestCookie(req);
 
-    if (await this.tokensService.isBlacklisted(authToken)) {
+    if (!authToken || await this.tokensService.isBlacklisted(authToken)) {
       const unauthorized = this.i18n.translate('general.errors.unauthorized', { lang: I18nContext.current()?.lang });
       throw new UnauthorizedException(unauthorized);
     }
@@ -47,8 +48,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     return user;
   }
 
-  extractJwtFromRequestCookie(req: Request) {
-    const token = req && req.cookies ? req.cookies[SESSION_COOKIE_NAME] : null;
+  extractJwtFromRequestCookie(req: Request): string {
+    const token: string = req && req.cookies ? req.cookies[SESSION_COOKIE_NAME] : "";
     return token;
   }
 

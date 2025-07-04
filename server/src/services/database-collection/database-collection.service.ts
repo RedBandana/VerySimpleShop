@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
 import { Model, Query, Document, PipelineStage } from 'mongoose';
 import { PaginationOptions } from 'src/common/interfaces/database-request-options.interface';
-import { Converter } from 'src/common/utils/converter.utils';
+import { objectToDotNotation } from 'src/common/utils/functions.utils';
 
 @Injectable()
 export class DatabaseCollectionService {
@@ -18,7 +18,7 @@ export class DatabaseCollectionService {
     }
 
     async updateDocument(documentId: string | ObjectId, updateRequest: any): Promise<any> {
-        const correctUpdateRequest = Converter.objectToDotNotation(updateRequest);
+        const correctUpdateRequest = objectToDotNotation(updateRequest);
         const record = await this.model.findByIdAndUpdate(documentId, correctUpdateRequest, { new: true }).lean().exec();
         return record;
     }
@@ -88,21 +88,6 @@ export class DatabaseCollectionService {
         if (option) {
             if (option.from >= 0) this.query.skip(option.from);
             if (option.limit > 0) this.query.limit(option.limit);
-        }
-    }
-
-    formatResponse(payload: any) {
-        const transform = (obj: any) => {
-            delete obj.password;
-            return obj;
-        };
-
-        if (Array.isArray(payload)) {
-            return payload.map((item) => transform(item));
-        } else if (payload && typeof payload === 'object') {
-            return transform(payload);
-        } else {
-            return payload;
         }
     }
 }

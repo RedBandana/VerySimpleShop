@@ -3,10 +3,12 @@ import { SEC_IN_HOUR } from 'src/common/constants/time.constant';
 import { DatabaseModel } from 'src/common/enums/database-model.enum';
 
 export interface Token extends Document {
-  token: string;
-  expireAt: Date;
+  _id: string;
   createdAt: Date;
   updatedAt: Date;
+
+  token: string;
+  expireAt: Date;
 }
 
 export const TokenSchema = new mongoose.Schema(

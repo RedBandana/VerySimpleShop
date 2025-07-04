@@ -1,0 +1,40 @@
+export enum UserPermissions {
+    ALL = 'all',
+    MODERATOR = 'moderator',
+    ADMINISTRATOR = 'administrator',
+
+    USER_ALL = 'user:all',
+    USER_READ = 'user:read',
+    USER_READ_ALL = 'user:read:all',
+    USER_EDIT = 'user:edit',
+    USER_ADD = 'user:add',
+    USER_DELETE = 'user:delete',
+
+    PRODUCT_ALL = 'product:all',
+    PRODUCT_READ = 'product:read',
+    PRODUCT_READ_ALL = 'product:read:all',
+    PRODUCT_EDIT = 'product:edit',
+    PRODUCT_ADD = 'product:add',
+    PRODUCT_DELETE = 'product:delete',
+
+    CART_ALL = 'cart:all',
+    CART_READ = 'cart:read',
+    CART_READ_ALL = 'cart:read:all',
+    CART_EDIT = 'cart:edit',
+    CART_ADD = 'cart:add',
+    CART_DELETE = 'cart:delete',
+
+    ORDER_ALL = 'order:all',
+    ORDER_READ = 'order:read',
+    ORDER_READ_ALL = 'order:read:all',
+    ORDER_EDIT = 'order:edit',
+    ORDER_ADD = 'order:add',
+    ORDER_DELETE = 'order:delete',
+
+    TOKEN_ALL = 'token:all',
+    TOKEN_READ = 'token:read',
+    TOKEN_READ_ALL = 'token:read:all',
+    TOKEN_EDIT = 'token:edit',
+    TOKEN_ADD = 'token:add',
+    TOKEN_DELETE = 'token:delete',
+}
