@@ -7,7 +7,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { INPUT_LENGTH } from 'src/common/constants/input.constant';
-import { AddressDto } from './address.dto';
+import { AddressDto } from '../../../common/dto/address.dto';
 
 export class UpdateUserDto {
     @IsOptional()

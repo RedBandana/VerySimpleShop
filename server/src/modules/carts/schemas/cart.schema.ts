@@ -7,7 +7,7 @@ export interface Cart extends Document {
     createdAt: Date;
     updatedAt: Date;
 
-    customerId: string;
+    userId: string;
     orderId?: string;
     items: CartItem[];
     totalPrice: number;
@@ -15,7 +15,7 @@ export interface Cart extends Document {
 
 export const CartSchema = new Schema<Cart>(
     {
-        customerId: { type: String, required: true },
+        userId: { type: String, required: true },
         items: { type: [CartItemSchema], required: true },
         totalPrice: { type: Number, required: true, default: 0 },
         orderId: { type: String, required: false },

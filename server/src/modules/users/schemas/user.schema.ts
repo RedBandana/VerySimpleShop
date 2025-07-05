@@ -5,7 +5,7 @@ import mongoose, { Schema } from "mongoose";
 import { INPUT_LENGTH } from "src/common/constants/input.constant";
 import { UserTypes } from "src/common/enums/user-types.enum";
 import { emailValidator } from "src/common/utils/functions.utils";
-import { Address, AddressSchema } from "./address.schema";
+import { Address, AddressSchema } from "../../../common/schemas/address.schema";
 import { UserPermissions } from 'src/common/enums/user-permissions.enum';
 
 export interface User extends Document {

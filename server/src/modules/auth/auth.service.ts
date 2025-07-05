@@ -36,7 +36,7 @@ export class AuthService {
     }
 
     async createGuest(): Promise<User> {
-        const guest = await this.usersService.create({ type: UserTypes.GUEST });
+        const guest = await this.usersService.createDocument({ type: UserTypes.GUEST });
         return guest;
     }
 

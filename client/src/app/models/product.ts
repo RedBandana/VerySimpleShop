@@ -20,7 +20,7 @@ export interface IProductOptionChoice {
 
 export interface IProductVariant {
     sku?: string;
-    attributes: { [key: string]: string }; // e.g., { size: "M", color: "Red" }
+    specifications: { [key: string]: string }; // e.g., { size: "M", color: "Red" }
     imageUrls: string[];
     price?: number;
     stock?: number;

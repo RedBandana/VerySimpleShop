@@ -36,7 +36,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException(unauthorized);
     }
 
-    const user = await this.usersService.get(payload.userId);
+    const user = await this.usersService.getDocument(payload.userId);
     if (!user) {
       const notFound = this.i18n.translate('general.errors.notFound', {
         args: { model: DatabaseModel.USER },

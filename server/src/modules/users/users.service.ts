@@ -15,13 +15,12 @@ export class UsersService extends DatabaseCollectionService {
     }
 
     async get(userId: string): Promise<User> {
-        const user: any = await this.getDocumentByIdLean(userId);
+        const user: any = await this.getDocument(userId);
         return user;
     }
 
     async create(user: Partial<User>): Promise<User> {
-        const newUser = new this.userModel(user);
-        await newUser.save();
-        return newUser.toObject();
+        const newUser = await this.createDocument(user);
+        return newUser;
     }
 }

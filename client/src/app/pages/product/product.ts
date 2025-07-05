@@ -62,37 +62,37 @@ export class Product {
     variants: [
       {
         id: "1",
-        attributes: { color: "jet_black" },
+        specifications: { color: "jet_black" },
         imageUrls: [],
         price: 30
       },
       {
         id: "2",
-        attributes: { color: "dark_brown" },
+        specifications: { color: "dark_brown" },
         imageUrls: [],
         price: 30
       },
       {
         id: "3",
-        attributes: { color: "beige_blonde" },
+        specifications: { color: "beige_blonde" },
         imageUrls: [],
         price: 30
       },
       {
         id: "4",
-        attributes: { color: "platinum_blonde" },
+        specifications: { color: "platinum_blonde" },
         imageUrls: [],
         price: 30
       },
       {
         id: "5",
-        attributes: { color: "balayage_choco" },
+        specifications: { color: "balayage_choco" },
         imageUrls: [],
         price: 30
       },
       {
         id: "6",
-        attributes: { color: "balayage_sun_kiss" },
+        specifications: { color: "balayage_sun_kiss" },
         imageUrls: [],
         price: 30
       }
