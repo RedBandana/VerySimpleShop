@@ -4,11 +4,16 @@ import { OrdersService } from './orders.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DatabaseModel } from 'src/common/enums/database-model.enum';
 import { OrderSchema } from './schemas/order.schema';
+import { CartsModule } from '../carts/carts.module';
+import { StripeService } from 'src/services/stripe/stripe.service';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: DatabaseModel.ORDER, schema: OrderSchema }])],
-  providers: [OrdersService],
+  imports: [
+    MongooseModule.forFeature([{ name: DatabaseModel.ORDER, schema: OrderSchema }]),
+    CartsModule,
+  ],
+  providers: [OrdersService, StripeService],
   controllers: [OrdersController],
   exports: [OrdersService],
 })
-export class OrdersModule {}
+export class OrdersModule { }

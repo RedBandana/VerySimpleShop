@@ -11,8 +11,6 @@ import { RemoveFromCartDto } from './dto/remove-from-cart.dto';
 import { DatabaseCollectionService } from 'src/services/database-collection/database-collection.service';
 import { ObjectId } from 'mongodb';
 import { ProductsService } from '../products/products.service';
-import { CartItem } from './schemas/cart-item.schema';
-import { StripeItem } from 'src/common/interfaces/stripe-item.interface';
 
 @Injectable()
 export class CartsService extends DatabaseCollectionService {
@@ -194,38 +192,5 @@ export class CartsService extends DatabaseCollectionService {
         }
 
         cart.totalPrice = totalPrice;
-    }
-
-    cartItemsToStripeItems(cartItems: CartItem[]): StripeItem[] {
-        const stripeItems = cartItems.map(item => {
-            const product = item._product;
-            let name = '';
-            let description = '';
-            let price = 0;
-
-            if (!product) {
-                name = 'Unknown Product';
-                description = '';
-                price = 0;
-            } else if (item.variantId) {
-                const variant = product.variants.find(v => v._id.toString() === item.variantId?.toString());
-                name = product.name;
-                description = product.description;
-                price = variant?.price ?? product.price;
-            } else {
-                name = product.name;
-                description = product.description;
-                price = product.price;
-            }
-
-            return {
-                name,
-                description,
-                price,
-                quantity: item.quantity,
-            };
-        });
-
-        return stripeItems;
     }
 }

@@ -1,14 +1,12 @@
 import 'dotenv/config';
-import { Injectable, Logger, RawBodyRequest } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import Stripe from 'stripe';
-import { Response } from 'express';
 import { StripeItem } from 'src/common/interfaces/stripe-item.interface';
 
 @Injectable()
 export class StripeService {
     private readonly logger = new Logger(StripeService.name);
 
-    private readonly WEBHOOK_KEY: string = process.env.STRIPE_WEBHOOK_KEY ?? "";
     private readonly BASE_URL: string = process.env.FRONTEND_URL ?? "";
     private stripe: Stripe;
 
@@ -32,9 +30,18 @@ export class StripeService {
                 },
                 quantity: item.quantity,
             })),
+            shipping_address_collection: {
+                allowed_countries: ['US', 'CA'],
+            },
             mode: 'payment',
-            success_url: `${this.BASE_URL}/success?orderid=${metadata?.orderId}`,
-            cancel_url: `${this.BASE_URL}/cancel?orderid=${metadata?.orderId}`,
+            payment_intent_data: {
+                metadata: {
+                    checkout_session_id: '{CHECKOUT_SESSION_ID}',
+                    ...metadata
+                }
+            },
+            success_url: `${this.BASE_URL}/success`,
+            cancel_url: `${this.BASE_URL}/cancel`,
             metadata
         });
 
@@ -42,52 +49,46 @@ export class StripeService {
     }
 
     async retrieveCheckoutSession(sessionId: string) {
-        const sessionWithLineItems = await this.stripe.checkout.sessions.retrieve(
-            sessionId,
-            { expand: ['line_items'] }
+        const session = await this.stripe.checkout.sessions.retrieve(
+            sessionId, { expand: ['line_items', 'shipping_details'] }
         );
 
-        return sessionWithLineItems;
+        return session;
     }
 
-    async handleWebhook(req: RawBodyRequest<Request>, res: Response) {
-        const sig = req.headers['stripe-signature'] as string;
-        let event: Stripe.Event;
+    async getSessionIdFromPaymentIntent(paymentIntentId: string) {
+        const paymentIntent = await this.stripe.paymentIntents.retrieve(paymentIntentId);
+        const sessionId = paymentIntent.metadata.checkout_session_id;
+        const session = await this.retrieveCheckoutSession(sessionId);
 
-        try {
-            event = this.stripe.webhooks.constructEvent(req.rawBody ?? "", sig, this.WEBHOOK_KEY);
-        } catch (err) {
-            console.error(`Webhook Error: ${err.message}`);
-            return res.status(400).send(`Webhook Error: ${err.message}`);
+        return session;
+    }
+
+    async updateSessionMetadata(sessionId: string, metadata: Stripe.Metadata) {
+        const session = await this.stripe.checkout.sessions.retrieve(sessionId);
+
+        if (session.payment_intent) {
+            const paymentIntentId = typeof session.payment_intent === 'string'
+                ? session.payment_intent
+                : session.payment_intent.id;
+
+            await this.stripe.paymentIntents.update(paymentIntentId, { metadata });
         }
+    }
 
-        switch (event.type) {
-            case 'checkout.session.completed':
-                {
-                    const session = event.data.object;
-                    await this.handleSuccessfulCheckout(session);
-                    break;
-                }
-            case 'payment_intent.succeeded':
-                {
-                    const paymentIntent = event.data.object;
-                    await this.handleSuccessfulPayment(paymentIntent);
-                    break;
-                }
-            default:
-                this.logger.warn(`Unhandled event type ${event.type}`);
+    async updateSubscriptionMetadata(sessionId: string, metadata: Stripe.Metadata) {
+        const session = await this.stripe.checkout.sessions.retrieve(sessionId);
+
+        if (session.subscription) {
+            const subscriptionId = typeof session.subscription === 'string'
+                ? session.subscription
+                : session.subscription.id;
+
+            await this.stripe.subscriptions.update(subscriptionId, { metadata });
         }
-
-        res.json({ received: true });
     }
 
-    private async handleSuccessfulCheckout(session: Stripe.Checkout.Session) {
-        this.logger.log('Successful checkout:', session.id);
-        // Create an order
-    }
-
-    private async handleSuccessfulPayment(paymentIntent: Stripe.PaymentIntent) {
-        this.logger.log('Successful payment:', paymentIntent.id);
-        // Create an order
+    getEvent(payload: any, signature: string): Stripe.Event {
+        return this.stripe.webhooks.constructEvent(payload, signature, process.env.STRIPE_WEBHOOK_KEY ?? "");
     }
 }

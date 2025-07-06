@@ -51,7 +51,7 @@ export class ProductsService extends DatabaseCollectionService {
         }
 
         const [products, total] = await Promise.all([
-            this.productModel.find(filter).skip(skip).limit(limit).lean().exec(),
+            this.filterBy(filter, { skip, limit }),
             this.productModel.countDocuments(filter).lean().exec(),
         ]);
 

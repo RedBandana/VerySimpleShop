@@ -2,6 +2,8 @@ import mongoose, { Schema } from "mongoose";
 import { CartItemSchema, CartItem } from "./cart-item.schema";
 import { DatabaseModel } from "src/common/enums/database-model.enum";
 import { ObjectId } from "mongodb";
+import { User } from "src/modules/users/schemas/user.schema";
+import { Order } from "src/modules/orders/schemas/order.schema";
 
 export interface Cart extends Document {
     _id: ObjectId;
@@ -12,6 +14,9 @@ export interface Cart extends Document {
     orderId?: ObjectId;
     items: CartItem[];
     totalPrice: number;
+
+    _user?: User;
+    _order?: Order;
 }
 
 export const CartSchema = new Schema<Cart>(
@@ -43,12 +48,42 @@ CartSchema.index(
     }
 );
 
+CartSchema.virtual('_user', {
+    ref: DatabaseModel.USER,
+    localField: 'userId',
+    foreignField: '_id',
+    justOne: true,
+});
+
+CartSchema.virtual('_order', {
+    ref: DatabaseModel.ORDER,
+    localField: 'orderId',
+    foreignField: '_id',
+    justOne: true,
+});
+
 function populateVirtualFields(obj: any) {
     obj.populate({
         path: "items._product",
         options: {
-            _recursed: true,
             select: "name price variants._id variants.price variants.stock",
+            _recursed: true,
+        },
+    });
+
+    obj.populate({
+        path: "_user",
+        options: {
+            select: "firstName lastName email",
+            _recursed: true,
+        },
+    });
+
+    obj.populate({
+        path: "_order",
+        options: {
+            select: "status paymentStatus shippingAddress",
+            _recursed: true,
         },
     });
 }
@@ -58,6 +93,22 @@ function populateVirtualFieldsLean(obj: any) {
         path: "items._product",
         options: {
             select: "name price",
+            _recursed: true,
+        },
+    });
+
+    obj.populate({
+        path: "_user",
+        options: {
+            select: "email",
+            _recursed: true,
+        },
+    });
+
+    obj.populate({
+        path: "_order",
+        options: {
+            select: "status paymentStatus",
             _recursed: true,
         },
     });

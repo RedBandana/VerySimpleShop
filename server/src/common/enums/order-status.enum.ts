@@ -7,5 +7,6 @@ export enum OrderStatus {
     RETURNED = "returned",
     REFUNDED = "refunded",
     FAILED = "failed",
+    EXPIRED = "expired",
     COMPLETED = "completed",
 }
