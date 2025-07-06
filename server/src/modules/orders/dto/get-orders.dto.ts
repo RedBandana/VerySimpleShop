@@ -1,7 +1,8 @@
-import { IsOptional, IsString, IsNumber, Min, IsEnum } from 'class-validator';
+import { IsOptional, IsNumber, Min, IsEnum, IsMongoId } from 'class-validator';
 import { Type } from 'class-transformer';
 import { OrderStatus } from 'src/common/enums/order-status.enum';
 import { PaymentStatus } from 'src/common/enums/payment-status.enum';
+import { ObjectId } from 'mongodb';
 
 export class GetOrdersDto {
     @IsOptional()
@@ -17,8 +18,8 @@ export class GetOrdersDto {
     limit?: number = 10;
 
     @IsOptional()
-    @IsString()
-    cartId?: string;
+    @IsMongoId()
+    cartId?: ObjectId;
 
     @IsOptional()
     @IsEnum(OrderStatus)
@@ -29,6 +30,6 @@ export class GetOrdersDto {
     paymentStatus?: PaymentStatus;
 
     @IsOptional()
-    @IsString()
-    userId?: string;
+    @IsMongoId()
+    userId?: ObjectId;
 }

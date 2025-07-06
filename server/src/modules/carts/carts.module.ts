@@ -5,9 +5,13 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { DatabaseModel } from 'src/common/enums/database-model.enum';
 import { CartSchema } from './schemas/cart.schema';
 import { StripeService } from 'src/services/stripe/stripe.service';
+import { ProductsModule } from '../products/products.module';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: DatabaseModel.CART, schema: CartSchema }])],
+  imports: [
+    MongooseModule.forFeature([{ name: DatabaseModel.CART, schema: CartSchema }]),
+    ProductsModule,
+  ],
   providers: [CartsService, StripeService],
   controllers: [CartsController],
   exports: [CartsService],

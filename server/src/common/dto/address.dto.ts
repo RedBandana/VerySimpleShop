@@ -14,7 +14,7 @@ export class AddressDto {
     @IsOptional()
     @IsString()
     @Length(INPUT_LENGTH.TEXT.MIN, INPUT_LENGTH.TEXT.MAX)
-    readonly streetAddress02: string;
+    readonly streetAddress02?: string;
 
     @IsString()
     @Length(INPUT_LENGTH.TEXT.MIN, INPUT_LENGTH.TEXT.MAX)

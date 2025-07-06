@@ -1,9 +1,14 @@
-import { IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsNumber, IsOptional, Min } from 'class-validator';
+import { ObjectId } from 'mongodb';
 
 export class RemoveFromCartDto {
-    @IsString()
+    @IsMongoId()
     @IsNotEmpty()
-    productId: string;
+    productId: ObjectId;
+
+    @IsMongoId()
+    @IsOptional()
+    variantId?: ObjectId;
 
     @IsNumber()
     @Min(1)

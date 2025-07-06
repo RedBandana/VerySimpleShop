@@ -4,7 +4,9 @@ import {
     IsNotEmpty,
     Length,
     IsOptional,
+    IsMongoId,
 } from 'class-validator';
+import { ObjectId } from 'mongodb';
 import { INPUT_LENGTH } from 'src/common/constants/input.constant';
 
 export class RegisterDto {
@@ -18,8 +20,8 @@ export class RegisterDto {
     @Length(INPUT_LENGTH.PASSWORD.MIN, INPUT_LENGTH.PASSWORD.MAX)
     readonly password: string;
 
-    @IsString()
+    @IsMongoId()
     @IsOptional()
     @Length(INPUT_LENGTH.TEXT.MIN, INPUT_LENGTH.TEXT.MAX)
-    readonly guestId?: string;
+    readonly guestId?: ObjectId;
 }

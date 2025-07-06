@@ -13,10 +13,10 @@ export class DatabaseCollectionService {
     async createDocument(document: any): Promise<any> {
         const record = new this.model(document);
         await record.save();
-        return record.toObject();
+        return record;
     }
 
-    async updateDocument(id: string | ObjectId, updateRequest: any): Promise<any> {
+    async updateDocument(id: ObjectId, updateRequest: any): Promise<any> {
         const correctUpdateRequest = objectToDotNotation(updateRequest);
         const record = await this.model.findByIdAndUpdate(
             id,
@@ -26,16 +26,16 @@ export class DatabaseCollectionService {
         return record;
     }
 
-    async deleteDocument(id: string | ObjectId): Promise<any> {
+    async deleteDocument(id: ObjectId): Promise<any> {
         const record = await this.model.findByIdAndDelete(id).lean().exec();
         return record;
     }
 
-    async getDocument(id: string | ObjectId, projection?: any): Promise<any> {
+    async getDocument(id: ObjectId, projection?: any): Promise<any> {
         return await this.model.findById(id).sort({ createdAt: -1 }).select(projection).lean();
     }
 
-    async getAllDocuments(option?: PaginationOptions, projection?: any) {
+    async getAllDocuments(option?: PaginationOptions, projection?: any): Promise<any[]> {
         return await this.filterBy({}, option, projection);
     }
 
@@ -47,12 +47,12 @@ export class DatabaseCollectionService {
         return await this.model.aggregate(stages);
     }
 
-    async documentExists(id: ObjectId | string): Promise<boolean> {
+    async documentExists(id: ObjectId): Promise<boolean> {
         const exists = await this.model.exists({ _id: id });
         return exists !== null;
     }
 
-    async documentsInArrayExist(ids: string[] | ObjectId[]): Promise<boolean> {
+    async documentsInArrayExist(ids: ObjectId[]): Promise<boolean> {
         for (const id of ids) {
             const exists = await this.model.exists({ _id: id });
             if (!exists) return false;
@@ -60,13 +60,20 @@ export class DatabaseCollectionService {
         return true;
     }
 
-    async filterBy(filter: any, option?: PaginationOptions, projection?: any) : Promise<any> {
+    async filterBy(filter: any, options?: PaginationOptions, projection?: any): Promise<any[]> {
         const query = this.model.find(filter);
-        if (option) {
-            if (option.from >= 0) query.skip(option.from);
-            if (option.limit > 0) query.limit(option.limit);
+        if (options) {
+            if (options.skip >= 0) query.skip(options.skip);
+            if (options.limit > 0) query.limit(options.limit);
         }
 
         return await query.sort({ createdAt: -1 }).select(projection).lean().exec();
+    }
+
+    async filterOneBy(filter: any, lean: boolean = true, projection?: any): Promise<any> {
+        const query = this.model.findOne(filter).sort({ createdAt: -1 }).select(projection);
+        if (lean) query.lean();
+
+        return await query.exec();
     }
 }

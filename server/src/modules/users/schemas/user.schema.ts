@@ -7,9 +7,10 @@ import { UserTypes } from "src/common/enums/user-types.enum";
 import { emailValidator } from "src/common/utils/functions.utils";
 import { Address, AddressSchema } from "../../../common/schemas/address.schema";
 import { UserPermissions } from 'src/common/enums/user-permissions.enum';
+import { ObjectId } from 'mongodb';
 
 export interface User extends Document {
-    _id: string;
+    _id: ObjectId;
     createdAt: Date;
     updatedAt: Date;
 
@@ -49,27 +50,10 @@ export const UserSchema = new Schema(
                 'Password is required',
             ],
         },
-        type: {
-            type: String,
-            enum: UserTypes,
-            default: UserTypes.GUEST,
-            required: true,
-        },
-        firstName: {
-            type: String,
-            minlength: INPUT_LENGTH.NAME.MIN,
-            maxlength: INPUT_LENGTH.NAME.MAX,
-        },
-        lastName: {
-            type: String,
-            minlength: INPUT_LENGTH.NAME.MIN,
-            maxlength: INPUT_LENGTH.NAME.MAX,
-        },
-        phone: {
-            type: String,
-            minlength: INPUT_LENGTH.PHONE.MIN,
-            maxlength: INPUT_LENGTH.PHONE.MAX,
-        },
+        type: { type: String, enum: UserTypes, default: UserTypes.GUEST, required: true },
+        firstName: { type: String, minlength: INPUT_LENGTH.NAME.MIN, maxlength: INPUT_LENGTH.NAME.MAX },
+        lastName: { type: String, minlength: INPUT_LENGTH.NAME.MIN, maxlength: INPUT_LENGTH.NAME.MAX },
+        phone: { type: String, minlength: INPUT_LENGTH.PHONE.MIN, maxlength: INPUT_LENGTH.PHONE.MAX },
         address: { type: AddressSchema },
         isVerified: { type: Boolean },
         permissions: { type: [String], enum: UserPermissions, default: [] },
@@ -79,6 +63,22 @@ export const UserSchema = new Schema(
     },
 );
 
+UserSchema.index(
+    { email: 1 },
+    {
+        unique: true,
+        sparse: true,
+        partialFilterExpression: {
+            email: {
+                $and: [
+                    { $exists: true },
+                    { $ne: null },
+                    { $ne: '' }
+                ]
+            }
+        },
+    },
+);
 
 async function preUpdate(next: any) {
     try {
@@ -107,23 +107,6 @@ async function preSave(next: any) {
         return next(err);
     }
 }
-
-UserSchema.index(
-    { email: 1 },
-    {
-        unique: true,
-        sparse: true,
-        partialFilterExpression: {
-            email: {
-                $and: [
-                    { $exists: true },
-                    { $ne: null },
-                    { $ne: '' }
-                ]
-            }
-        },
-    },
-);
 
 UserSchema.pre('findOneAndReplace', preUpdate);
 UserSchema.pre('findOneAndUpdate', preUpdate);

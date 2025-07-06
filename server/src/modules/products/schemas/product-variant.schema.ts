@@ -1,6 +1,9 @@
+import { ObjectId } from "mongodb";
 import { Schema } from "mongoose";
 
 export interface ProductVariant {
+    _id: ObjectId;
+
     sku?: string;
     specifications: any; // e.g., { size: "M", color: "Red" }
     imageUrls?: string[];

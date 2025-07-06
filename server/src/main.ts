@@ -4,6 +4,29 @@ import { AppModule } from './app.module';
 import mongoose from 'mongoose';
 
 async function bootstrap() {
+  mongoose.set('strictQuery', false);
+  mongoose.set('debug', process.env.NODE_ENV === 'development');
+  
+  mongoose.set('toJSON', {
+    virtuals: true,
+    versionKey: false,
+    transform: function(doc, ret) {
+      ret.id = ret._id;
+      delete ret._id;
+      return ret;
+    }
+  });
+  
+  mongoose.set('toObject', {
+    virtuals: true,
+    versionKey: false,
+    transform: function(doc, ret) {
+      ret.id = ret._id;
+      delete ret._id;
+      return ret;
+    }
+  });
+  
   const app = await NestFactory.create(AppModule, { rawBody: true });
 
   app.enableCors({
@@ -14,7 +37,6 @@ async function bootstrap() {
   });
 
   await app.listen(process.env.PORT || 3000);
-  mongoose.set('debug', false);
 }
 
 bootstrap();

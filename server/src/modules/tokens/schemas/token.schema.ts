@@ -1,9 +1,10 @@
+import { ObjectId } from 'mongodb';
 import mongoose, { Document } from 'mongoose';
 import { SEC_IN_HOUR } from 'src/common/constants/time.constant';
 import { DatabaseModel } from 'src/common/enums/database-model.enum';
 
 export interface Token extends Document {
-  _id: string;
+  _id: ObjectId;
   createdAt: Date;
   updatedAt: Date;
 

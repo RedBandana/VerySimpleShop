@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Cart } from './schemas/cart.schema';
@@ -9,19 +9,24 @@ import { AddToCartDto } from './dto/add-to-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
 import { RemoveFromCartDto } from './dto/remove-from-cart.dto';
 import { DatabaseCollectionService } from 'src/services/database-collection/database-collection.service';
+import { ObjectId } from 'mongodb';
+import { ProductsService } from '../products/products.service';
+import { CartItem } from './schemas/cart-item.schema';
+import { StripeItem } from 'src/common/interfaces/stripe-item.interface';
 
 @Injectable()
 export class CartsService extends DatabaseCollectionService {
+    private readonly logger = new Logger(CartsService.name);
 
     constructor(
         @InjectModel(DatabaseModel.CART) protected readonly cartModel: Model<Cart>,
+        protected productsService: ProductsService
     ) {
         super(cartModel);
     }
 
     async create(createCartDto: CreateCartDto): Promise<Cart> {
-        const cart = await this.createDocument(createCartDto);
-        return cart;
+        return await this.createDocument(createCartDto);
     }
 
     async getAll(getCartsDto: GetCartsDto): Promise<{ carts: Cart[]; total: number; page: number; limit: number }> {
@@ -29,59 +34,51 @@ export class CartsService extends DatabaseCollectionService {
         const skip = (page - 1) * limit;
 
         const filter: any = {};
-
-        if (userId) {
-            filter.userId = userId;
-        }
-
-        if (orderId) {
-            filter.orderId = orderId;
-        }
+        if (userId) filter.userId = userId;
+        if (orderId) filter.orderId = orderId;
 
         const [carts, total] = await Promise.all([
-            this.cartModel.find(filter).skip(skip).limit(limit).lean().exec(),
+            this.filterBy(filter, { skip, limit }),
             this.cartModel.countDocuments(filter).lean().exec(),
         ]);
 
-        return {
-            carts,
-            total,
-            page,
-            limit,
-        };
+        return { carts, total, page, limit, };
     }
 
-    async get(id: string): Promise<Cart> {
-        const cart = await this.getDocument(id);
+    async get(cartId: ObjectId): Promise<Cart> {
+        const cart = await this.getDocument(cartId);
         return cart;
     }
 
-    async update(id: string, updateCartDto: any): Promise<Cart> {
-        const cart = await this.updateDocument(id, updateCartDto);
+    async update(cartId: ObjectId, updateCartDto: UpdateCartDto): Promise<Cart> {
+        const cart = await this.updateDocument(cartId, updateCartDto);
         return cart;
     }
 
-    async delete(id: string): Promise<void> {
-        await this.deleteDocument(id);
+    async delete(cartId: ObjectId): Promise<void> {
+        await this.deleteDocument(cartId);
     }
 
-    async findByUserId(userId: string): Promise<Cart | null> {
-        return await this.cartModel.findOne({ userId }).exec();
+    async getByUserId(userId: ObjectId): Promise<Cart | null> {
+        return await this.filterOneBy({ userId, orderId: null }, false);
     }
 
-    async addToCart(userId: string, addToCartDto: AddToCartDto): Promise<Cart> {
-        let cart = await this.findByUserId(userId);
+    async addToCart(userId: ObjectId, addToCartDto: AddToCartDto): Promise<Cart> {
+        const product = await this.productsService.getDocument(addToCartDto.productId);
+        if (!product) throw new Error('Product not found');
 
-        if (!cart) {
-            cart = new this.cartModel({
-                userId,
-                items: [],
-                totalPrice: 0
-            });
+        if (addToCartDto.variantId) {
+            const productVariantIds = product.variants.map(v => v._id.toString());
+            if (!productVariantIds.includes(addToCartDto.variantId))
+                throw new Error('Product not found');
         }
 
-        const existingItemIndex = cart.items.findIndex(
-            item => item.productId === addToCartDto.productId
+        let cart = await this.getByUserId(userId);
+        if (!cart) cart = await this.create({ userId, items: [], totalPrice: 0 });
+
+        const existingItemIndex = cart.items.findIndex(item =>
+            item.productId.toString() === addToCartDto.productId.toString() &&
+            item.variantId?.toString() === addToCartDto.variantId?.toString()
         );
 
         if (existingItemIndex > -1) {
@@ -89,8 +86,11 @@ export class CartsService extends DatabaseCollectionService {
         } else {
             cart.items.push({
                 productId: addToCartDto.productId,
+                variantId: addToCartDto.variantId,
                 quantity: addToCartDto.quantity
             });
+            // Saving now so virtual property _product get added.
+            await (cart as any).save();
         }
 
         await this.calculateTotalPrice(cart);
@@ -99,15 +99,16 @@ export class CartsService extends DatabaseCollectionService {
         return cart;
     }
 
-    async updateCartItem(userId: string, updateCartDto: UpdateCartDto): Promise<Cart> {
-        const cart = await this.findByUserId(userId);
+    async updateCartItem(userId: ObjectId, updateCartDto: UpdateCartDto): Promise<Cart> {
+        const cart = await this.getByUserId(userId);
 
         if (!cart) {
             throw new Error('Cart not found');
         }
 
-        const itemIndex = cart.items.findIndex(
-            item => item.productId === updateCartDto.productId
+        const itemIndex = cart.items.findIndex(item =>
+            item.productId.toString() === updateCartDto.productId.toString() &&
+            item.variantId?.toString() === updateCartDto.variantId?.toString()
         );
 
         if (itemIndex === -1) {
@@ -126,15 +127,16 @@ export class CartsService extends DatabaseCollectionService {
         return cart;
     }
 
-    async removeFromCart(userId: string, removeFromCartDto: RemoveFromCartDto): Promise<Cart> {
-        const cart = await this.findByUserId(userId);
+    async removeFromCart(userId: ObjectId, removeFromCartDto: RemoveFromCartDto): Promise<Cart> {
+        const cart = await this.getByUserId(userId);
 
         if (!cart) {
             throw new Error('Cart not found');
         }
 
-        const itemIndex = cart.items.findIndex(
-            item => item.productId === removeFromCartDto.productId
+        const itemIndex = cart.items.findIndex(item =>
+            item.productId.toString() === removeFromCartDto.productId.toString() &&
+            item.variantId?.toString() === removeFromCartDto.variantId?.toString()
         );
 
         if (itemIndex === -1) {
@@ -156,8 +158,8 @@ export class CartsService extends DatabaseCollectionService {
         return cart;
     }
 
-    async clearCart(userId: string): Promise<Cart> {
-        const cart = await this.findByUserId(userId);
+    async clearCart(userId: ObjectId): Promise<Cart> {
+        const cart = await this.getByUserId(userId);
 
         if (!cart) {
             throw new Error('Cart not found');
@@ -172,8 +174,58 @@ export class CartsService extends DatabaseCollectionService {
     }
 
     private async calculateTotalPrice(cart: Cart): Promise<void> {
-        // For now, we'll set totalPrice to 0 as we need ProductsService to calculate actual prices
-        // In a real implementation, you'd inject ProductsService and calculate based on product prices
-        cart.totalPrice = 0;
+        let totalPrice = 0;
+
+        for (const item of cart.items) {
+            if (!item._product) throw new Error('Product not found');
+
+            if (item.variantId && (item._product.variants.length ?? 0) > 0) {
+                const variantIndex = item._product.variants.findIndex(
+                    v => v._id.toString() === item.variantId?.toString()
+                );
+
+                if (variantIndex >= 0 && item._product.variants[variantIndex].price) {
+                    totalPrice += item._product.variants[variantIndex].price * item.quantity;
+                    continue;
+                }
+            }
+
+            totalPrice += item._product.price * item.quantity;
+        }
+
+        cart.totalPrice = totalPrice;
+    }
+
+    cartItemsToStripeItems(cartItems: CartItem[]): StripeItem[] {
+        const stripeItems = cartItems.map(item => {
+            const product = item._product;
+            let name = '';
+            let description = '';
+            let price = 0;
+
+            if (!product) {
+                name = 'Unknown Product';
+                description = '';
+                price = 0;
+            } else if (item.variantId) {
+                const variant = product.variants.find(v => v._id.toString() === item.variantId?.toString());
+                name = product.name;
+                description = product.description;
+                price = variant?.price ?? product.price;
+            } else {
+                name = product.name;
+                description = product.description;
+                price = product.price;
+            }
+
+            return {
+                name,
+                description,
+                price,
+                quantity: item.quantity,
+            };
+        });
+
+        return stripeItems;
     }
 }

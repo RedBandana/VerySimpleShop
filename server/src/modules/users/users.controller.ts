@@ -5,6 +5,8 @@ import { UsersService } from './users.service';
 import { AdminGuard } from 'src/common/guards/admin.guard';
 import { User } from './schemas/user.schema';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ParseObjectIdPipe } from 'src/common/pipes/parse-object-id.pipe';
+import { ObjectId } from 'mongodb';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard)
@@ -38,15 +40,15 @@ export class UsersController {
 
     }
 
-    @Get(':id')
+    @Get(':userId')
     @UseGuards(AdminGuard)
-    getUserById(@Param('id') id: string) {
-        this.logger.log(id);
+    getUserById(@Param('userId', ParseObjectIdPipe) userId: ObjectId) {
+        this.logger.log(userId);
     }
 
-    @Delete(':id')
+    @Delete(':userId')
     @UseGuards(AdminGuard)
-    deleteUser(@Param('id') id: string) {
-        this.logger.log(id);
+    deleteUser(@Param('userId', ParseObjectIdPipe) userId: ObjectId) {
+        this.logger.log(userId);
     }
 }

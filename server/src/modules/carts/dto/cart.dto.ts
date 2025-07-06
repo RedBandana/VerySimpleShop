@@ -1,10 +1,15 @@
-import { IsString, IsNotEmpty, IsNumber, IsArray, IsOptional, ValidateNested, Min } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsArray, IsOptional, ValidateNested, Min, IsMongoId } from 'class-validator';
 import { Type } from 'class-transformer';
+import { ObjectId } from 'mongodb';
 
 export class CartItemDto {
-    @IsString()
+    @IsMongoId()
     @IsNotEmpty()
-    productId: string;
+    productId: ObjectId;
+
+    @IsMongoId()
+    @IsOptional()
+    variantId?: ObjectId;
 
     @IsNumber()
     @Min(1)
@@ -12,9 +17,9 @@ export class CartItemDto {
 }
 
 export class CartDto {
-    @IsString()
+    @IsMongoId()
     @IsNotEmpty()
-    userId: string;
+    userId: ObjectId;
 
     @IsArray()
     @ValidateNested({ each: true })
@@ -25,7 +30,7 @@ export class CartDto {
     @Min(0)
     totalPrice: number;
 
-    @IsString()
+    @IsMongoId()
     @IsOptional()
-    orderId?: string;
+    orderId?: ObjectId;
 }

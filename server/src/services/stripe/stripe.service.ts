@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { Injectable, Logger, RawBodyRequest } from '@nestjs/common';
 import Stripe from 'stripe';
 import { Response } from 'express';
+import { StripeItem } from 'src/common/interfaces/stripe-item.interface';
 
 @Injectable()
 export class StripeService {
@@ -17,7 +18,7 @@ export class StripeService {
         });
     }
 
-    async createCheckoutSession(items: any[], metadata?: Stripe.MetadataParam) {
+    async createCheckoutSession(items: StripeItem[], metadata?: Stripe.MetadataParam) {
         const session = await this.stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             line_items: items.map(item => ({
@@ -27,7 +28,7 @@ export class StripeService {
                         name: item.name,
                         description: item.description,
                     },
-                    unit_amount: item.price,
+                    unit_amount: Math.round(item.price * 100),
                 },
                 quantity: item.quantity,
             })),

@@ -2,9 +2,10 @@ import mongoose, { Schema, Document } from "mongoose";
 import { ProductOption, ProductOptionSchema } from "./product-option.schema";
 import { ProductVariant, ProductVariantSchema } from "./product-variant.schema";
 import { DatabaseModel } from "src/common/enums/database-model.enum";
+import { ObjectId } from "mongodb";
 
 export interface Product extends Document {
-    _id: string;
+    _id: ObjectId;
     createdAt: Date;
     updatedAt: Date;
 

@@ -11,6 +11,7 @@ import { UpdatePaymentStatusDto } from './dto/update-payment-status.dto';
 import { OrderStatus } from 'src/common/enums/order-status.enum';
 import { PaymentStatus } from 'src/common/enums/payment-status.enum';
 import { DatabaseCollectionService } from 'src/services/database-collection/database-collection.service';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class OrdersService extends DatabaseCollectionService {
@@ -64,30 +65,30 @@ export class OrdersService extends DatabaseCollectionService {
         };
     }
 
-    async get(id: string): Promise<Order> {
+    async get(id: ObjectId): Promise<Order> {
         const order = await this.getDocument(id);
         return order;
     }
 
-    async update(id: string, updateOrderDto: UpdateOrderDto): Promise<Order> {
+    async update(id: ObjectId, updateOrderDto: UpdateOrderDto): Promise<Order> {
         const order = await this.updateDocument(id, updateOrderDto);
         return order;
     }
 
-    async delete(id: string): Promise<void> {
+    async delete(id: ObjectId): Promise<void> {
         await this.deleteDocument(id);
     }
 
-    async findByCartId(cartId: string): Promise<Order | null> {
-        return await this.orderModel.findOne({ cartId }).exec();
+    async findByCartId(cartId: ObjectId): Promise<Order | null> {
+        return await this.filterOneBy({ cartId });
     }
 
-    async updateOrderStatus(id: string, updateOrderStatusDto: UpdateOrderStatusDto): Promise<Order> {
+    async updateOrderStatus(id: ObjectId, updateOrderStatusDto: UpdateOrderStatusDto): Promise<Order> {
         const order = await this.updateDocument(id, { status: updateOrderStatusDto.status });
         return order;
     }
 
-    async updatePaymentStatus(id: string, updatePaymentStatusDto: UpdatePaymentStatusDto): Promise<Order> {
+    async updatePaymentStatus(id: ObjectId, updatePaymentStatusDto: UpdatePaymentStatusDto): Promise<Order> {
         const order = await this.updateDocument(id, { paymentStatus: updatePaymentStatusDto.paymentStatus });
         return order;
     }
@@ -100,7 +101,7 @@ export class OrdersService extends DatabaseCollectionService {
         return await this.orderModel.find({ paymentStatus }).exec();
     }
 
-    async cancelOrder(id: string): Promise<Order> {
+    async cancelOrder(id: ObjectId): Promise<Order> {
         const order = await this.get(id);
         
         if (order.status === OrderStatus.SHIPPED || order.status === OrderStatus.DELIVERED) {
@@ -112,7 +113,7 @@ export class OrdersService extends DatabaseCollectionService {
         });
     }
 
-    async completeOrder(id: string): Promise<Order> {
+    async completeOrder(id: ObjectId): Promise<Order> {
         const order = await this.get(id);
         
         if (order.paymentStatus !== PaymentStatus.PAID) {
@@ -124,7 +125,7 @@ export class OrdersService extends DatabaseCollectionService {
         });
     }
 
-    async createOrderFromCart(cartId: string, shippingAddress?: any): Promise<Order> {
+    async createOrderFromCart(cartId: ObjectId, shippingAddress?: any): Promise<Order> {
         // Check if order already exists for this cart
         const existingOrder = await this.findByCartId(cartId);
         if (existingOrder) {

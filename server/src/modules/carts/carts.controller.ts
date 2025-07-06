@@ -1,12 +1,12 @@
-import { 
-    Body, 
-    Controller, 
-    Logger, 
-    Post, 
-    Put, 
-    Get, 
-    Delete, 
-    Param, 
+import {
+    Body,
+    Controller,
+    Logger,
+    Post,
+    Put,
+    Get,
+    Delete,
+    Param,
     Query,
     UseGuards,
     UseInterceptors,
@@ -14,7 +14,7 @@ import {
     ValidationPipe,
     HttpCode,
     HttpStatus,
-    Request
+    Req
 } from '@nestjs/common';
 import { CartsService } from './carts.service';
 import { StripeService } from 'src/services/stripe/stripe.service';
@@ -26,6 +26,9 @@ import { GetCartsDto } from './dto/get-carts.dto';
 import { AddToCartDto } from './dto/add-to-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
 import { RemoveFromCartDto } from './dto/remove-from-cart.dto';
+import { CartOwnerGuard } from 'src/common/guards/cart-owner.guard';
+import { ObjectId } from 'mongodb';
+import { ParseObjectIdPipe } from 'src/common/pipes/parse-object-id.pipe';
 
 @Controller('carts')
 @UseInterceptors(FormatResponseInterceptor)
@@ -55,74 +58,73 @@ export class CartsController {
         return await this.cartsService.getAll(getCartsDto);
     }
 
-    @Get(':id')
-    @UseGuards(JwtAuthGuard)
-    async get(@Param('id') id: string) {
-        return await this.cartsService.get(id);
+    @Get(':cartId')
+    @UseGuards(JwtAuthGuard, CartOwnerGuard, AdminGuard)
+    async get(@Param('cartId', ParseObjectIdPipe) cartId: ObjectId) {
+        return await this.cartsService.get(cartId);
     }
 
-    @Put(':id')
-    @UseGuards(JwtAuthGuard)
-    async update(@Param('id') id: string, @Body() updateCartDto: any) {
-        return await this.cartsService.updateDocument(id, updateCartDto);
+    @Put(':cartId')
+    @UseGuards(JwtAuthGuard, CartOwnerGuard, AdminGuard)
+    async update(@Param('cartId', ParseObjectIdPipe) cartId: ObjectId, @Body() updateCartDto: any) {
+        return await this.cartsService.updateDocument(cartId, updateCartDto);
     }
 
-    @Delete(':id')
-    @UseGuards(JwtAuthGuard)
+    @Delete(':cartId')
+    @UseGuards(JwtAuthGuard, CartOwnerGuard, AdminGuard)
     @HttpCode(HttpStatus.NO_CONTENT)
-    async delete(@Param('id') id: string) {
-        await this.cartsService.delete(id);
+    async delete(@Param('cartId', ParseObjectIdPipe) cartId: ObjectId) {
+        await this.cartsService.delete(cartId);
     }
 
-    @Get('user/me')
+    @Get('users/me')
     @UseGuards(JwtAuthGuard)
-    async getMyCart(@Request() req) {
-        const userId = req.user.id;
-        const cart = await this.cartsService.findByUserId(userId);
+    async getMyCart(@Req() req: any) {
+        const userId = req.user._id;
+        const cart = await this.cartsService.getByUserId(userId);
         return cart;
     }
 
-    @Post('add')
+    @Post('users/me/add')
     @UseGuards(JwtAuthGuard)
-    async addToCart(@Request() req, @Body() addToCartDto: AddToCartDto) {
-        const userId = req.user.id;
+    async addToCart(@Req() req: any, @Body() addToCartDto: AddToCartDto) {
+        const userId = req.user._id;
         return await this.cartsService.addToCart(userId, addToCartDto);
     }
 
-    @Post('remove')
+    @Post('users/me/remove')
     @UseGuards(JwtAuthGuard)
-    async removeFromCart(@Request() req, @Body() removeFromCartDto: RemoveFromCartDto) {
-        const userId = req.user.id;
+    async removeFromCart(@Req() req: any, @Body() removeFromCartDto: RemoveFromCartDto) {
+        const userId = req.user._id;
         return await this.cartsService.removeFromCart(userId, removeFromCartDto);
     }
 
-    @Put('update')
+    @Put('users/me/update')
     @UseGuards(JwtAuthGuard)
-    async updateCartItem(@Request() req, @Body() updateCartDto: UpdateCartDto) {
-        const userId = req.user.id;
+    async updateCartItem(@Req() req: any, @Body() updateCartDto: UpdateCartDto) {
+        const userId = req.user._id;
         return await this.cartsService.updateCartItem(userId, updateCartDto);
     }
 
-    @Delete('clear')
+    @Delete('users/me/clear')
     @UseGuards(JwtAuthGuard)
-    async clearCart(@Request() req) {
-        const userId = req.user.id;
+    async clearCart(@Req() req: any) {
+        const userId = req.user._id;
         return await this.cartsService.clearCart(userId);
     }
 
-    @Post('checkout')
+    @Post('users/me/checkout')
     @UseGuards(JwtAuthGuard)
-    async createCheckoutSession(@Request() req) {
-        const userId = req.user.id;
-        const cart = await this.cartsService.findByUserId(userId);
-        
+    async createCheckoutSession(@Req() req: any) {
+        const userId = req.user._id;
+        const cart = await this.cartsService.getByUserId(userId);
+
         if (!cart || cart.items.length === 0) {
             throw new Error('Cart is empty');
         }
 
-        // For now, we'll use empty items array as we need ProductsService to get actual product details
-        const items: any = [];
+        const items = this.cartsService.cartItemsToStripeItems(cart.items);
         const session = await this.stripeService.createCheckoutSession(items);
-        return { url: session.url };
+        return { url: session.url, statusCode: 302 };
     }
 }

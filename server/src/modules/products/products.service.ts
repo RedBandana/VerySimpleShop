@@ -7,6 +7,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { GetProductsDto } from './dto/get-products.dto';
 import { DatabaseCollectionService } from 'src/services/database-collection/database-collection.service';
 import { CreateProductDto } from './dto/create-product.dto';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class ProductsService extends DatabaseCollectionService {
@@ -62,17 +63,17 @@ export class ProductsService extends DatabaseCollectionService {
         };
     }
 
-    async get(id: string): Promise<Product> {
-        const product = await this.getDocument(id);
+    async get(productId: ObjectId): Promise<Product> {
+        const product = await this.getDocument(productId);
         return product;
     }
 
-    async update(id: string, updateProductDto: UpdateProductDto): Promise<Product> {
-        const product = await this.updateDocument(id, updateProductDto);
+    async update(productId: ObjectId, updateProductDto: UpdateProductDto): Promise<Product> {
+        const product = await this.updateDocument(productId, updateProductDto);
         return product;
     }
 
-    async delete(id: string): Promise<void> {
-        await this.deleteDocument(id);
+    async delete(productId: ObjectId): Promise<void> {
+        await this.deleteDocument(productId);
     }
 }

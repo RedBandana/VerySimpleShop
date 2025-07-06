@@ -22,6 +22,8 @@ import { FormatResponseInterceptor } from 'src/common/interceptors/format-respon
 import { UpdateProductDto } from './dto/update-product.dto';
 import { GetProductsDto } from './dto/get-products.dto';
 import { CreateProductDto } from './dto/create-product.dto';
+import { ParseObjectIdPipe } from 'src/common/pipes/parse-object-id.pipe';
+import { ObjectId } from 'mongodb';
 
 @Controller('products')
 @UseInterceptors(FormatResponseInterceptor)
@@ -49,21 +51,21 @@ export class ProductsController {
         return await this.productsService.getAll(getProductsDto);
     }
 
-    @Get(':id')
-    async get(@Param('id') id: string) {
-        return await this.productsService.get(id);
+    @Get(':productId')
+    async get(@Param('productId', ParseObjectIdPipe) productId: ObjectId) {
+        return await this.productsService.get(productId);
     }
 
-    @Put(':id')
+    @Put(':productId')
     @UseGuards(JwtAuthGuard, AdminGuard)
-    async update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-        return await this.productsService.updateDocument(id, updateProductDto);
+    async update(@Param('productId', ParseObjectIdPipe) productId: ObjectId, @Body() updateProductDto: UpdateProductDto) {
+        return await this.productsService.updateDocument(productId, updateProductDto);
     }
 
-    @Delete(':id')
+    @Delete(':productId')
     @UseGuards(JwtAuthGuard, AdminGuard)
     @HttpCode(HttpStatus.NO_CONTENT)
-    async delete(@Param('id') id: string) {
-        await this.productsService.delete(id);
+    async delete(@Param('productId', ParseObjectIdPipe) productId: ObjectId) {
+        await this.productsService.delete(productId);
     }
 }

@@ -1,5 +1,6 @@
-import { IsOptional, IsString, IsNumber, Min } from 'class-validator';
+import { IsOptional, IsNumber, Min, IsMongoId } from 'class-validator';
 import { Type } from 'class-transformer';
+import { ObjectId } from 'mongodb';
 
 export class GetCartsDto {
     @IsOptional()
@@ -15,10 +16,10 @@ export class GetCartsDto {
     limit?: number = 10;
 
     @IsOptional()
-    @IsString()
-    userId?: string;
+    @IsMongoId()
+    userId?: ObjectId;
 
     @IsOptional()
-    @IsString()
-    orderId?: string;
+    @IsMongoId()
+    orderId?: ObjectId;
 }

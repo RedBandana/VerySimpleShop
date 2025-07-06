@@ -1,7 +1,8 @@
-import { IsString, IsNotEmpty, IsEnum, ValidateNested, IsOptional } from 'class-validator';
+import { IsString, IsNotEmpty, IsEnum, ValidateNested, IsOptional, IsMongoId } from 'class-validator';
 import { Type } from 'class-transformer';
 import { OrderStatus } from 'src/common/enums/order-status.enum';
 import { PaymentStatus } from 'src/common/enums/payment-status.enum';
+import { ObjectId } from 'mongodb';
 
 export class AddressDto {
     @IsString()
@@ -30,9 +31,9 @@ export class AddressDto {
 }
 
 export class OrderDto {
-    @IsString()
+    @IsMongoId()
     @IsNotEmpty()
-    cartId: string;
+    cartId: ObjectId;
 
     @IsEnum(OrderStatus)
     status: OrderStatus;

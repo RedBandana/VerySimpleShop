@@ -16,7 +16,7 @@ export class TokensService extends DatabaseCollectionService {
     }
 
     async isBlacklisted(token: string): Promise<boolean> {
-        const foundToken = await this.tokenModel.findOne({ token }).lean().exec();
+        const foundToken = await this.filterOneBy({ token });
         if (!foundToken) return false;
 
         if (foundToken.expireAt < new Date()) {

@@ -1,16 +1,16 @@
-import { 
-    Controller, 
-    Logger, 
-    UseGuards, 
-    UseInterceptors, 
-    UsePipes, 
-    ValidationPipe, 
-    Get, 
-    Post, 
-    Put, 
-    Delete, 
-    Body, 
-    Param, 
+import {
+    Controller,
+    Logger,
+    UseGuards,
+    UseInterceptors,
+    UsePipes,
+    ValidationPipe,
+    Get,
+    Post,
+    Put,
+    Delete,
+    Body,
+    Param,
     Query,
     HttpCode,
     HttpStatus,
@@ -25,6 +25,8 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { GetOrdersDto } from './dto/get-orders.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 import { UpdatePaymentStatusDto } from './dto/update-payment-status.dto';
+import { ParseObjectIdPipe } from 'src/common/pipes/parse-object-id.pipe';
+import { ObjectId } from 'mongodb';
 
 @Controller('orders')
 @UseInterceptors(FormatResponseInterceptor)
@@ -53,58 +55,58 @@ export class OrdersController {
         return await this.ordersService.getAll(getOrdersDto);
     }
 
-    @Get(':id')
+    @Get(':orderId')
     @UseGuards(JwtAuthGuard)
-    async get(@Param('id') id: string) {
-        return await this.ordersService.get(id);
+    async get(@Param('orderId', ParseObjectIdPipe) orderId: ObjectId) {
+        return await this.ordersService.get(orderId);
     }
 
-    @Put(':id')
+    @Put(':orderId')
     @UseGuards(JwtAuthGuard, AdminGuard)
-    async update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-        return await this.ordersService.updateDocument(id, updateOrderDto);
+    async update(@Param('orderId', ParseObjectIdPipe) orderId: ObjectId, @Body() updateOrderDto: UpdateOrderDto) {
+        return await this.ordersService.updateDocument(orderId, updateOrderDto);
     }
 
-    @Delete(':id')
+    @Delete(':orderId')
     @UseGuards(JwtAuthGuard, AdminGuard)
     @HttpCode(HttpStatus.NO_CONTENT)
-    async delete(@Param('id') id: string) {
-        await this.ordersService.delete(id);
+    async delete(@Param('orderId', ParseObjectIdPipe) orderId: ObjectId) {
+        await this.ordersService.delete(orderId);
     }
 
-    @Put(':id/status')
+    @Put(':orderId/status')
     @UseGuards(JwtAuthGuard, AdminGuard)
-    async updateOrderStatus(@Param('id') id: string, @Body() updateOrderStatusDto: UpdateOrderStatusDto) {
-        return await this.ordersService.updateOrderStatus(id, updateOrderStatusDto);
+    async updateOrderStatus(@Param('orderId', ParseObjectIdPipe) orderId: ObjectId, @Body() updateOrderStatusDto: UpdateOrderStatusDto) {
+        return await this.ordersService.updateOrderStatus(orderId, updateOrderStatusDto);
     }
 
-    @Put(':id/payment-status')
+    @Put(':orderId/payment-status')
     @UseGuards(JwtAuthGuard, AdminGuard)
-    async updatePaymentStatus(@Param('id') id: string, @Body() updatePaymentStatusDto: UpdatePaymentStatusDto) {
-        return await this.ordersService.updatePaymentStatus(id, updatePaymentStatusDto);
+    async updatePaymentStatus(@Param('orderId', ParseObjectIdPipe) orderId: ObjectId, @Body() updatePaymentStatusDto: UpdatePaymentStatusDto) {
+        return await this.ordersService.updatePaymentStatus(orderId, updatePaymentStatusDto);
     }
 
-    @Post(':id/cancel')
+    @Post(':orderId/cancel')
     @UseGuards(JwtAuthGuard)
-    async cancelOrder(@Param('id') id: string) {
-        return await this.ordersService.cancelOrder(id);
+    async cancelOrder(@Param('orderId', ParseObjectIdPipe) orderId: ObjectId) {
+        return await this.ordersService.cancelOrder(orderId);
     }
 
-    @Post(':id/complete')
+    @Post(':orderId/complete')
     @UseGuards(JwtAuthGuard, AdminGuard)
-    async completeOrder(@Param('id') id: string) {
-        return await this.ordersService.completeOrder(id);
+    async completeOrder(@Param('orderId', ParseObjectIdPipe) orderId: ObjectId) {
+        return await this.ordersService.completeOrder(orderId);
     }
 
     @Post('from-cart/:cartId')
     @UseGuards(JwtAuthGuard)
-    async createOrderFromCart(@Param('cartId') cartId: string, @Body() shippingAddress?: any) {
+    async createOrderFromCart(@Param('cartId', ParseObjectIdPipe) cartId: ObjectId, @Body() shippingAddress?: any) {
         return await this.ordersService.createOrderFromCart(cartId, shippingAddress?.shippingAddress);
     }
 
     @Get('cart/:cartId')
     @UseGuards(JwtAuthGuard)
-    async getOrderByCartId(@Param('cartId') cartId: string) {
+    async getOrderByCartId(@Param('cartId', ParseObjectIdPipe) cartId: ObjectId) {
         return await this.ordersService.findByCartId(cartId);
     }
 }

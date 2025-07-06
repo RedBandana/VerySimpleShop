@@ -10,7 +10,7 @@ export class MailService {
     constructor(private mailerService: MailerService) { }
 
     async sendMail(mail: ISendMailOptions) {
-        if (process.env.ENVIRONMENT === EnvironmentTypes.DEV) {
+        if (process.env.NODE_ENV === EnvironmentTypes.DEV) {
             this.logger.verbose('sendMail dev', mail);
             return;
         }
