@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TermsOfUse } from './terms-of-use';
+import { TermsOfUse } from './terms-of-use.component';
 
 describe('TermsOfUse', () => {
   let component: TermsOfUse;

@@ -3,7 +3,7 @@ import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { FormatResponseInterceptor } from 'src/common/interceptors/format-response.interceptor';
 import { UsersService } from './users.service';
 import { AdminGuard } from 'src/common/guards/admin.guard';
-import { User } from './schemas/user.schema';
+import { IUser } from './schemas/user.schema';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ParseObjectIdPipe } from 'src/common/pipes/parse-object-id.pipe';
 import { ObjectId } from 'mongodb';
@@ -25,7 +25,7 @@ export class UsersController {
     ) { }
 
     @Get('me')
-    getProfile(@Req() req: any): User {
+    getProfile(@Req() req: any): IUser {
         return req.user;
     }
 

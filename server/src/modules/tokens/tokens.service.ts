@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { DatabaseModel } from 'src/common/enums/database-model.enum';
-import { Token } from './schemas/token.schema';
+import { IToken } from './schemas/token.schema';
 import { DatabaseCollectionService } from 'src/services/database-collection/database-collection.service';
 
 @Injectable()
 export class TokensService extends DatabaseCollectionService {
-    constructor(@InjectModel(DatabaseModel.TOKEN) private readonly tokenModel: Model<Token>) {
+    constructor(@InjectModel(DatabaseModel.TOKEN) private readonly tokenModel: Model<IToken>) {
         super(tokenModel);
     }
 

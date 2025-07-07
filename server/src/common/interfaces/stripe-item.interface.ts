@@ -1,4 +1,4 @@
-export interface StripeItem {
+export interface IStripeItem {
     name: string;
     description: string;
     price: number;

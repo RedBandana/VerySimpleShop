@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '../users/schemas/user.schema';
+import { IUser } from '../users/schemas/user.schema';
 import { UserTypes } from 'src/common/enums/user-types.enum';
 import { CookieOptions } from 'express';
 import { SESSION_COOKIE_NAME, SESSION_DURATION_DAYS } from 'src/common/constants/general.constant';
 import { JwtService } from '@nestjs/jwt';
 import { HOURS_IN_DAY, HOURS_IN_MS, MS_IN_SEC } from 'src/common/constants/time.constant';
 import { getBaseDomain } from 'src/common/utils/functions.utils';
-import { AuthCookie } from './interfaces/auth-cookie.interface';
+import { IAuthCookie } from './interfaces/auth-cookie.interface';
 import { TokensService } from '../tokens/tokens.service';
 import { UsersService } from '../users/users.service';
 
@@ -20,10 +20,10 @@ export class AuthService {
     ) {
     }
 
-    authenticate(user: User): AuthCookie {
+    authenticate(user: IUser): IAuthCookie {
         const token = this.jwtService.sign({ userId: user._id }, { expiresIn: `${SESSION_DURATION_DAYS}d` });
         const options = this.getCookieOptions();
-        const authCookie: AuthCookie = { name: SESSION_COOKIE_NAME, token, options }
+        const authCookie: IAuthCookie = { name: SESSION_COOKIE_NAME, token, options }
         return authCookie;
     }
 
@@ -35,7 +35,7 @@ export class AuthService {
         await this.tokensService.blacklistToken(token, expireAt);
     }
 
-    async createGuest(): Promise<User> {
+    async createGuest(): Promise<IUser> {
         const guest = await this.usersService.createDocument({ type: UserTypes.GUEST });
         return guest;
     }

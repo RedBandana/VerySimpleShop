@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { Injectable, Logger } from '@nestjs/common';
 import Stripe from 'stripe';
-import { StripeItem } from 'src/common/interfaces/stripe-item.interface';
+import { IStripeItem } from 'src/common/interfaces/stripe-item.interface';
 
 @Injectable()
 export class StripeService {
@@ -16,7 +16,7 @@ export class StripeService {
         });
     }
 
-    async createCheckoutSession(items: StripeItem[], metadata?: Stripe.MetadataParam) {
+    async createCheckoutSession(items: IStripeItem[], metadata?: Stripe.MetadataParam) {
         const session = await this.stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             line_items: items.map(item => ({

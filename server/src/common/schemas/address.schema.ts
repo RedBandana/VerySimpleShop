@@ -1,7 +1,7 @@
 import { Schema } from "mongoose";
 import { INPUT_LENGTH } from "src/common/constants/input.constant";
 
-export interface Address {
+export interface IAddress {
     streetAddress01: string;
     streetAddress02: string;
     city: string;

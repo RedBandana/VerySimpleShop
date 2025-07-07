@@ -6,14 +6,17 @@ import { BrowserModule, provideClientHydration, withEventReplay } from '@angular
 
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { HttpClient, provideHttpClient } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { MARKED_OPTIONS, MarkdownModule, MarkedOptions, MarkedRenderer } from 'ngx-markdown';
-import { Language } from './enums/language';
+import { Language } from './core/enums/language.enum';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { apiPrefixInterceptor } from './core/interceptors/api-prefix.interceptor';
+import { cachingInterceptor } from './core/interceptors/caching.interceptor';
+import { timingInterceptor } from './core/interceptors/timing.interceptor';
 
 export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+  return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
 
 export function markedOptionsFactory(): MarkedOptions {
@@ -48,7 +51,14 @@ export const appConfig: ApplicationConfig = {
       }),
     ),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([
+        apiPrefixInterceptor,
+        cachingInterceptor,
+        timingInterceptor
+      ])
+    ),
     importProvidersFrom(
       CommonModule,
       BrowserModule,
@@ -60,7 +70,7 @@ export const appConfig: ApplicationConfig = {
           useFactory: HttpLoaderFactory,
           deps: [HttpClient],
         },
-        defaultLanguage: Language.English,
+        defaultLanguage: Language.ENGLISH,
       }),
       MarkdownModule.forRoot({
         sanitize: SecurityContext.NONE,

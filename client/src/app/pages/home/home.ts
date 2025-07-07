@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IProduct } from '../../models/product';
+import { IProduct } from '../../features/products/models/product.model';
 import { ButtonToggle } from "../../components/inputs/button-toggle/button-toggle";
 import { ProductListItem } from '../../components/product-list-item/product-list-item';
 

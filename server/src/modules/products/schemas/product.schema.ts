@@ -1,10 +1,10 @@
 import mongoose, { Schema, Document } from "mongoose";
-import { ProductOption, ProductOptionSchema } from "./product-option.schema";
-import { ProductVariant, ProductVariantSchema } from "./product-variant.schema";
+import { IProductOption, ProductOptionSchema } from "./product-option.schema";
+import { IProductVariant, ProductVariantSchema } from "./product-variant.schema";
 import { DatabaseModel } from "src/common/enums/database-model.enum";
 import { ObjectId } from "mongodb";
 
-export interface Product extends Document {
+export interface IProduct extends Document {
     _id: ObjectId;
     createdAt: Date;
     updatedAt: Date;
@@ -14,11 +14,11 @@ export interface Product extends Document {
     price: number;
     imageUrls: string[];
     collections: string[];
-    options: ProductOption[];
-    variants: ProductVariant[];
+    options: IProductOption[];
+    variants: IProductVariant[];
 }
 
-export const ProductSchema = new Schema<Product>(
+export const ProductSchema = new Schema<IProduct>(
     {
         name: { type: String, required: true },
         description: { type: String, required: true },
@@ -33,4 +33,4 @@ export const ProductSchema = new Schema<Product>(
     },
 );
 
-export const ProductModel = mongoose.model<Product>(DatabaseModel.PRODUCT, ProductSchema);
+export const ProductModel = mongoose.model<IProduct>(DatabaseModel.PRODUCT, ProductSchema);

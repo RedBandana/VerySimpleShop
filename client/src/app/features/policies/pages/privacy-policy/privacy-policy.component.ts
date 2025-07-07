@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { MetadataService } from '../../../services/general/metadata-service';
-import { Language } from '../../../enums/language';
+import { MetadataService } from '../../../../core/services/metadata-service';
+import { Language } from '../../../../core/enums/language.enum';
 import { MarkdownModule } from 'ngx-markdown';
 
 @Component({
   selector: 'app-privacy-policy-page',
   imports: [MarkdownModule, TranslateModule],
-  templateUrl: './privacy-policy.html',
-  styleUrls: ['./privacy-policy.scss', '../../page.scss']
+  templateUrl: './privacy-policy.component.html',
+  styleUrls: ['./privacy-policy.component.scss', '../../styles/policy.style.scss']
 })
 export class PrivacyPolicy {
   privacyPolicyEn: string = `
@@ -113,9 +113,9 @@ export class PrivacyPolicy {
 
   get privacyPolicy(): string {
     switch (this.translateService.currentLang) {
-      case Language.English:
+      case Language.ENGLISH:
         return this.privacyPolicyEn;
-      case Language.French:
+      case Language.FRENCH:
         return this.privacyPolicyFr;
       default:
         return this.privacyPolicyEn;

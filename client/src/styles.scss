@@ -1,6 +1,7 @@
+@use 'styles/variables';
+@use 'styles/mixins';
+@use 'styles/reset-styles';
 @import '@fortawesome/fontawesome-free/css/all.css';
-@import 'variables.scss';
-@import 'reset-styles.scss';
 
 * {
     font-family: var(--font-family-text);

@@ -7,7 +7,7 @@ import { UsersService } from 'src/modules/users/users.service';
 import { TokensService } from 'src/modules/tokens/tokens.service';
 import { DatabaseModel } from '../enums/database-model.enum';
 import { SESSION_COOKIE_NAME } from '../constants/general.constant';
-import { User } from 'src/modules/users/schemas/user.schema';
+import { IUser } from 'src/modules/users/schemas/user.schema';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -28,7 +28,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super(strategyOptions);
   }
 
-  async validate(req: Request, payload: any): Promise<User> {
+  async validate(req: Request, payload: any): Promise<IUser> {
     const authToken = this.extractJwtFromRequestCookie(req);
 
     if (!authToken || await this.tokensService.isBlacklisted(authToken)) {

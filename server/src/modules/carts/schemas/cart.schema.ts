@@ -1,25 +1,25 @@
 import mongoose, { Schema } from "mongoose";
-import { CartItemSchema, CartItem } from "./cart-item.schema";
+import { CartItemSchema, ICartItem } from "./cart-item.schema";
 import { DatabaseModel } from "src/common/enums/database-model.enum";
 import { ObjectId } from "mongodb";
-import { User } from "src/modules/users/schemas/user.schema";
-import { Order } from "src/modules/orders/schemas/order.schema";
+import { IUser } from "src/modules/users/schemas/user.schema";
+import { IOrder } from "src/modules/orders/schemas/order.schema";
 
-export interface Cart extends Document {
+export interface ICart extends Document {
     _id: ObjectId;
     createdAt: Date;
     updatedAt: Date;
 
     userId: ObjectId;
     orderId?: ObjectId;
-    items: CartItem[];
+    items: ICartItem[];
     totalPrice: number;
 
-    _user?: User;
-    _order?: Order;
+    _user?: IUser;
+    _order?: IOrder;
 }
 
-export const CartSchema = new Schema<Cart>(
+export const CartSchema = new Schema<ICart>(
     {
         userId: { type: Schema.Types.ObjectId, ref: DatabaseModel.USER, required: true },
         items: { type: [CartItemSchema], required: true },
@@ -136,4 +136,4 @@ CartSchema.pre('updateOne', preOperation);
 CartSchema.pre('updateMany', preOperation);
 CartSchema.pre('save', preOperation);
 
-export const CartModel = mongoose.model<Cart>(DatabaseModel.CART, CartSchema);
+export const CartModel = mongoose.model<ICart>(DatabaseModel.CART, CartSchema);

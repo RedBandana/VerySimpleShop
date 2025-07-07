@@ -1,6 +1,6 @@
 import { CookieOptions } from "express";
 
-export interface AuthCookie {
+export interface IAuthCookie {
     name: string;
     token: string;
     options: CookieOptions;

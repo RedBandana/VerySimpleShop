@@ -35,7 +35,7 @@
     <div class="product-options">
         <h1 class="product-options-title">Select a {{option.name}}</h1>
         <div class="product-options-container">
-            @for (value of option.values; track $index) {
+            @for (value of option.choices; track $index) {
             <button class="product-option-choice">
                 <img class="product-option-choice-content" [src]="value.imageUrl" />
                 <div class="product-option-choice-text">{{value.value}}</div>

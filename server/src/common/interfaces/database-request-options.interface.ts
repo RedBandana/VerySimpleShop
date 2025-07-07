@@ -1,4 +1,4 @@
-export interface PaginationOptions {
+export interface IPaginationOptions {
   skip: number;
   limit: number;
 }

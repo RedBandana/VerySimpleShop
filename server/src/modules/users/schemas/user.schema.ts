@@ -5,11 +5,11 @@ import mongoose, { Schema } from "mongoose";
 import { INPUT_LENGTH } from "src/common/constants/input.constant";
 import { UserTypes } from "src/common/enums/user-types.enum";
 import { emailValidator } from "src/common/utils/functions.utils";
-import { Address, AddressSchema } from "../../../common/schemas/address.schema";
+import { IAddress, AddressSchema } from "../../../common/schemas/address.schema";
 import { UserPermissions } from 'src/common/enums/user-permissions.enum';
 import { ObjectId } from 'mongodb';
 
-export interface User extends Document {
+export interface IUser extends Document {
     _id: ObjectId;
     createdAt: Date;
     updatedAt: Date;
@@ -18,7 +18,7 @@ export interface User extends Document {
     lastName: string;
     email: string;
     phone: string;
-    address: Address;
+    address: IAddress;
     password: string;
     type: UserTypes;
     isVerified: boolean;
@@ -115,4 +115,4 @@ UserSchema.pre('updateOne', preUpdate);
 UserSchema.pre('updateMany', preUpdate);
 UserSchema.pre('save', preSave);
 
-export const UserModel = mongoose.model<User>(DatabaseModel.USER, UserSchema);
+export const UserModel = mongoose.model<IUser>(DatabaseModel.USER, UserSchema);

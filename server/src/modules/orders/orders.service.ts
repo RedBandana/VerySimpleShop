@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Order } from './schemas/order.schema';
+import { IOrder } from './schemas/order.schema';
 import { DatabaseModel } from 'src/common/enums/database-model.enum';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -14,27 +14,27 @@ import { DatabaseCollectionService } from 'src/services/database-collection/data
 import { ObjectId } from 'mongodb';
 import { StripeService } from 'src/services/stripe/stripe.service';
 import { CartsService } from '../carts/carts.service';
-import { CartItem } from '../carts/schemas/cart-item.schema';
-import { StripeItem } from 'src/common/interfaces/stripe-item.interface';
+import { ICartItem } from '../carts/schemas/cart-item.schema';
+import { IStripeItem } from 'src/common/interfaces/stripe-item.interface';
 
 @Injectable()
 export class OrdersService extends DatabaseCollectionService {
     private readonly logger = new Logger(OrdersService.name);
 
     constructor(
-        @InjectModel(DatabaseModel.ORDER) protected readonly orderModel: Model<Order>,
+        @InjectModel(DatabaseModel.ORDER) protected readonly orderModel: Model<IOrder>,
         protected readonly cartsService: CartsService,
         private readonly stripeService: StripeService
     ) {
         super(orderModel);
     }
 
-    async create(createOrderDto: CreateOrderDto): Promise<Order> {
+    async create(createOrderDto: CreateOrderDto): Promise<IOrder> {
         const order = await this.createDocument(createOrderDto);
         return order;
     }
 
-    async getAll(getOrdersDto: GetOrdersDto): Promise<{ orders: Order[]; total: number; page: number; limit: number }> {
+    async getAll(getOrdersDto: GetOrdersDto): Promise<{ orders: IOrder[]; total: number; page: number; limit: number }> {
         const { page = 1, limit = 10, cartId, status, paymentStatus, userId } = getOrdersDto;
         const skip = (page - 1) * limit;
         const filter: any = {};
@@ -57,12 +57,12 @@ export class OrdersService extends DatabaseCollectionService {
         };
     }
 
-    async get(orderId: ObjectId): Promise<Order> {
+    async get(orderId: ObjectId): Promise<IOrder> {
         const order = await this.getDocument(orderId);
         return order;
     }
 
-    async update(orderId: ObjectId, updateOrderDto: UpdateOrderDto): Promise<Order> {
+    async update(orderId: ObjectId, updateOrderDto: UpdateOrderDto): Promise<IOrder> {
         const order = await this.updateDocument(orderId, updateOrderDto);
         return order;
     }
@@ -71,29 +71,29 @@ export class OrdersService extends DatabaseCollectionService {
         await this.deleteDocument(orderId);
     }
 
-    async findByCartId(cartId: ObjectId): Promise<Order | null> {
+    async findByCartId(cartId: ObjectId): Promise<IOrder | null> {
         return await this.filterOneBy({ cartId });
     }
 
-    async updateOrderStatus(orderId: ObjectId, updateOrderStatusDto: UpdateOrderStatusDto): Promise<Order> {
+    async updateOrderStatus(orderId: ObjectId, updateOrderStatusDto: UpdateOrderStatusDto): Promise<IOrder> {
         const order = await this.updateDocument(orderId, { status: updateOrderStatusDto.status });
         return order;
     }
 
-    async updatePaymentStatus(orderId: ObjectId, updatePaymentStatusDto: UpdatePaymentStatusDto): Promise<Order> {
+    async updatePaymentStatus(orderId: ObjectId, updatePaymentStatusDto: UpdatePaymentStatusDto): Promise<IOrder> {
         const order = await this.updateDocument(orderId, { paymentStatus: updatePaymentStatusDto.paymentStatus });
         return order;
     }
 
-    async getOrdersByStatus(status: OrderStatus): Promise<Order[]> {
+    async getOrdersByStatus(status: OrderStatus): Promise<IOrder[]> {
         return await this.orderModel.find({ status }).exec();
     }
 
-    async getOrdersByPaymentStatus(paymentStatus: PaymentStatus): Promise<Order[]> {
+    async getOrdersByPaymentStatus(paymentStatus: PaymentStatus): Promise<IOrder[]> {
         return await this.orderModel.find({ paymentStatus }).exec();
     }
 
-    async cancelOrder(orderId: ObjectId): Promise<Order> {
+    async cancelOrder(orderId: ObjectId): Promise<IOrder> {
         const order = await this.get(orderId);
 
         if (order.status === OrderStatus.SHIPPED || order.status === OrderStatus.DELIVERED) {
@@ -105,7 +105,7 @@ export class OrdersService extends DatabaseCollectionService {
         });
     }
 
-    async completeOrder(orderId: ObjectId): Promise<Order> {
+    async completeOrder(orderId: ObjectId): Promise<IOrder> {
         const order = await this.get(orderId);
 
         if (order.paymentStatus !== PaymentStatus.PAID) {
@@ -117,7 +117,7 @@ export class OrdersService extends DatabaseCollectionService {
         });
     }
 
-    async createOrderFromCart(cartId: ObjectId, shippingAddress?: any): Promise<Order> {
+    async createOrderFromCart(cartId: ObjectId, shippingAddress?: any): Promise<IOrder> {
         // Check if order already exists for this cart
         const existingOrder = await this.findByCartId(cartId);
         if (existingOrder) {
@@ -151,7 +151,7 @@ export class OrdersService extends DatabaseCollectionService {
         return session.url;
     }
 
-    cartItemsToStripeItems(cartItems: CartItem[]): StripeItem[] {
+    cartItemsToStripeItems(cartItems: ICartItem[]): IStripeItem[] {
         const stripeItems = cartItems.map(item => {
             const product = item._product;
             let name = '';

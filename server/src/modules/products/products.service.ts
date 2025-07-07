@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Product } from './schemas/product.schema';
+import { IProduct } from './schemas/product.schema';
 import { DatabaseModel } from 'src/common/enums/database-model.enum';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { GetProductsDto } from './dto/get-products.dto';
@@ -13,17 +13,17 @@ import { ObjectId } from 'mongodb';
 export class ProductsService extends DatabaseCollectionService {
 
     constructor(
-        @InjectModel(DatabaseModel.PRODUCT) protected readonly productModel: Model<Product>,
+        @InjectModel(DatabaseModel.PRODUCT) protected readonly productModel: Model<IProduct>,
     ) {
         super(productModel);
     }
 
-    async create(createProductDto: CreateProductDto): Promise<Product> {
+    async create(createProductDto: CreateProductDto): Promise<IProduct> {
         const product = await this.createDocument(createProductDto);
         return product;
     }
 
-    async getAll(getProductsDto: GetProductsDto): Promise<{ products: Product[]; total: number; page: number; limit: number }> {
+    async getAll(getProductsDto: GetProductsDto): Promise<{ products: IProduct[]; total: number; page: number; limit: number }> {
         const { page = 1, limit = 10, search, collections, minPrice, maxPrice } = getProductsDto;
         const skip = (page - 1) * limit;
 
@@ -63,12 +63,12 @@ export class ProductsService extends DatabaseCollectionService {
         };
     }
 
-    async get(productId: ObjectId): Promise<Product> {
+    async get(productId: ObjectId): Promise<IProduct> {
         const product = await this.getDocument(productId);
         return product;
     }
 
-    async update(productId: ObjectId, updateProductDto: UpdateProductDto): Promise<Product> {
+    async update(productId: ObjectId, updateProductDto: UpdateProductDto): Promise<IProduct> {
         const product = await this.updateDocument(productId, updateProductDto);
         return product;
     }

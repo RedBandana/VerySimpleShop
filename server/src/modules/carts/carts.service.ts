@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Cart } from './schemas/cart.schema';
+import { ICart } from './schemas/cart.schema';
 import { DatabaseModel } from 'src/common/enums/database-model.enum';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { GetCartsDto } from './dto/get-carts.dto';
@@ -17,17 +17,17 @@ export class CartsService extends DatabaseCollectionService {
     private readonly logger = new Logger(CartsService.name);
 
     constructor(
-        @InjectModel(DatabaseModel.CART) protected readonly cartModel: Model<Cart>,
+        @InjectModel(DatabaseModel.CART) protected readonly cartModel: Model<ICart>,
         protected productsService: ProductsService
     ) {
         super(cartModel);
     }
 
-    async create(createCartDto: CreateCartDto): Promise<Cart> {
+    async create(createCartDto: CreateCartDto): Promise<ICart> {
         return await this.createDocument(createCartDto);
     }
 
-    async getAll(getCartsDto: GetCartsDto): Promise<{ carts: Cart[]; total: number; page: number; limit: number }> {
+    async getAll(getCartsDto: GetCartsDto): Promise<{ carts: ICart[]; total: number; page: number; limit: number }> {
         const { page = 1, limit = 10, userId, orderId } = getCartsDto;
         const skip = (page - 1) * limit;
 
@@ -43,12 +43,12 @@ export class CartsService extends DatabaseCollectionService {
         return { carts, total, page, limit, };
     }
 
-    async get(cartId: ObjectId): Promise<Cart> {
+    async get(cartId: ObjectId): Promise<ICart> {
         const cart = await this.getDocument(cartId);
         return cart;
     }
 
-    async update(cartId: ObjectId, updateCartDto: UpdateCartDto): Promise<Cart> {
+    async update(cartId: ObjectId, updateCartDto: UpdateCartDto): Promise<ICart> {
         const cart = await this.updateDocument(cartId, updateCartDto);
         return cart;
     }
@@ -57,11 +57,11 @@ export class CartsService extends DatabaseCollectionService {
         await this.deleteDocument(cartId);
     }
 
-    async getByUserId(userId: ObjectId): Promise<Cart | null> {
+    async getByUserId(userId: ObjectId): Promise<ICart | null> {
         return await this.filterOneBy({ userId, orderId: null }, false);
     }
 
-    async addToCart(userId: ObjectId, addToCartDto: AddToCartDto): Promise<Cart> {
+    async addToCart(userId: ObjectId, addToCartDto: AddToCartDto): Promise<ICart> {
         const product = await this.productsService.getDocument(addToCartDto.productId);
         if (!product) throw new Error('Product not found');
 
@@ -97,7 +97,7 @@ export class CartsService extends DatabaseCollectionService {
         return cart;
     }
 
-    async updateCartItem(userId: ObjectId, updateCartDto: UpdateCartDto): Promise<Cart> {
+    async updateCartItem(userId: ObjectId, updateCartDto: UpdateCartDto): Promise<ICart> {
         const cart = await this.getByUserId(userId);
 
         if (!cart) {
@@ -125,7 +125,7 @@ export class CartsService extends DatabaseCollectionService {
         return cart;
     }
 
-    async removeFromCart(userId: ObjectId, removeFromCartDto: RemoveFromCartDto): Promise<Cart> {
+    async removeFromCart(userId: ObjectId, removeFromCartDto: RemoveFromCartDto): Promise<ICart> {
         const cart = await this.getByUserId(userId);
 
         if (!cart) {
@@ -156,7 +156,7 @@ export class CartsService extends DatabaseCollectionService {
         return cart;
     }
 
-    async clearCart(userId: ObjectId): Promise<Cart> {
+    async clearCart(userId: ObjectId): Promise<ICart> {
         const cart = await this.getByUserId(userId);
 
         if (!cart) {
@@ -171,7 +171,7 @@ export class CartsService extends DatabaseCollectionService {
         return cart;
     }
 
-    private async calculateTotalPrice(cart: Cart): Promise<void> {
+    private async calculateTotalPrice(cart: ICart): Promise<void> {
         let totalPrice = 0;
 
         for (const item of cart.items) {

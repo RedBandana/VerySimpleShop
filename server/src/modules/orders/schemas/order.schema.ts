@@ -2,12 +2,12 @@ import mongoose, { Schema, Document } from "mongoose";
 import { OrderStatus } from "src/common/enums/order-status.enum";
 import { DatabaseModel } from "src/common/enums/database-model.enum";
 import { PaymentStatus } from "src/common/enums/payment-status.enum";
-import { Address, AddressSchema } from "src/common/schemas/address.schema";
+import { IAddress, AddressSchema } from "src/common/schemas/address.schema";
 import { ObjectId } from "mongodb";
-import { Cart } from "src/modules/carts/schemas/cart.schema";
-import { User } from "src/modules/users/schemas/user.schema";
+import { ICart } from "src/modules/carts/schemas/cart.schema";
+import { IUser } from "src/modules/users/schemas/user.schema";
 
-export interface Order extends Document {
+export interface IOrder extends Document {
     _id: ObjectId;
     createdAt: Date;
     updatedAt: Date;
@@ -16,16 +16,16 @@ export interface Order extends Document {
     cartId: ObjectId;
     status: OrderStatus;
     paymentStatus: PaymentStatus;
-    shippingAddress: Address;
+    shippingAddress: IAddress;
 
     sessionId?: string;
     sessionUrl?: string;
 
-    _cart?: Cart;
-    _user: User;
+    _cart?: ICart;
+    _user: IUser;
 }
 
-export const OrderSchema = new Schema<Order>(
+export const OrderSchema = new Schema<IOrder>(
     {
         userId: { type: Schema.Types.ObjectId, ref: DatabaseModel.USER, required: false },
         cartId: { type: Schema.Types.ObjectId, ref: DatabaseModel.CART, required: true, unique: true },
@@ -165,4 +165,4 @@ OrderSchema.pre('updateOne', preUpdate);
 OrderSchema.pre('updateMany', preUpdate);
 OrderSchema.pre('save', preSave);
 
-export const OrderModel = mongoose.model<Order>(DatabaseModel.ORDER, OrderSchema);
+export const OrderModel = mongoose.model<IOrder>(DatabaseModel.ORDER, OrderSchema);

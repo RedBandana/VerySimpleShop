@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
 import { Model, PipelineStage } from 'mongoose';
-import { PaginationOptions } from 'src/common/interfaces/database-request-options.interface';
+import { IPaginationOptions } from 'src/common/interfaces/database-request-options.interface';
 import { objectToDotNotation } from 'src/common/utils/functions.utils';
 
 @Injectable()
@@ -35,7 +35,7 @@ export class DatabaseCollectionService {
         return await this.model.findById(id).sort({ createdAt: -1 }).select(projection).lean();
     }
 
-    async getAllDocuments(option?: PaginationOptions, projection?: any): Promise<any[]> {
+    async getAllDocuments(option?: IPaginationOptions, projection?: any): Promise<any[]> {
         return await this.filterBy({}, option, projection);
     }
 
@@ -60,7 +60,7 @@ export class DatabaseCollectionService {
         return true;
     }
 
-    async filterBy(filter: any, options?: PaginationOptions, projection?: any): Promise<any[]> {
+    async filterBy(filter: any, options?: IPaginationOptions, projection?: any): Promise<any[]> {
         const query = this.model.find(filter);
         if (options) {
             if (options.skip >= 0) query.skip(options.skip);

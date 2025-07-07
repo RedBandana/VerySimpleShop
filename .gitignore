@@ -44,3 +44,6 @@ Thumbs.db
 # Custom
 .vs/*
 .env
+
+.claude/
+CLAUDE.md

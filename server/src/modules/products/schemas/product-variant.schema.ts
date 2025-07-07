@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import { Schema } from "mongoose";
 
-export interface ProductVariant {
+export interface IProductVariant {
     _id: ObjectId;
 
     sku?: string;
@@ -11,7 +11,7 @@ export interface ProductVariant {
     stock?: number;
 }
 
-export const ProductVariantSchema = new Schema<ProductVariant>({
+export const ProductVariantSchema = new Schema<IProductVariant>({
     sku: { type: String, required: false },
     specifications: { type: Object, required: true }, // Using Map for dynamic attributes
     imageUrls: { type: [String], required: false },
