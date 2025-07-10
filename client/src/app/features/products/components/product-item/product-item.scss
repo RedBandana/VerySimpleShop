@@ -1,16 +1,16 @@
-.product-list-item-container {
+.product-item-container {
     display: flex;
     flex-direction: column;
     width: 150px;
     gap: var(--gap01);
 }
 
-.pli-image {
+.product-item-image {
     width: 150px;
     height: auto;
 }
 
-.pli-text-container {
+.product-item-text-container {
     display: flex;
     flex-direction: column;
     gap: var(--gap00);

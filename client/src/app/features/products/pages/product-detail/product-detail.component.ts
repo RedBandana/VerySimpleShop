@@ -1,12 +1,12 @@
-import { Component, Input } from '@angular/core';
-import { IProduct } from '../../features/products/models/product.model';
+import { Component } from '@angular/core';
+import { IProduct } from '../../models/product.model';
 import { MarkdownModule } from 'ngx-markdown';
 
 @Component({
   selector: 'app-product',
   imports: [MarkdownModule],
-  templateUrl: './product.html',
-  styleUrl: './product.scss'
+  templateUrl: './product-detail.component.html',
+  styleUrl: './product-detail.component.scss'
 })
 export class Product {
   product: IProduct = {

@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
 import { TermsOfUse } from './features/policies/pages/terms-of-use/terms-of-use.component';
 import { PrivacyPolicy } from './features/policies/pages/privacy-policy/privacy-policy.component';
-import { Home } from './pages/home/home';
-import { Product } from './pages/product/product';
+import { Home } from './features/products/pages/featured-products/featured-products.component';
+import { Product } from './features/products/pages/product-detail/product-detail.component';
 import { unsavedChangesGuard } from './core/guards/unsaved-changes.guard';
 import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';

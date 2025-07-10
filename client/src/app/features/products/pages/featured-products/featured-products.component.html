@@ -1,0 +1,24 @@
+<div class="featured-products-container">
+    <div class="featured-products-header">
+        <a class="featured-products-header-action" href="/">
+            <img class="featured-products-header-panel" src="assets/images/template00.jpg" />
+        </a>
+        <a class="featured-products-header-action" href="/">
+            <img class="featured-products-header-panel" src="assets/images/template01.jpg" />
+        </a>
+    </div>
+
+    <section class="featured-products-section">
+        <h1>Latest Trending Styles</h1>
+        <div class="featured-products-trending-container">
+            @for (tag of trending; track $index) {
+            <app-button-toggle [isSelected]="$index === 0" [text]="tag"></app-button-toggle>
+            }
+        </div>
+        <div class="featured-products-products-container">
+            @for (product of products; track $index) {
+            <app-product-item [product]="product"></app-product-item>
+            }
+        </div>
+    </section>
+</div>

@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
-import { IProduct } from '../../features/products/models/product.model';
-import { ButtonToggle } from "../../components/inputs/button-toggle/button-toggle";
-import { ProductListItem } from '../../components/product-list-item/product-list-item';
+import { IProduct } from '../../models/product.model';
+import { ProductItem } from '../../components/product-item/product-item';
+import { ButtonToggle } from '../../../../shared/components/inputs/button-toggle/button-toggle';
 
 @Component({
-  selector: 'app-home',
-  imports: [ButtonToggle, ProductListItem],
-  templateUrl: './home.html',
-  styleUrl: './home.scss'
+  selector: 'app-featured-products',
+  imports: [ButtonToggle, ProductItem],
+  templateUrl: './featured-products.component.html',
+  styleUrl: './featured-products.component.scss'
 })
 export class Home {
   trending: string[] = ["New In", "Popular", "Sale", "Crochet Braid", "Half Wig", "Ponytail"];
