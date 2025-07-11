@@ -100,8 +100,8 @@ export const productReducer = createReducer(
   on(ProductActions.updateProductSuccess, (state, { product }) => ({
     ...state,
     loading: false,
-    products: state.products.map(p => (p.id && product.id && p.id === product.id) ? product : p),
-    selectedProduct: (state.selectedProduct?.id && product.id && state.selectedProduct.id === product.id) ? product : state.selectedProduct,
+    products: state.products.map(p => (p._id && product._id && p._id === product._id) ? product : p),
+    selectedProduct: (state.selectedProduct?._id && product._id && state.selectedProduct._id === product._id) ? product : state.selectedProduct,
     error: null
   })),
 
@@ -120,8 +120,8 @@ export const productReducer = createReducer(
   on(ProductActions.deleteProductSuccess, (state, { productId }) => ({
     ...state,
     loading: false,
-    products: state.products.filter(p => p.id !== productId),
-    selectedProduct: state.selectedProduct?.id === productId ? null : state.selectedProduct,
+    products: state.products.filter(p => p._id !== productId),
+    selectedProduct: state.selectedProduct?._id === productId ? null : state.selectedProduct,
     total: state.total - 1,
     error: null
   })),

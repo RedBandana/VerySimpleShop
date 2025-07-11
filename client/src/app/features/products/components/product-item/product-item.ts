@@ -10,7 +10,7 @@ import { RouterModule } from '@angular/router';
 })
 export class ProductItem {
   @Input() product: IProduct = {
-    id: "",
+    _id: "",
     name: "",
     description: "",
     price: 0,

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ApiService } from '../../../core/services/api.service';
 import { PaginatedApiResponse } from '../../../core/interfaces/api-response.interface';
 import {
@@ -19,7 +20,15 @@ export class ProductService {
   constructor(private apiService: ApiService) { }
 
   getProducts(params?: IGetProductsRequest): Observable<IProductsResponse> {
-    return this.apiService.get<IProductsResponse>(this.endpoint, params);
+    return this.apiService.getPaginated<IProduct>(this.endpoint, params).pipe(
+      map(response => ({
+        products: response.data,
+        total: response.pagination.total,
+        page: response.pagination.page,
+        limit: response.pagination.limit,
+        totalPages: response.pagination.totalPages
+      }))
+    );
   }
 
   getProductsPaginated(params?: IGetProductsRequest): Observable<PaginatedApiResponse<IProduct>> {

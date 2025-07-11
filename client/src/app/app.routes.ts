@@ -10,7 +10,7 @@ import { adminGuard } from './core/guards/admin.guard';
 export const routes: Routes = [
     { path: 'privacy-policy', component: PrivacyPolicy },
     { path: 'terms-of-use', component: TermsOfUse },
-    { path: 'product', component: ProductDetail },
+    { path: 'product/:id', component: ProductDetail },
     {
         path: 'profile',
         component: ProductDetail,

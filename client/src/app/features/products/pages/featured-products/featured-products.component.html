@@ -10,15 +10,46 @@
 
     <section class="featured-products-section">
         <h1>Latest Trending Styles</h1>
+        
+        <!-- Trending buttons -->
         <div class="featured-products-trending-container">
             @for (tag of trending; track $index) {
-            <app-button-toggle [isSelected]="$index === 0" [text]="tag"></app-button-toggle>
+            <app-button-toggle 
+                [isSelected]="$index === selectedTrendingIndex" 
+                [text]="tag"
+                (click)="onTrendingSelect($index)">
+            </app-button-toggle>
             }
         </div>
+        
+        <!-- Loading state -->
+        @if (loading$ | async) {
+        <div class="featured-products-loading">
+            <p>Loading products...</p>
+            <!-- Add spinner/skeleton here if needed -->
+        </div>
+        }
+        
+        <!-- Error state -->
+        @if (error$ | async; as error) {
+        <div class="featured-products-error">
+            <p>Error loading products: {{ error }}</p>
+            <button (click)="onRetryLoad()" type="button">Retry</button>
+        </div>
+        }
+        
+        <!-- Products list -->
+        @if (!(loading$ | async) && !(error$ | async)) {
         <div class="featured-products-products-container">
-            @for (product of (products$ | async); track $index) {
+            @for (product of (products$ | async); track trackByProduct($index, product)) {
             <app-product-item [product]="product"></app-product-item>
             }
+            @empty {
+            <div class="featured-products-empty">
+                <p>No products available</p>
+            </div>
+            }
         </div>
+        }
     </section>
 </div>

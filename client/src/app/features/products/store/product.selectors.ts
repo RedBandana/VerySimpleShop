@@ -61,7 +61,7 @@ export const selectProductsPagination = createSelector(
 export const selectProductById = (productId: string) =>
   createSelector(
     selectProducts,
-    (products) => products.find(product => product.id === productId || product.id === productId)
+    (products) => products.find(product => product._id === productId || product._id === productId)
   );
 
 export const selectProductsByCollection = (collection: string) =>

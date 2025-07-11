@@ -1,5 +1,5 @@
 export interface IProduct {
-    id?: string;
+    _id?: string;
     name: string;
     description: string;
     price: number;
@@ -12,19 +12,19 @@ export interface IProduct {
 }
 
 export interface IProductOption {
-    id?: string;
+    _id?: string;
     name: string;
     choices: IProductOptionChoice[];
 }
 
 export interface IProductOptionChoice {
-    id?: string;
+    _id?: string;
     value: string;
     imageUrl?: string;
 }
 
 export interface IProductVariant {
-    id?: string;
+    _id?: string;
     sku?: string;
     specifications: { [key: string]: string };
     imageUrls: string[];
