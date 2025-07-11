@@ -14,8 +14,7 @@ export class LanguageService {
     get userTypes() {
         return new Map<UserTypes, string>([
             [UserTypes.GUEST, this.i18n.translate('general.enums.userTypes.guest', { lang: this.lang })],
-            [UserTypes.NORMAL, this.i18n.translate('general.enums.userTypes.normal', { lang: this.lang })],
-            [UserTypes.PREMIUM, this.i18n.translate('general.enums.userTypes.premium', { lang: this.lang })],
+            [UserTypes.REGISTERED, this.i18n.translate('general.enums.userTypes.registered', { lang: this.lang })],
         ]);
     }
 }

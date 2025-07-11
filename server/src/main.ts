@@ -2,6 +2,9 @@ import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import mongoose from 'mongoose';
+import { ResponseInterceptor } from './common/interceptors/response.interceptor';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   mongoose.set('strictQuery', false);
@@ -28,6 +31,19 @@ async function bootstrap() {
   });
 
   const app = await NestFactory.create(AppModule, { rawBody: true });
+
+  // Global pipes
+  app.useGlobalPipes(new ValidationPipe({
+    transform: true,
+    whitelist: true,
+    forbidNonWhitelisted: true,
+  }));
+
+  // Global interceptors
+  app.useGlobalInterceptors(new ResponseInterceptor());
+
+  // Global filters
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   app.enableCors({
     origin: [process.env.FRONTEND_URL],

@@ -24,4 +24,18 @@ export class UsersService extends DatabaseCollectionService {
         const newUser = await this.createDocument(user);
         return newUser;
     }
+
+    async findByEmail(email: string): Promise<IUser | null> {
+        const user = await this.userModel.findOne({ email }).exec();
+        return user;
+    }
+
+    async getAll(params: any): Promise<IUser[]> {
+        const users = await this.userModel.find(params).exec();
+        return users;
+    }
+
+    async delete(userId: ObjectId): Promise<void> {
+        await this.userModel.findByIdAndDelete(userId).exec();
+    }
 }

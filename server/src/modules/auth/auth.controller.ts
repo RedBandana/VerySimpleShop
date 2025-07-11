@@ -1,5 +1,4 @@
 import { Body, Controller, HttpStatus, Logger, Post, Req, Res, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
-import { FormatResponseInterceptor } from 'src/common/interceptors/format-response.interceptor';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { ResetPasswordRequestDto } from './dto/reset-password-request.dto';
@@ -9,15 +8,10 @@ import { Response } from 'express';
 import { SESSION_COOKIE_NAME } from 'src/common/constants/general.constant';
 import { VerifyAccountRequestDto } from './dto/verify-account-request.dto';
 import { VerifyAccountDto } from './dto/verify-account.dto';
+import { ResponseUtil } from 'src/common/utils/response.util';
+import { ApiResponse } from 'src/common/interfaces/api-response.interface';
 
 @Controller('auth')
-@UseInterceptors(FormatResponseInterceptor)
-@UsePipes(
-    new ValidationPipe({
-        whitelist: true,
-        transform: true,
-    }),
-)
 export class AuthController {
     private readonly logger = new Logger(AuthController.name);
 
@@ -26,50 +20,130 @@ export class AuthController {
     ) { }
 
     @Post('guest')
-    async createGuestSession(@Res() res: Response) {
+    async createGuestSession(@Res() res: Response): Promise<void> {
         const user = await this.authService.createGuest();
         const authCookie = this.authService.authenticate(user);
 
         res.cookie(authCookie.name, authCookie.token, authCookie.options);
-        res.status(HttpStatus.OK).json(user);
+        
+        const response = ResponseUtil.success(user, 'Guest session created successfully');
+        res.status(HttpStatus.OK).json(response);
     }
 
     @Post('login')
-    login(@Body() loginDto: LoginDto) {
-        this.logger.log(loginDto);
+    async login(@Body() loginDto: LoginDto, @Res() res: Response): Promise<void> {
+        try {
+            const result = await this.authService.login(loginDto);
+            const authCookie = this.authService.authenticate(result.user);
+            
+            res.cookie(authCookie.name, authCookie.token, authCookie.options);
+            
+            const response = ResponseUtil.success(result, 'Login successful');
+            res.status(HttpStatus.OK).json(response);
+        } catch (error) {
+            const response = ResponseUtil.error(
+                'Login failed',
+                'LOGIN_FAILED',
+                HttpStatus.UNAUTHORIZED,
+                error.message
+            );
+            res.status(HttpStatus.UNAUTHORIZED).json(response);
+        }
     }
 
     @Post('register')
-    register(@Body() registerDto: RegisterDto) {
-        this.logger.log(registerDto);
+    async register(@Body() registerDto: RegisterDto): Promise<ApiResponse<any>> {
+        try {
+            const result = await this.authService.register(registerDto);
+            return ResponseUtil.success(result, 'Registration successful');
+        } catch (error) {
+            return ResponseUtil.error(
+                'Registration failed',
+                'REGISTRATION_FAILED',
+                HttpStatus.BAD_REQUEST,
+                error.message
+            );
+        }
     }
 
     @Post('password-reset/request')
-    requestPasswordReset(@Body() resetRequestDto: ResetPasswordRequestDto) {
-        this.logger.log(resetRequestDto);
+    async requestPasswordReset(@Body() resetRequestDto: ResetPasswordRequestDto): Promise<ApiResponse<any>> {
+        try {
+            const result = await this.authService.requestPasswordReset(resetRequestDto);
+            return ResponseUtil.success(result, 'Password reset request sent');
+        } catch (error) {
+            return ResponseUtil.error(
+                'Password reset request failed',
+                'PASSWORD_RESET_REQUEST_FAILED',
+                HttpStatus.BAD_REQUEST,
+                error.message
+            );
+        }
     }
 
     @Post('password-reset')
-    resetPassword(@Body() resetDto: ResetPasswordDto) {
-        this.logger.log(resetDto);
+    async resetPassword(@Body() resetDto: ResetPasswordDto): Promise<ApiResponse<any>> {
+        try {
+            const result = await this.authService.resetPassword(resetDto);
+            return ResponseUtil.success(result, 'Password reset successful');
+        } catch (error) {
+            return ResponseUtil.error(
+                'Password reset failed',
+                'PASSWORD_RESET_FAILED',
+                HttpStatus.BAD_REQUEST,
+                error.message
+            );
+        }
     }
 
     @Post('verify-account/request')
-    verifyAccountRequest(@Body() verifyAccountRequestDto: VerifyAccountRequestDto) {
-        this.logger.log(verifyAccountRequestDto);
+    async verifyAccountRequest(@Body() verifyAccountRequestDto: VerifyAccountRequestDto): Promise<ApiResponse<any>> {
+        try {
+            const result = await this.authService.requestAccountVerification(verifyAccountRequestDto);
+            return ResponseUtil.success(result, 'Account verification request sent');
+        } catch (error) {
+            return ResponseUtil.error(
+                'Account verification request failed',
+                'ACCOUNT_VERIFICATION_REQUEST_FAILED',
+                HttpStatus.BAD_REQUEST,
+                error.message
+            );
+        }
     }
 
     @Post('verify-account/:token')
-    verifyAccount(verifyAccountDto: VerifyAccountDto) {
-        this.logger.log(verifyAccountDto);
+    async verifyAccount(@Body() verifyAccountDto: VerifyAccountDto): Promise<ApiResponse<any>> {
+        try {
+            const result = await this.authService.verifyAccount(verifyAccountDto);
+            return ResponseUtil.success(result, 'Account verified successfully');
+        } catch (error) {
+            return ResponseUtil.error(
+                'Account verification failed',
+                'ACCOUNT_VERIFICATION_FAILED',
+                HttpStatus.BAD_REQUEST,
+                error.message
+            );
+        }
     }
 
     @Post('logout')
-    async logout(@Req() req: any, @Res() res: Response) {
-        const token: string = req.cookies ? req.cookies[SESSION_COOKIE_NAME] : "";
-        await this.authService.invalidateSession(token);
+    async logout(@Req() req: any, @Res() res: Response): Promise<void> {
+        try {
+            const token: string = req.cookies ? req.cookies[SESSION_COOKIE_NAME] : "";
+            await this.authService.invalidateSession(token);
 
-        res.clearCookie(SESSION_COOKIE_NAME);
-        res.status(HttpStatus.NO_CONTENT).send();
+            res.clearCookie(SESSION_COOKIE_NAME);
+            
+            const response = ResponseUtil.success(null, 'Logout successful');
+            res.status(HttpStatus.OK).json(response);
+        } catch (error) {
+            const response = ResponseUtil.error(
+                'Logout failed',
+                'LOGOUT_FAILED',
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                error.message
+            );
+            res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(response);
+        }
     }
 }

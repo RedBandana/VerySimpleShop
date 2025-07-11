@@ -8,7 +8,7 @@ import { MarkdownModule } from 'ngx-markdown';
   templateUrl: './product-detail.component.html',
   styleUrl: './product-detail.component.scss'
 })
-export class Product {
+export class ProductDetail {
   product: IProduct = {
     id: "random",
     name: "Outre Quick Weave Synthetic Half Wig - Susannah",
