@@ -1,13 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 import { FormsModule } from '@angular/forms';
 import { MarkdownModule } from 'ngx-markdown';
 
 import { IProduct, IProductVariant } from '../../models/product.model';
 import { ProductFacadeService } from '../../services/product-facade.service';
+import { AuthService } from '../../../users/services/auth.service';
+import { CartFacadeService } from '../../../carts/services/cart-facade.service';
 
 @Component({
   selector: 'app-product',
@@ -25,9 +27,9 @@ export class ProductDetail implements OnInit, OnDestroy {
   quantity = 1;
   
   // Simple observables from facade
-  product$;
-  loading$;
-  error$;
+  product$!: Observable<IProduct | null>;
+  loading$!: Observable<boolean>;
+  error$!: Observable<string | null>;
   
   // Computed getters
   get currentProduct(): IProduct | null {
@@ -53,7 +55,9 @@ export class ProductDetail implements OnInit, OnDestroy {
 
   constructor(
     private productFacade: ProductFacadeService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private authService: AuthService,
+    private cartFacade: CartFacadeService
   ) {
     this.product$ = this.productFacade.selectedProduct$;
     this.loading$ = this.productFacade.loading$;
@@ -103,11 +107,26 @@ export class ProductDetail implements OnInit, OnDestroy {
   }
 
   onAddToCart(): void {
-    // TODO: Implement add to cart functionality
-    console.log('Add to cart:', {
-      product: this.selectedVariant || this.currentProduct,
-      quantity: this.quantity,
-      selectedOptions: this.selectedOptions
+    const product = this.currentProduct;
+    if (!product || !product._id) return;
+
+    // Ensure guest session exists before adding to cart
+    this.authService.ensureGuestSession().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: () => {
+        const addToCartRequest = {
+          productId: product._id!,
+          variantId: this.selectedVariant?._id,
+          quantity: this.quantity,
+          selectedOptions: this.selectedOptions
+        };
+
+        this.cartFacade.addToCart(addToCartRequest);
+      },
+      error: (error) => {
+        console.error('Failed to create guest session:', error);
+      }
     });
   }
 

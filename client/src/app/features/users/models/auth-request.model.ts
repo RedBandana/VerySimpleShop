@@ -1,16 +1,16 @@
-interface LoginRequest {
+export interface LoginRequest {
   email: string;
   password: string;
 }
 
-interface RegisterRequest {
+export interface RegisterRequest {
   email: string;
   password: string;
   firstName: string;
   lastName: string;
 }
 
-interface AuthResponse {
+export interface AuthResponse {
   user: any;
   token?: string;
 }

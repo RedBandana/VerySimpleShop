@@ -4,6 +4,8 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, retry, timeout, map } from 'rxjs/operators';
 import { API_TIMEOUT, API_RETRY_ATTEMPTS } from '../constants/api.constants';
 import { ApiResponse, PaginatedApiResponse } from '../interfaces/api-response.interface';
+import { TranslateService } from '@ngx-translate/core';
+import { Language } from '../enums';
 
 export interface QueryParams {
   [key: string]: any;
@@ -14,11 +16,14 @@ export interface QueryParams {
 })
 export class ApiService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private translate: TranslateService) { }
 
   get<T>(endpoint: string, params?: QueryParams): Observable<T> {
     const httpParams = this.buildHttpParams(params);
-    const options = { params: httpParams };
+    const options = {
+      ...this.getHttpOptions(),
+      params: httpParams
+    };
 
     return this.http.get<ApiResponse<T>>(endpoint, options).pipe(
       retry(API_RETRY_ATTEMPTS),
@@ -29,7 +34,13 @@ export class ApiService {
   }
 
   post<T>(endpoint: string, body: any, options?: { headers?: HttpHeaders }): Observable<T> {
-    return this.http.post<ApiResponse<T>>(endpoint, body, options).pipe(
+    const mergedOptions = {
+      ...this.getHttpOptions(),
+      ...options,
+      headers: options?.headers ? options.headers.set('Accept-Language', this.translate.currentLang) : this.getHttpOptions().headers
+    };
+
+    return this.http.post<ApiResponse<T>>(endpoint, body, mergedOptions).pipe(
       retry(API_RETRY_ATTEMPTS),
       timeout(API_TIMEOUT),
       map(response => this.extractData(response)),
@@ -38,7 +49,13 @@ export class ApiService {
   }
 
   put<T>(endpoint: string, body: any, options?: { headers?: HttpHeaders }): Observable<T> {
-    return this.http.put<ApiResponse<T>>(endpoint, body, options).pipe(
+    const mergedOptions = {
+      ...this.getHttpOptions(),
+      ...options,
+      headers: options?.headers ? options.headers.set('Accept-Language', this.translate.currentLang) : this.getHttpOptions().headers
+    };
+
+    return this.http.put<ApiResponse<T>>(endpoint, body, mergedOptions).pipe(
       retry(API_RETRY_ATTEMPTS),
       timeout(API_TIMEOUT),
       map(response => this.extractData(response)),
@@ -47,7 +64,24 @@ export class ApiService {
   }
 
   delete<T>(endpoint: string): Observable<T> {
-    return this.http.delete<ApiResponse<T>>(endpoint).pipe(
+    const options = this.getHttpOptions();
+
+    return this.http.delete<ApiResponse<T>>(endpoint, options).pipe(
+      retry(API_RETRY_ATTEMPTS),
+      timeout(API_TIMEOUT),
+      map(response => this.extractData(response)),
+      catchError(this.handleError)
+    );
+  }
+
+  patch<T>(endpoint: string, body: any, options?: { headers?: HttpHeaders }): Observable<T> {
+    const mergedOptions = {
+      ...this.getHttpOptions(),
+      ...options,
+      headers: options?.headers ? options.headers.set('Accept-Language', this.translate.currentLang) : this.getHttpOptions().headers
+    };
+
+    return this.http.patch<ApiResponse<T>>(endpoint, body, mergedOptions).pipe(
       retry(API_RETRY_ATTEMPTS),
       timeout(API_TIMEOUT),
       map(response => this.extractData(response)),
@@ -58,7 +92,10 @@ export class ApiService {
   // Raw response methods (when you need access to full ApiResponse)
   getRaw<T>(endpoint: string, params?: QueryParams): Observable<ApiResponse<T>> {
     const httpParams = this.buildHttpParams(params);
-    const options = { params: httpParams };
+    const options = {
+      ...this.getHttpOptions(),
+      params: httpParams
+    };
 
     return this.http.get<ApiResponse<T>>(endpoint, options).pipe(
       retry(API_RETRY_ATTEMPTS),
@@ -68,7 +105,13 @@ export class ApiService {
   }
 
   postRaw<T>(endpoint: string, body: any, options?: { headers?: HttpHeaders }): Observable<ApiResponse<T>> {
-    return this.http.post<ApiResponse<T>>(endpoint, body, options).pipe(
+    const mergedOptions = {
+      ...this.getHttpOptions(),
+      ...options,
+      headers: options?.headers ? options.headers.set('Accept-Language', this.translate.currentLang) : this.getHttpOptions().headers
+    };
+
+    return this.http.post<ApiResponse<T>>(endpoint, body, mergedOptions).pipe(
       retry(API_RETRY_ATTEMPTS),
       timeout(API_TIMEOUT),
       catchError(this.handleError)
@@ -78,7 +121,10 @@ export class ApiService {
   // Paginated response method
   getPaginated<T>(endpoint: string, params?: QueryParams): Observable<PaginatedApiResponse<T>> {
     const httpParams = this.buildHttpParams(params);
-    const options = { params: httpParams };
+    const options = {
+      ...this.getHttpOptions(),
+      params: httpParams
+    };
 
     return this.http.get<PaginatedApiResponse<T>>(endpoint, options).pipe(
       retry(API_RETRY_ATTEMPTS),
@@ -140,7 +186,16 @@ export class ApiService {
       error: error.error,
       url: error.url
     });
-    
+
     return throwError(() => new Error(errorMessage));
+  }
+
+  private getHttpOptions() {
+    return {
+      headers: new HttpHeaders({
+        'Accept-Language': this.translate.currentLang || Language.ENGLISH,
+      }),
+      withCredentials: true,
+    };
   }
 }

@@ -1,0 +1,112 @@
+<div class="product-list">
+  <div class="container">
+    <div class="page-header">
+      <h1>Products</h1>
+      <p>Discover our amazing collection of products</p>
+    </div>
+    
+    <div class="filters-section">
+      <div class="search-filter">
+        <input 
+          type="text" 
+          [(ngModel)]="searchTerm"
+          (keyup.enter)="onSearch()"
+          placeholder="Search products..."
+          class="search-input"
+        >
+        <button (click)="onSearch()" class="search-btn">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </div>
+      
+      <div class="filter-controls">
+        <div class="filter-group">
+          <label for="category">Category:</label>
+          <select id="category" [(ngModel)]="selectedCategory" (change)="onCategoryChange()">
+            <option *ngFor="let category of categories" [value]="category.value">
+              {{ category.label }}
+            </option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="sortBy">Sort by:</label>
+          <select id="sortBy" [(ngModel)]="sortBy" (change)="onSortChange()">
+            <option *ngFor="let option of sortOptions" [value]="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="sortOrder">Order:</label>
+          <select id="sortOrder" [(ngModel)]="sortOrder" (change)="onSortChange()">
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
+        </div>
+        
+        <div class="filter-group price-filter">
+          <label>Price Range:</label>
+          <div class="price-inputs">
+            <input 
+              type="number" 
+              [(ngModel)]="priceRange.min"
+              (change)="onPriceRangeChange()"
+              placeholder="Min"
+              class="price-input"
+            >
+            <span>-</span>
+            <input 
+              type="number" 
+              [(ngModel)]="priceRange.max"
+              (change)="onPriceRangeChange()"
+              placeholder="Max"
+              class="price-input"
+            >
+          </div>
+        </div>
+        
+        <button (click)="onClearFilters()" class="clear-filters-btn">
+          Clear Filters
+        </button>
+      </div>
+    </div>
+    
+    <div *ngIf="loading$ | async" class="loading">
+      <div class="spinner"></div>
+      <p>Loading products...</p>
+    </div>
+    
+    <div *ngIf="error$ | async as error" class="error">
+      <div class="error-message">
+        <h3>Error loading products</h3>
+        <p>{{ error }}</p>
+        <button class="retry-btn" (click)="onRetryLoad()">Try Again</button>
+      </div>
+    </div>
+    
+    <div *ngIf="products$ | async as products" class="products-section">
+      <div class="products-header">
+        <h2>{{ products.length }} Products Found</h2>
+      </div>
+      
+      <div *ngIf="products.length === 0" class="no-products">
+        <div class="no-products-icon">📦</div>
+        <h3>No products found</h3>
+        <p>Try adjusting your search terms or filters</p>
+        <button (click)="onClearFilters()" class="clear-filters-btn">
+          Clear All Filters
+        </button>
+      </div>
+      
+      <div *ngIf="products.length > 0" class="products-grid">
+        <app-product-item 
+          *ngFor="let product of products; trackBy: trackByProduct"
+          [product]="product"
+          class="product-card"
+        ></app-product-item>
+      </div>
+    </div>
+  </div>
+</div>

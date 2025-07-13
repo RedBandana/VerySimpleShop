@@ -2,15 +2,32 @@
     <a class="navbar-action" routerLink="/">
         <img class="navbar-logo" src="assets/images/logo192.png" alt="VSS logo" />
     </a>
-    <div class="navbar-action">
-        <button for="navbar-search">
+    
+    <div class="navbar-search" [class.show]="showSearch">
+        <input 
+            type="text" 
+            [(ngModel)]="searchTerm"
+            (keyup.enter)="onSearch()"
+            placeholder="Search products..."
+            class="search-input"
+        >
+        <button (click)="onSearch()" class="search-submit-btn">
             <i class="fa-solid fa-magnifying-glass"></i>
         </button>
-        <button class="navbar-action">
+    </div>
+    
+    <div class="navbar-action">
+        <button (click)="onSearchToggle()" class="search-toggle-btn">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+        <a class="navbar-action cart-link" routerLink="/cart">
             <i class="fa-solid fa-cart-shopping"></i>
-        </button>
-        <button class="navbar-action">
-            <i class="fa-solid fa-bars"></i>
-        </button>
+            <span class="cart-counter" *ngIf="(cartItemCount$ | async) as count">
+                {{ count }}
+            </span>
+        </a>
+        <a class="navbar-action" routerLink="/products">
+            <i class="fa-solid fa-list"></i>
+        </a>
     </div>
 </nav>

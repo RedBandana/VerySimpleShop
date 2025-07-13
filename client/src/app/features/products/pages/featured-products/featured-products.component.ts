@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { Observable } from 'rxjs';
 import { IProduct } from '../../models/product.model';
 import { ProductItem } from '../../components/product-item/product-item';
 import { ButtonToggle } from '../../../../shared/components/inputs/button-toggle/button-toggle';
@@ -7,7 +9,7 @@ import { ProductFacadeService } from '../../services/product-facade.service';
 
 @Component({
   selector: 'app-featured-products',
-  imports: [CommonModule, ButtonToggle, ProductItem],
+  imports: [CommonModule, RouterModule, ButtonToggle, ProductItem],
   templateUrl: './featured-products.component.html',
   styleUrl: './featured-products.component.scss'
 })
@@ -16,9 +18,9 @@ export class FeaturedProducts implements OnInit {
   selectedTrendingIndex = 0;
   
   // Simple observables from facade
-  products$;
-  loading$;
-  error$;
+  products$!: Observable<IProduct[]>;
+  loading$!: Observable<boolean>;
+  error$!: Observable<string | null>;
 
   constructor(private productFacade: ProductFacadeService) {
     this.products$ = this.productFacade.products$;

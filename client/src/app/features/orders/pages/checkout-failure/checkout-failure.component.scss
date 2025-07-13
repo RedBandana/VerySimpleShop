@@ -1,0 +1,152 @@
+.checkout-failure {
+  min-height: 100vh;
+  padding: 2rem 0;
+  background: #f8f9fa;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.failure-content {
+  background: white;
+  padding: 3rem 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.failure-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+h1 {
+  color: #e74c3c;
+  margin-bottom: 1rem;
+}
+
+.failure-message {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.error-details,
+.next-steps {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 4px;
+  margin-bottom: 2rem;
+  text-align: left;
+  
+  h3 {
+    color: #333;
+    margin-bottom: 1rem;
+  }
+  
+  ul {
+    margin: 0;
+    padding-left: 1.5rem;
+    
+    li {
+      margin-bottom: 0.5rem;
+      color: #666;
+    }
+  }
+}
+
+.next-steps {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  
+  h3 {
+    color: #856404;
+  }
+  
+  ul li {
+    color: #856404;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  
+  .retry-btn {
+    background: #27ae60;
+    color: white;
+    padding: 0.75rem 2rem;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    
+    &:hover {
+      background: #219a52;
+    }
+  }
+  
+  .cart-btn {
+    background: #3498db;
+    color: white;
+    padding: 0.75rem 2rem;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    
+    &:hover {
+      background: #2980b9;
+    }
+  }
+  
+  .home-btn {
+    background: #6c757d;
+    color: white;
+    padding: 0.75rem 2rem;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    
+    &:hover {
+      background: #5a6268;
+    }
+  }
+}
+
+.support-info {
+  background: #e7f3ff;
+  padding: 1.5rem;
+  border-radius: 4px;
+  border: 1px solid #b8daff;
+  
+  p {
+    margin: 0.5rem 0;
+    color: #004085;
+    
+    &:first-child {
+      font-weight: 500;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .failure-content {
+    padding: 2rem 1rem;
+  }
+  
+  .actions {
+    flex-direction: column;
+    
+    .retry-btn,
+    .cart-btn,
+    .home-btn {
+      width: 100%;
+      text-align: center;
+    }
+  }
+}

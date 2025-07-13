@@ -43,3 +43,30 @@
     gap: var(--gap02);
     justify-content: space-around;
 }
+
+.featured-products-view-all {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--gap02);
+    
+    .view-all-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: #3498db;
+        color: white;
+        padding: 0.75rem 2rem;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: 500;
+        transition: background-color 0.3s ease;
+        
+        &:hover {
+            background: #2980b9;
+        }
+        
+        i {
+            font-size: 0.875rem;
+        }
+    }
+}
