@@ -1,15 +1,19 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { Subject, Observable } from 'rxjs';
+import { Subject, Observable, Subscription } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 import { FormsModule } from '@angular/forms';
 import { MarkdownModule } from 'ngx-markdown';
 
 import { IProduct, IProductVariant } from '../../models/product.model';
-import { ProductFacadeService } from '../../services/product-facade.service';
-import { AuthService } from '../../../users/services/auth.service';
 import { CartFacadeService } from '../../../carts/services/cart-facade.service';
+import { ProductDispatchService } from '../../services/product-dispatch.service';
+import { ProductState } from '../..';
+import { AuthDispatchService } from '../../../auth/services/auth-dispatch.service';
+import { AuthState } from '../../../auth/store/auth.reducer';
+import { TranslateService } from '@ngx-translate/core';
+import { UserDispatchService } from '../../../users/services/user-dispatch.service';
 
 @Component({
   selector: 'app-product',
@@ -18,76 +22,88 @@ import { CartFacadeService } from '../../../carts/services/cart-facade.service';
   styleUrl: './product-detail.component.scss'
 })
 export class ProductDetail implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>();
-  
-  // Component state
+
   selectedVariant: IProductVariant | null = null;
   selectedOptions: { [optionId: string]: string } = {};
   selectedImageIndex = 0;
   quantity = 1;
-  
-  // Simple observables from facade
-  product$!: Observable<IProduct | null>;
-  loading$!: Observable<boolean>;
-  error$!: Observable<string | null>;
-  
+
+  waitingForAuthBeforeBuying = false;
+
+  productState?: ProductState;
+  productSubscription!: Subscription;
+  authState?: AuthState;
+  authSubscription!: Subscription;
+
   // Computed getters
-  get currentProduct(): IProduct | null {
-    let product: IProduct | null = null;
-    this.product$.pipe(takeUntil(this.destroy$)).subscribe(p => product = p);
-    return product;
+  get product(): IProduct | undefined {
+    return this.productState?.product;
   }
-  
+
   get collections(): string {
-    return this.currentProduct?.collections?.join(', ') || '';
+    return this.product?.collections?.join(', ') || '';
   }
-  
+
   get currentPrice(): number {
-    return this.selectedVariant?.price || this.currentProduct?.price || 0;
+    return this.selectedVariant?.price || this.product?.price || 0;
   }
-  
+
+  get currentPriceString() {
+    return new Intl.NumberFormat(this.translate.currentLang, {
+      style: 'currency',
+      currency: 'CAD',
+    }).format(this.currentPrice);
+  }
+
   get currentImageUrls(): string[] {
     if (this.selectedVariant?.imageUrls?.length) {
       return this.selectedVariant.imageUrls;
     }
-    return this.currentProduct?.imageUrls || [];
+    return this.product?.imageUrls || [];
   }
 
   constructor(
-    private productFacade: ProductFacadeService,
+    private productDispatchService: ProductDispatchService,
+    private userDispatchService: UserDispatchService,
+    private authDispatchService: AuthDispatchService,
+    private translate: TranslateService,
     private route: ActivatedRoute,
-    private authService: AuthService,
     private cartFacade: CartFacadeService
   ) {
-    this.product$ = this.productFacade.selectedProduct$;
-    this.loading$ = this.productFacade.loading$;
-    this.error$ = this.productFacade.error$;
+
   }
 
   ngOnInit(): void {
+    this.subscribeNgRx();
+
     this.route.paramMap.pipe(
-      takeUntil(this.destroy$),
       map(params => params.get('id'))
     ).subscribe(productId => {
       if (productId) {
         this.loadProduct(productId);
       }
     });
-
-    // Initialize selected options when product loads
-    this.product$.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(product => {
-      if (product) {
-        this.initializeSelectedOptions(product);
-      }
-    });
   }
 
   ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-    this.productFacade.clearSelectedProduct();
+    this.productSubscription.unsubscribe();
+    this.authSubscription.unsubscribe();
+  }
+
+  subscribeNgRx() {
+    this.productSubscription = this.productDispatchService.subscription.subscribe((state) => {
+      this.productState = state;
+
+      if (state.getSuccess && state.product)
+        this.initializeSelectedOptions(state.product);
+    });
+
+    this.authSubscription = this.authDispatchService.subscription.subscribe((state) => {
+      this.authState = state;
+
+      if (this.waitingForAuthBeforeBuying && state.guestSessionSuccess)
+        this.onAddToCart();
+    });
   }
 
   onOptionSelect(optionId: string, choiceId: string): void {
@@ -107,43 +123,22 @@ export class ProductDetail implements OnInit, OnDestroy {
   }
 
   onAddToCart(): void {
-    const product = this.currentProduct;
+    const product = this.product;
     if (!product || !product._id) return;
 
-    // Ensure guest session exists before adding to cart
-    this.authService.ensureGuestSession().pipe(
-      takeUntil(this.destroy$)
-    ).subscribe({
-      next: () => {
-        const addToCartRequest = {
-          productId: product._id!,
-          variantId: this.selectedVariant?._id,
-          quantity: this.quantity,
-          selectedOptions: this.selectedOptions
-        };
+    if (this.userDispatchService.hasAnActiveSession) {
+      const addToCartRequest = {
+        productId: product._id!,
+        variantId: this.selectedVariant?._id,
+        quantity: this.quantity,
+        selectedOptions: this.selectedOptions
+      };
 
-        this.cartFacade.addToCart(addToCartRequest);
-      },
-      error: (error) => {
-        console.error('Failed to create guest session:', error);
-      }
-    });
-  }
-
-  onPrevious(): void {
-    // TODO: Implement navigation to previous product
-    console.log('Navigate to previous product');
-  }
-
-  onNext(): void {
-    // TODO: Implement navigation to next product
-    console.log('Navigate to next product');
-  }
-
-  onRetryLoad(): void {
-    const productId = this.route.snapshot.paramMap.get('id');
-    if (productId) {
-      this.loadProduct(productId);
+      this.cartFacade.addToCart(addToCartRequest);
+    }
+    else {
+      this.waitingForAuthBeforeBuying = true;
+      this.authDispatchService.createGuestSession();
     }
   }
 
@@ -160,33 +155,33 @@ export class ProductDetail implements OnInit, OnDestroy {
   }
 
   private loadProduct(productId: string): void {
-    this.productFacade.loadProduct(productId);
+    this.productDispatchService.getProduct(productId);
   }
 
   private initializeSelectedOptions(product: IProduct): void {
     const initialOptions: { [optionId: string]: string } = {};
-    
+
     product.options?.forEach(option => {
       if (option.choices && option.choices.length > 0) {
         initialOptions[option._id || ''] = option.choices[0]._id || '';
       }
     });
-    
+
     this.selectedOptions = initialOptions;
     this.updateSelectedVariant();
   }
 
   private updateSelectedVariant(): void {
-    const product = this.currentProduct;
+    const product = this.product;
     if (!product?.variants) return;
-    
+
     this.selectedVariant = product.variants.find(variant => {
       return Object.keys(this.selectedOptions).every(optionId => {
         const selectedChoice = this.selectedOptions[optionId];
         return variant.specifications?.[optionId] === selectedChoice;
       });
     }) || null;
-    
+
     // Reset image selection when variant changes
     this.selectedImageIndex = 0;
   }

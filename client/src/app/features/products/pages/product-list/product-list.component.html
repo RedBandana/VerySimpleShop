@@ -4,21 +4,15 @@
       <h1>Products</h1>
       <p>Discover our amazing collection of products</p>
     </div>
-    
+
     <div class="filters-section">
       <div class="search-filter">
-        <input 
-          type="text" 
-          [(ngModel)]="searchTerm"
-          (keyup.enter)="onSearch()"
-          placeholder="Search products..."
-          class="search-input"
-        >
+        <input type="text" [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" placeholder="Search products..." class="search-input">
         <button (click)="onSearch()" class="search-btn">
           <i class="fa-solid fa-magnifying-glass"></i>
         </button>
       </div>
-      
+
       <div class="filter-controls">
         <div class="filter-group">
           <label for="category">Category:</label>
@@ -28,7 +22,7 @@
             </option>
           </select>
         </div>
-        
+
         <div class="filter-group">
           <label for="sortBy">Sort by:</label>
           <select id="sortBy" [(ngModel)]="sortBy" (change)="onSortChange()">
@@ -37,7 +31,7 @@
             </option>
           </select>
         </div>
-        
+
         <div class="filter-group">
           <label for="sortOrder">Order:</label>
           <select id="sortOrder" [(ngModel)]="sortOrder" (change)="onSortChange()">
@@ -45,53 +39,45 @@
             <option value="desc">Descending</option>
           </select>
         </div>
-        
+
         <div class="filter-group price-filter">
           <label>Price Range:</label>
           <div class="price-inputs">
-            <input 
-              type="number" 
-              [(ngModel)]="priceRange.min"
-              (change)="onPriceRangeChange()"
-              placeholder="Min"
-              class="price-input"
-            >
+            <input type="number" [(ngModel)]="priceRange.min" (change)="onPriceRangeChange()" placeholder="Min" class="price-input">
             <span>-</span>
-            <input 
-              type="number" 
-              [(ngModel)]="priceRange.max"
-              (change)="onPriceRangeChange()"
-              placeholder="Max"
-              class="price-input"
-            >
+            <input type="number" [(ngModel)]="priceRange.max" (change)="onPriceRangeChange()" placeholder="Max" class="price-input">
           </div>
         </div>
-        
+
         <button (click)="onClearFilters()" class="clear-filters-btn">
           Clear Filters
         </button>
       </div>
     </div>
-    
-    <div *ngIf="loading$ | async" class="loading">
+
+    @if(productState?.loading){
+    <div class="loading">
       <div class="spinner"></div>
       <p>Loading products...</p>
     </div>
-    
-    <div *ngIf="error$ | async as error" class="error">
+    }
+
+    @if(productState?.error){
+    <div class="error">
       <div class="error-message">
         <h3>Error loading products</h3>
-        <p>{{ error }}</p>
-        <button class="retry-btn" (click)="onRetryLoad()">Try Again</button>
+        <p>{{ productState?.error }}</p>
       </div>
     </div>
-    
-    <div *ngIf="products$ | async as products" class="products-section">
+    }
+
+    <div class="products-section">
       <div class="products-header">
         <h2>{{ products.length }} Products Found</h2>
       </div>
-      
-      <div *ngIf="products.length === 0" class="no-products">
+
+      @if (products.length === 0) {
+      <div class="no-products">
         <div class="no-products-icon">📦</div>
         <h3>No products found</h3>
         <p>Try adjusting your search terms or filters</p>
@@ -99,14 +85,12 @@
           Clear All Filters
         </button>
       </div>
-      
-      <div *ngIf="products.length > 0" class="products-grid">
-        <app-product-item 
-          *ngFor="let product of products; trackBy: trackByProduct"
-          [product]="product"
-          class="product-card"
-        ></app-product-item>
+      }
+      @else {
+      <div class="products-grid">
+        <app-product-item *ngFor="let product of products; trackBy: trackByProduct" [product]="product" class="product-card"></app-product-item>
       </div>
+      }
     </div>
   </div>
 </div>

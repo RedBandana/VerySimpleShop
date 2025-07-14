@@ -1,18 +1,17 @@
-// core/guards/auth.guard.ts
+// core/guards/user.guard.ts
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from '../../features/users/services/auth.service';
+import { UserDispatchService } from '../../features/users/services/user-dispatch.service';
 
 export const authGuard: CanActivateFn = () => {
-    const authService = inject(AuthService);
+    const userDispatchService = inject(UserDispatchService);
     const router = inject(Router);
 
-    if (authService.isLoggedIn()) {
+    if (userDispatchService.isUserLogged)
         return true;
-    }
 
     // Store attempted URL for redirecting after login (optional)
-    // authService.redirectUrl = router.url;
+    // userService.redirectUrl = router.url;
 
     return router.createUrlTree(['/login']);
 };

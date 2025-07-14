@@ -33,7 +33,7 @@ export class ApiService {
     );
   }
 
-  post<T>(endpoint: string, body: any, options?: { headers?: HttpHeaders }): Observable<T> {
+  post<T>(endpoint: string, body?: any, options?: { headers?: HttpHeaders }): Observable<T> {
     const mergedOptions = {
       ...this.getHttpOptions(),
       ...options,

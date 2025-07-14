@@ -1,4 +1,4 @@
-import { Body, Controller, HttpStatus, Logger, Post, Req, Res, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Logger, Post, Req, Res } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { ResetPasswordRequestDto } from './dto/reset-password-request.dto';
@@ -10,6 +10,7 @@ import { VerifyAccountRequestDto } from './dto/verify-account-request.dto';
 import { VerifyAccountDto } from './dto/verify-account.dto';
 import { ResponseUtil } from 'src/common/utils/response.util';
 import { ApiResponse } from 'src/common/interfaces/api-response.interface';
+import { IAuthResponse } from './interfaces/auth.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -23,22 +24,22 @@ export class AuthController {
     async createGuestSession(@Res() res: Response): Promise<void> {
         const user = await this.authService.createGuest();
         const authCookie = this.authService.authenticate(user);
+        const authResponse: IAuthResponse = { token: authCookie.token };
+        const response = ResponseUtil.success(authResponse, 'Guest session created successfully');
 
         res.cookie(authCookie.name, authCookie.token, authCookie.options);
-        
-        const response = ResponseUtil.success(user, 'Guest session created successfully');
         res.status(HttpStatus.OK).json(response);
     }
 
     @Post('login')
     async login(@Body() loginDto: LoginDto, @Res() res: Response): Promise<void> {
         try {
-            const result = await this.authService.login(loginDto);
-            const authCookie = this.authService.authenticate(result.user);
-            
+            const user = await this.authService.login(loginDto);
+            const authCookie = this.authService.authenticate(user);
+            const authResponse: IAuthResponse = { token: authCookie.token };
+            const response = ResponseUtil.success(authResponse, 'Login successful');
+
             res.cookie(authCookie.name, authCookie.token, authCookie.options);
-            
-            const response = ResponseUtil.success(result, 'Login successful');
             res.status(HttpStatus.OK).json(response);
         } catch (error) {
             const response = ResponseUtil.error(
@@ -52,17 +53,23 @@ export class AuthController {
     }
 
     @Post('register')
-    async register(@Body() registerDto: RegisterDto): Promise<ApiResponse<any>> {
+    async register(@Body() registerDto: RegisterDto, @Res() res: Response): Promise<void> {
         try {
-            const result = await this.authService.register(registerDto);
-            return ResponseUtil.success(result, 'Registration successful');
+            const user = await this.authService.register(registerDto);
+            const authCookie = this.authService.authenticate(user);
+            const authResponse: IAuthResponse = { token: authCookie.token };
+            const response = ResponseUtil.success(authResponse, 'Registration successful');
+
+            res.cookie(authCookie.name, authCookie.token, authCookie.options);
+            res.status(HttpStatus.OK).json(response);
         } catch (error) {
-            return ResponseUtil.error(
+            const response = ResponseUtil.error(
                 'Registration failed',
                 'REGISTRATION_FAILED',
                 HttpStatus.BAD_REQUEST,
                 error.message
             );
+            res.status(HttpStatus.UNAUTHORIZED).json(response);
         }
     }
 
@@ -133,7 +140,7 @@ export class AuthController {
             await this.authService.invalidateSession(token);
 
             res.clearCookie(SESSION_COOKIE_NAME);
-            
+
             const response = ResponseUtil.success(null, 'Logout successful');
             res.status(HttpStatus.OK).json(response);
         } catch (error) {

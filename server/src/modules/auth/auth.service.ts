@@ -6,7 +6,7 @@ import { SESSION_COOKIE_NAME, SESSION_DURATION_DAYS } from 'src/common/constants
 import { JwtService } from '@nestjs/jwt';
 import { HOURS_IN_DAY, HOURS_IN_MS, MS_IN_SEC } from 'src/common/constants/time.constant';
 import { getBaseDomain } from 'src/common/utils/functions.utils';
-import { IAuthCookie } from './interfaces/auth-cookie.interface';
+import { IAuthCookie } from './interfaces/auth.interface';
 import { TokensService } from '../tokens/tokens.service';
 import { UsersService } from '../users/users.service';
 import { LoginDto } from './dto/login.dto';
@@ -47,7 +47,7 @@ export class AuthService {
         return guest;
     }
 
-    async login(loginDto: LoginDto): Promise<{ user: IUser; token: string }> {
+    async login(loginDto: LoginDto): Promise<IUser> {
         const user = await this.usersService.findByEmail(loginDto.email);
         if (!user) {
             throw new UnauthorizedException('Invalid credentials');
@@ -58,13 +58,11 @@ export class AuthService {
             throw new UnauthorizedException('Invalid credentials');
         }
 
-        const token = this.jwtService.sign({ userId: user._id }, { expiresIn: `${SESSION_DURATION_DAYS}d` });
-        
         const { password, ...userWithoutPassword } = user;
-        return { user: userWithoutPassword as IUser, token };
+        return userWithoutPassword as IUser;
     }
 
-    async register(registerDto: RegisterDto): Promise<{ user: IUser; message: string }> {
+    async register(registerDto: RegisterDto): Promise<IUser> {
         const existingUser = await this.usersService.findByEmail(registerDto.email);
         if (existingUser) {
             throw new BadRequestException('User already exists');
@@ -78,7 +76,7 @@ export class AuthService {
         });
 
         const { password, ...userWithoutPassword } = user;
-        return { user: userWithoutPassword as IUser, message: 'User registered successfully' };
+        return userWithoutPassword;
     }
 
     async requestPasswordReset(dto: ResetPasswordRequestDto): Promise<{ message: string }> {
@@ -92,7 +90,7 @@ export class AuthService {
 
     async resetPassword(dto: ResetPasswordDto): Promise<{ message: string }> {
         const hashedPassword = await bcrypt.hash(dto.password, 10);
-        
+
         return { message: 'Password reset successfully' };
     }
 

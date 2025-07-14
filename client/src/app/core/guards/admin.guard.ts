@@ -1,15 +1,14 @@
 // core/guards/admin.guard.ts
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from '../../features/users/services/auth.service';
+import { UserDispatchService } from '../../features/users/services/user-dispatch.service';
 
 export const adminGuard: CanActivateFn = () => {
-    const authService = inject(AuthService);
+    const userDispatchService = inject(UserDispatchService);
     const router = inject(Router);
 
-    if (authService.isAdmin()) {
+    if (userDispatchService.isAnAdmin)
         return true;
-    }
 
-    return router.createUrlTree(['/unauthorized']);
+    return router.createUrlTree(['/unuserorized']);
 };

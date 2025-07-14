@@ -1,11 +1,14 @@
+import { UserPermissions } from "../../../core/enums/user-permissions.enum";
+import { UserTypes } from "../../../core/enums/user-types.enum";
+
 export interface IUser {
   _id: string;
   email: string;
   firstName: string;
   lastName: string;
-  isGuest: boolean;
+  type: UserTypes;
   isVerified: boolean;
-  permissions: string[];
+  permissions: UserPermissions[];
   addresses?: IAddress[];
   createdAt: string;
   updatedAt: string;
@@ -19,9 +22,4 @@ export interface IAddress {
   country: string;
   zipCode: string;
   isDefault?: boolean;
-}
-
-export interface IAuthResponse {
-  user: IUser;
-  token?: string;
 }

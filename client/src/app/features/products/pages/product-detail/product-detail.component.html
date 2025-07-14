@@ -1,5 +1,5 @@
 <!-- Loading State -->
-@if (loading$ | async) {
+@if (productState?.loading) {
 <div class="product-detail-loading">
     <p>Loading product details...</p>
     <!-- Add spinner/skeleton here if needed -->
@@ -7,22 +7,21 @@
 }
 
 <!-- Error State -->
-@if (error$ | async; as error) {
+@if (productState?.error) {
 <div class="product-detail-error">
-    <p>Error loading product: {{ error }}</p>
-    <button (click)="onRetryLoad()" type="button">Retry</button>
+    <p>Error loading product: {{ productState?.error }}</p>
 </div>
 }
 
 <!-- Product Content -->
-@if (product$ | async; as product) {
+@if (product) {
 <div class="product-detail-container">
-    <nav class="product-detail-navbar">
-        <button class="product-detail-navbar-direction" (click)="onPrevious()">
+    <nav class="product-detail-navbar remove">
+        <button class="product-detail-navbar-direction">
             <i class="fa-solid fa-chevron-left"></i>
             <div class="product-detail-navbar-text">Previous</div>
         </button>
-        <button class="product-detail-navbar-direction" (click)="onNext()">
+        <button class="product-detail-navbar-direction">
             <div class="product-detail-navbar-text">Next</div>
             <i class="fa-solid fa-chevron-right"></i>
         </button>
@@ -31,27 +30,18 @@
     <div class="product-detail-header">
         <h1 class="product-detail-header-title">{{ product.name }}</h1>
         <div class="product-detail-header-category">{{ collections }}</div>
-        <div class="product-detail-header-price">${{ currentPrice }}.00</div>
+        <div class="product-detail-header-price">{{ currentPriceString }}</div>
     </div>
 
     <div class="product-detail-image">
         <div class="product-detail-image-slides-container">
             @for (url of currentImageUrls; track trackByImage($index, url)) {
-            <img 
-                class="product-detail-image-slide" 
-                [src]="url" 
-                [class.active]="$index === selectedImageIndex"
-                [style.display]="$index === selectedImageIndex ? 'block' : 'none'"
-            />
+            <img class="product-detail-image-slide" [src]="url" [class.active]="$index === selectedImageIndex" [style.display]="$index === selectedImageIndex ? 'block' : 'none'" />
             }
         </div>
         <div class="product-detail-image-choices-container">
             @for (url of currentImageUrls; track trackByImage($index, url)) {
-            <button 
-                class="product-detail-image-choice"
-                [class.active]="$index === selectedImageIndex"
-                (click)="onImageSelect($index)"
-            >
+            <button class="product-detail-image-choice" [class.active]="$index === selectedImageIndex" (click)="onImageSelect($index)">
                 <img class="product-detail-image-choice-content" [src]="url" />
             </button>
             }
@@ -63,11 +53,7 @@
         <h1 class="product-detail-options-title">Select a {{ option.name }}</h1>
         <div class="product-detail-options-container">
             @for (choice of option.choices; track trackByChoice($index, choice)) {
-            <button 
-                class="product-detail-option-choice"
-                [class.selected]="isOptionSelected(option._id || '', choice._id || '')"
-                (click)="onOptionSelect(option._id || '', choice._id || '')"
-            >
+            <button class="product-detail-option-choice" [class.selected]="isOptionSelected(option._id || '', choice._id || '')" (click)="onOptionSelect(option._id || '', choice._id || '')">
                 @if (choice.imageUrl) {
                 <img class="product-detail-option-choice-content" [src]="choice.imageUrl" />
                 }
@@ -86,14 +72,7 @@
 <div class="product-detail-cta-container">
     <div class="product-detail-cta-qty">
         <label for="product-detail-cta-qty-input">Quantity</label>
-        <input 
-            class="product-detail-cta-input" 
-            type="number" 
-            [value]="quantity" 
-            min="1"
-            id="product-detail-cta-qty-input" 
-            name="product-detail-cta-qty-input" 
-        />
+        <input class="product-detail-cta-input" type="number" [(ngModel)]="quantity" min="1" id="product-detail-cta-qty-input" name="product-detail-cta-qty-input" />
     </div>
     <button class="product-detail-cta" (click)="onAddToCart()">
         Add to Bag
@@ -101,10 +80,8 @@
 </div>
 }
 
-<!-- Empty State -->
-@if (!(loading$ | async) && !(error$ | async) && !(product$ | async)) {
+@if (!productState?.loading && !productState?.error && !product) {
 <div class="product-detail-empty">
     <p>Product not found</p>
-    <button (click)="onRetryLoad()" type="button">Retry</button>
 </div>
 }

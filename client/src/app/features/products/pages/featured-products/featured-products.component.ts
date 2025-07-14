@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { IProduct } from '../../models/product.model';
 import { ProductItem } from '../../components/product-item/product-item';
 import { ButtonToggle } from '../../../../shared/components/inputs/button-toggle/button-toggle';
-import { ProductFacadeService } from '../../services/product-facade.service';
+import { ProductDispatchService } from '../../services/product-dispatch.service';
+import { ProductState } from '../..';
 
 @Component({
   selector: 'app-featured-products',
@@ -13,40 +14,35 @@ import { ProductFacadeService } from '../../services/product-facade.service';
   templateUrl: './featured-products.component.html',
   styleUrl: './featured-products.component.scss'
 })
-export class FeaturedProducts implements OnInit {
+export class FeaturedProducts implements OnInit, OnDestroy {
   trending: string[] = ["New In", "Popular", "Sale"];
   selectedTrendingIndex = 0;
-  
-  // Simple observables from facade
-  products$!: Observable<IProduct[]>;
-  loading$!: Observable<boolean>;
-  error$!: Observable<string | null>;
 
-  constructor(private productFacade: ProductFacadeService) {
-    this.products$ = this.productFacade.products$;
-    this.loading$ = this.productFacade.loading$;
-    this.error$ = this.productFacade.error$;
+  productState?: ProductState;
+  productSubscription!: Subscription;
+
+  constructor(private productDispatchService: ProductDispatchService) { }
+
+  get products(): IProduct[] {
+    return this.productState?.productsPagination?.products ?? [];
   }
 
   ngOnInit(): void {
+    this.subscribeNgRx();
     this.loadProducts();
   }
 
-  onTrendingSelect(index: number): void {
-    this.selectedTrendingIndex = index;
-    // TODO: Implement filtering logic based on trending selection
-    this.loadProducts();
+  ngOnDestroy(): void {
+    this.productSubscription.unsubscribe();
   }
 
-  onRetryLoad(): void {
-    this.loadProducts();
-  }
-
-  trackByProduct(index: number, product: IProduct): string {
-    return product._id || index.toString();
+  subscribeNgRx() {
+    this.productSubscription = this.productDispatchService.subscription.subscribe((state) => {
+      this.productState = state;
+    });
   }
 
   private loadProducts(): void {
-    this.productFacade.loadProducts();
+    this.productDispatchService.getAllProducts();
   }
 }

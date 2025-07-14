@@ -24,7 +24,7 @@ export interface IGetProductsRequest {
     sortOrder?: SortOrder;
 }
 
-export interface IProductsResponse {
+export interface IProductsPagination {
     products: IProduct[];
     total: number;
     page: number;

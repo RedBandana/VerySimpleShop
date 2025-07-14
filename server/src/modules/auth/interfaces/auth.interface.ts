@@ -5,3 +5,7 @@ export interface IAuthCookie {
     token: string;
     options: CookieOptions;
 }
+
+export interface IAuthResponse {
+    token: string;
+}

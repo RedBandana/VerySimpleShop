@@ -17,6 +17,7 @@ export class CartService {
   }
 
   addToCart(request: IAddToCartRequest): Observable<ApiResponse<ICart>> {
+    delete request.selectedOptions;
     return this.apiService.post<ApiResponse<ICart>>(`${this.endpoint}/users/me/add`, request);
   }
 

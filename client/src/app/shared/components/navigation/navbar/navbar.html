@@ -17,7 +17,7 @@
     </div>
     
     <div class="navbar-action">
-        <button (click)="onSearchToggle()" class="search-toggle-btn">
+        <button (click)="onSearchToggle()" class="search-toggle-btn remove">
             <i class="fa-solid fa-magnifying-glass"></i>
         </button>
         <a class="navbar-action cart-link" routerLink="/cart">
@@ -26,7 +26,7 @@
                 {{ count }}
             </span>
         </a>
-        <a class="navbar-action" routerLink="/products">
+        <a class="navbar-action remove" routerLink="/products">
             <i class="fa-solid fa-list"></i>
         </a>
     </div>

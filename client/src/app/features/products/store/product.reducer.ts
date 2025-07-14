@@ -1,154 +1,82 @@
 import { createReducer, on } from '@ngrx/store';
 import * as ProductActions from './product.actions';
-import { IProduct, IGetProductsRequest } from '../../products';
+import { IProduct, IGetProductsRequest, IProductsPagination } from '../../products';
 
 export interface ProductState {
-  products: IProduct[];
-  selectedProduct: IProduct | null;
+  productsPagination?: IProductsPagination;
+  product?: IProduct;
   loading: boolean;
-  error: string | null;
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-  filter: IGetProductsRequest | null;
+  error?: string;
+  filter?: IGetProductsRequest;
+  success: boolean;
+  getAllSuccess: boolean;
+  getSuccess: boolean;
 }
 
 export const initialState: ProductState = {
-  products: [],
-  selectedProduct: null,
+  productsPagination: undefined,
+  product: undefined,
   loading: false,
-  error: null,
-  total: 0,
-  page: 1,
-  limit: 10,
-  totalPages: 0,
-  filter: null
+  error: undefined,
+  filter: undefined,
+  success: false,
+  getAllSuccess: false,
+  getSuccess: false
 };
 
 export const productReducer = createReducer(
   initialState,
 
-  on(ProductActions.loadProducts, (state) => ({
+  on(ProductActions.resetProductSuccessStates, (state) => ({
+    ...state,
+    success: false,
+    getAllSuccess: false,
+    getSuccess: false,
+  })),
+
+  on(ProductActions.startGetAllProducts, (state) => ({
+    ...state,
+    getAllSuccess: false,
+    loading: true,
+    error: undefined,
+  })),
+
+  on(ProductActions.getAllProductsSuccess, (state, { response }) => ({
+    ...state,
+    productsPagination: response,
+    loading: false,
+    error: undefined,
+    success: true,
+    getAllSuccess: true,
+  })),
+
+  on(ProductActions.getAllProductsFailure, (state, { error }) => ({
+    ...state,
+    error,
+    loading: false,
+    getAllSuccess: false,
+  })),
+
+  on(ProductActions.startGetProduct, (state) => ({
     ...state,
     loading: true,
-    error: null
+    error: undefined,
+    getSuccess: false,
   })),
 
-  on(ProductActions.loadProductsSuccess, (state, { response }) => ({
+  on(ProductActions.getProductSuccess, (state, { product }) => ({
     ...state,
+    product: product,
     loading: false,
-    products: response.products,
-    total: response.total,
-    page: response.page,
-    limit: response.limit,
-    totalPages: response.totalPages,
-    error: null
+    error: undefined,
+    success: true,
+    getSuccess: true,
   })),
 
-  on(ProductActions.loadProductsFailure, (state, { error }) => ({
+  on(ProductActions.getProductFailure, (state, { error }) => ({
     ...state,
+    error,
     loading: false,
-    error
+    getSuccess: false,
   })),
-
-  on(ProductActions.loadProduct, (state) => ({
-    ...state,
-    loading: true,
-    error: null
-  })),
-
-  on(ProductActions.loadProductSuccess, (state, { product }) => ({
-    ...state,
-    loading: false,
-    selectedProduct: product,
-    error: null
-  })),
-
-  on(ProductActions.loadProductFailure, (state, { error }) => ({
-    ...state,
-    loading: false,
-    error
-  })),
-
-  on(ProductActions.createProduct, (state) => ({
-    ...state,
-    loading: true,
-    error: null
-  })),
-
-  on(ProductActions.createProductSuccess, (state, { product }) => ({
-    ...state,
-    loading: false,
-    products: [...state.products, product],
-    total: state.total + 1,
-    error: null
-  })),
-
-  on(ProductActions.createProductFailure, (state, { error }) => ({
-    ...state,
-    loading: false,
-    error
-  })),
-
-  on(ProductActions.updateProduct, (state) => ({
-    ...state,
-    loading: true,
-    error: null
-  })),
-
-  on(ProductActions.updateProductSuccess, (state, { product }) => ({
-    ...state,
-    loading: false,
-    products: state.products.map(p => (p._id && product._id && p._id === product._id) ? product : p),
-    selectedProduct: (state.selectedProduct?._id && product._id && state.selectedProduct._id === product._id) ? product : state.selectedProduct,
-    error: null
-  })),
-
-  on(ProductActions.updateProductFailure, (state, { error }) => ({
-    ...state,
-    loading: false,
-    error
-  })),
-
-  on(ProductActions.deleteProduct, (state) => ({
-    ...state,
-    loading: true,
-    error: null
-  })),
-
-  on(ProductActions.deleteProductSuccess, (state, { productId }) => ({
-    ...state,
-    loading: false,
-    products: state.products.filter(p => p._id !== productId),
-    selectedProduct: state.selectedProduct?._id === productId ? null : state.selectedProduct,
-    total: state.total - 1,
-    error: null
-  })),
-
-  on(ProductActions.deleteProductFailure, (state, { error }) => ({
-    ...state,
-    loading: false,
-    error
-  })),
-
-  on(ProductActions.clearProductError, (state) => ({
-    ...state,
-    error: null
-  })),
-
-  on(ProductActions.clearSelectedProduct, (state) => ({
-    ...state,
-    selectedProduct: null
-  })),
-
-  on(ProductActions.setProductsFilter, (state, { filter }) => ({
-    ...state,
-    filter
-  })),
-
-  on(ProductActions.clearProductsFilter, (state) => ({
-    ...state,
-    filter: null
-  }))
 );

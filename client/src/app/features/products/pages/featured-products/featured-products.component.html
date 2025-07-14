@@ -1,47 +1,38 @@
 <div class="featured-products-container">
     <div class="featured-products-header">
-        <a class="featured-products-header-action" href="/">
+        <div class="featured-products-header-action">
             <img class="featured-products-header-panel" src="assets/images/template00.jpg" />
-        </a>
-        <a class="featured-products-header-action" href="/">
+        </div>
+        <div class="featured-products-header-action">
             <img class="featured-products-header-panel" src="assets/images/template01.jpg" />
-        </a>
+        </div>
     </div>
 
     <section class="featured-products-section">
         <h1>Latest Trending Styles</h1>
-        
-        <!-- Trending buttons -->
-        <div class="featured-products-trending-container">
+
+        <div class="featured-products-trending-container remove">
             @for (tag of trending; track $index) {
-            <app-button-toggle 
-                [isSelected]="$index === selectedTrendingIndex" 
-                [text]="tag"
-                (click)="onTrendingSelect($index)">
+            <app-button-toggle [isSelected]="$index === selectedTrendingIndex" [text]="tag">
             </app-button-toggle>
             }
         </div>
-        
-        <!-- Loading state -->
-        @if (loading$ | async) {
+
+        @if (productState?.loading) {
         <div class="featured-products-loading">
             <p>Loading products...</p>
-            <!-- Add spinner/skeleton here if needed -->
         </div>
         }
-        
-        <!-- Error state -->
-        @if (error$ | async; as error) {
+
+        @if (productState?.error) {
         <div class="featured-products-error">
-            <p>Error loading products: {{ error }}</p>
-            <button (click)="onRetryLoad()" type="button">Retry</button>
+            <p>Error loading products: {{ productState?.error }}</p>
         </div>
         }
-        
-        <!-- Products list -->
-        @if (!(loading$ | async) && !(error$ | async)) {
+
+        @if (!productState?.loading && !productState?.error) {
         <div class="featured-products-products-container">
-            @for (product of (products$ | async); track trackByProduct($index, product)) {
+            @for (product of products; track product._id || $index) {
             <app-product-item [product]="product"></app-product-item>
             }
             @empty {
@@ -49,14 +40,6 @@
                 <p>No products available</p>
             </div>
             }
-        </div>
-        
-        <!-- View All Products Link -->
-        <div class="featured-products-view-all">
-            <a routerLink="/products" class="view-all-btn">
-                View All Products
-                <i class="fa-solid fa-arrow-right"></i>
-            </a>
         </div>
         }
     </section>
