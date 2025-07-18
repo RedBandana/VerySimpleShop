@@ -16,7 +16,7 @@ export interface QueryParams {
 })
 export class ApiService {
 
-  constructor(private http: HttpClient, private translate: TranslateService) { }
+  constructor(private http: HttpClient, private translateService: TranslateService) { }
 
   get<T>(endpoint: string, params?: QueryParams): Observable<T> {
     const httpParams = this.buildHttpParams(params);
@@ -37,7 +37,7 @@ export class ApiService {
     const mergedOptions = {
       ...this.getHttpOptions(),
       ...options,
-      headers: options?.headers ? options.headers.set('Accept-Language', this.translate.currentLang) : this.getHttpOptions().headers
+      headers: options?.headers ? options.headers.set('Accept-Language', this.translateService.currentLang) : this.getHttpOptions().headers
     };
 
     return this.http.post<ApiResponse<T>>(endpoint, body, mergedOptions).pipe(
@@ -52,7 +52,7 @@ export class ApiService {
     const mergedOptions = {
       ...this.getHttpOptions(),
       ...options,
-      headers: options?.headers ? options.headers.set('Accept-Language', this.translate.currentLang) : this.getHttpOptions().headers
+      headers: options?.headers ? options.headers.set('Accept-Language', this.translateService.currentLang) : this.getHttpOptions().headers
     };
 
     return this.http.put<ApiResponse<T>>(endpoint, body, mergedOptions).pipe(
@@ -78,7 +78,7 @@ export class ApiService {
     const mergedOptions = {
       ...this.getHttpOptions(),
       ...options,
-      headers: options?.headers ? options.headers.set('Accept-Language', this.translate.currentLang) : this.getHttpOptions().headers
+      headers: options?.headers ? options.headers.set('Accept-Language', this.translateService.currentLang) : this.getHttpOptions().headers
     };
 
     return this.http.patch<ApiResponse<T>>(endpoint, body, mergedOptions).pipe(
@@ -108,7 +108,7 @@ export class ApiService {
     const mergedOptions = {
       ...this.getHttpOptions(),
       ...options,
-      headers: options?.headers ? options.headers.set('Accept-Language', this.translate.currentLang) : this.getHttpOptions().headers
+      headers: options?.headers ? options.headers.set('Accept-Language', this.translateService.currentLang) : this.getHttpOptions().headers
     };
 
     return this.http.post<ApiResponse<T>>(endpoint, body, mergedOptions).pipe(
@@ -193,7 +193,7 @@ export class ApiService {
   private getHttpOptions() {
     return {
       headers: new HttpHeaders({
-        'Accept-Language': this.translate.currentLang || Language.ENGLISH,
+        'Accept-Language': this.translateService.currentLang || Language.ENGLISH,
       }),
       withCredentials: true,
     };

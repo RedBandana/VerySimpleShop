@@ -40,8 +40,8 @@ export class StripeService {
                     ...metadata
                 }
             },
-            success_url: `${this.BASE_URL}/success`,
-            cancel_url: `${this.BASE_URL}/cancel`,
+            success_url: `${this.BASE_URL}/checkout-success?orderId=${metadata?.orderId ?? ''}`,
+            cancel_url: `${this.BASE_URL}/checkout-failure?orderId=${metadata?.orderId ?? ''}`,
             metadata
         });
 

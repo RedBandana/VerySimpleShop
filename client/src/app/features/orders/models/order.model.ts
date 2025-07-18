@@ -1,15 +1,21 @@
+import { ICart } from "../../carts/models/cart.model";
+import { IUser } from "../../users/models/user.model";
+
 export interface IOrder {
   _id: string;
-  userId: string;
-  cartId: string;
-  items: IOrderItem[];
-  shippingAddress: IAddress;
-  totalPrice: number;
-  orderStatus: OrderStatus;
-  paymentStatus: PaymentStatus;
-  stripePaymentIntentId?: string;
   createdAt: string;
   updatedAt: string;
+
+  userId: string;
+  cartId: string;
+  shippingAddress: IAddress;
+  status: OrderStatus;
+  paymentStatus: PaymentStatus;
+  sessionId: string;
+  sessionUrl: string;
+
+  _cart: ICart;
+  _user: IUser;
 }
 
 export interface IOrderItem {
@@ -18,8 +24,8 @@ export interface IOrderItem {
   variantId?: string;
   quantity: number;
   price: number;
-  product?: any;
-  selectedOptions?: { [optionId: string]: string };
+ 
+  _product?: any;
 }
 
 export interface IAddress {
@@ -30,14 +36,6 @@ export interface IAddress {
   country: string;
   zipCode: string;
   isDefault?: boolean;
-}
-
-export interface ICreateOrderRequest {
-  shippingAddress: IAddress;
-}
-
-export interface ICheckoutSessionResponse {
-  url: string;
 }
 
 export enum OrderStatus {

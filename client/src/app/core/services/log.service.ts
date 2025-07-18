@@ -27,7 +27,7 @@ export class LogService {
     }
 
     private formatMessage(level: string, ...args: any[]): string {
-        return `[${this.currentClassName} ${level}] ${args.join(' ')}`;
+        return `[${level}][${this.currentClassName}] ${args.join(' ')}`;
     }
 
     private outputLog(logFunction: (msg?: any) => void, message: string): void {

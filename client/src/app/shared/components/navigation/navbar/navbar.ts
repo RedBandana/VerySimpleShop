@@ -3,12 +3,11 @@ import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { CartFacadeService } from '../../../../features/carts/services/cart-facade.service';
+import { CartIconComponent } from '../../../../features/carts/components/cart-icon/cart-icon.component';
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterModule, CommonModule, FormsModule],
+  imports: [RouterModule, CommonModule, FormsModule, CartIconComponent],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss'
 })
@@ -17,26 +16,20 @@ export class Navbar {
   showSearch = false;
   cartItemCount$!: Observable<number>;
 
-  constructor(
-    private cartFacade: CartFacadeService,
-    private router: Router
-  ) {
-    this.cartItemCount$ = this.cartFacade.cart$.pipe(
-      map(cart => cart?.totalItems || 0)
-    );
+  constructor(private router: Router) {
   }
-  
+
   onSearchToggle(): void {
     this.showSearch = !this.showSearch;
     if (!this.showSearch) {
       this.searchTerm = '';
     }
   }
-  
+
   onSearch(): void {
     if (this.searchTerm.trim()) {
-      this.router.navigate(['/products'], { 
-        queryParams: { search: this.searchTerm.trim() } 
+      this.router.navigate(['/products'], {
+        queryParams: { search: this.searchTerm.trim() }
       });
       this.showSearch = false;
       this.searchTerm = '';

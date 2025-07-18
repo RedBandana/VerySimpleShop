@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../../../core/services/api.service';
-import { ICart, IAddToCartRequest, IUpdateCartRequest, IRemoveFromCartRequest } from '../models/cart.model';
-import { ApiResponse } from '../../../core/interfaces/api-response.interface';
+import { ICart } from '../models/cart.model';
+import { IAddToCartRequest, IRemoveFromCartRequest, IUpdateCartRequest } from '../models/cart-request.model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,24 +12,23 @@ export class CartService {
 
   constructor(private apiService: ApiService) { }
 
-  getMyCart(): Observable<ApiResponse<ICart>> {
-    return this.apiService.get<ApiResponse<ICart>>(`${this.endpoint}/users/me`);
+  getMyCart(): Observable<ICart> {
+    return this.apiService.get<ICart>(`${this.endpoint}/users/me`);
   }
 
-  addToCart(request: IAddToCartRequest): Observable<ApiResponse<ICart>> {
-    delete request.selectedOptions;
-    return this.apiService.post<ApiResponse<ICart>>(`${this.endpoint}/users/me/add`, request);
+  addToCart(request: IAddToCartRequest): Observable<ICart> {
+    return this.apiService.post<ICart>(`${this.endpoint}/users/me/add`, request);
   }
 
-  updateCartItem(request: IUpdateCartRequest): Observable<ApiResponse<ICart>> {
-    return this.apiService.put<ApiResponse<ICart>>(`${this.endpoint}/users/me/update`, request);
+  updateCartItem(request: IUpdateCartRequest): Observable<ICart> {
+    return this.apiService.put<ICart>(`${this.endpoint}/users/me/update`, request);
   }
 
-  removeFromCart(request: IRemoveFromCartRequest): Observable<ApiResponse<ICart>> {
-    return this.apiService.post<ApiResponse<ICart>>(`${this.endpoint}/users/me/remove`, request);
+  removeFromCart(request: IRemoveFromCartRequest): Observable<ICart> {
+    return this.apiService.post<ICart>(`${this.endpoint}/users/me/remove`, request);
   }
 
-  clearCart(): Observable<ApiResponse<ICart>> {
-    return this.apiService.delete<ApiResponse<ICart>>(`${this.endpoint}/users/me/clear`);
+  clearCart(): Observable<ICart> {
+    return this.apiService.delete<ICart>(`${this.endpoint}/users/me/clear`);
   }
 }

@@ -7,13 +7,14 @@ import { FormsModule } from '@angular/forms';
 import { MarkdownModule } from 'ngx-markdown';
 
 import { IProduct, IProductVariant } from '../../models/product.model';
-import { CartFacadeService } from '../../../carts/services/cart-facade.service';
 import { ProductDispatchService } from '../../services/product-dispatch.service';
 import { ProductState } from '../..';
 import { AuthDispatchService } from '../../../auth/services/auth-dispatch.service';
 import { AuthState } from '../../../auth/store/auth.reducer';
 import { TranslateService } from '@ngx-translate/core';
 import { UserDispatchService } from '../../../users/services/user-dispatch.service';
+import { CartDispatchService } from '../../../carts/services/cart-dispatch.service';
+import { LocalizationService } from '../../../../core/services/localization.service';
 
 @Component({
   selector: 'app-product',
@@ -49,10 +50,7 @@ export class ProductDetail implements OnInit, OnDestroy {
   }
 
   get currentPriceString() {
-    return new Intl.NumberFormat(this.translate.currentLang, {
-      style: 'currency',
-      currency: 'CAD',
-    }).format(this.currentPrice);
+    return this.localizationService.formatCurrency(this.currentPrice);
   }
 
   get currentImageUrls(): string[] {
@@ -66,9 +64,9 @@ export class ProductDetail implements OnInit, OnDestroy {
     private productDispatchService: ProductDispatchService,
     private userDispatchService: UserDispatchService,
     private authDispatchService: AuthDispatchService,
-    private translate: TranslateService,
+    private cartDispatchService: CartDispatchService,
+    private localizationService: LocalizationService,
     private route: ActivatedRoute,
-    private cartFacade: CartFacadeService
   ) {
 
   }
@@ -131,10 +129,9 @@ export class ProductDetail implements OnInit, OnDestroy {
         productId: product._id!,
         variantId: this.selectedVariant?._id,
         quantity: this.quantity,
-        selectedOptions: this.selectedOptions
       };
 
-      this.cartFacade.addToCart(addToCartRequest);
+      this.cartDispatchService.addToCart(addToCartRequest);
     }
     else {
       this.waitingForAuthBeforeBuying = true;

@@ -67,7 +67,6 @@ function populateVirtualFields(obj: any) {
         path: "_cart",
         options: {
             select: "userId items totalPrice",
-            _recursed: true
         },
     });
 }

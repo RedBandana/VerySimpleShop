@@ -1,3 +1,5 @@
+import { IProduct } from "../../products";
+
 export interface ICart {
   _id: string;
   userId: string;
@@ -15,22 +17,5 @@ export interface ICartItem {
   variantId?: string;
   quantity: number;
   price: number;
-  product?: any; // Will be populated with product details
-  selectedOptions?: { [optionId: string]: string };
-}
-
-export interface IAddToCartRequest {
-  productId: string;
-  variantId?: string;
-  quantity: number;
-  selectedOptions?: { [optionId: string]: string };
-}
-
-export interface IUpdateCartRequest {
-  cartItemId: string;
-  quantity: number;
-}
-
-export interface IRemoveFromCartRequest {
-  cartItemId: string;
+  _product?: IProduct;
 }

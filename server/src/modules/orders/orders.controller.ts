@@ -11,7 +11,6 @@ import {
     Body,
     Param,
     Query,
-    HttpCode,
     HttpStatus,
     Req,
 } from '@nestjs/common';
@@ -57,7 +56,7 @@ export class OrdersController {
     @UseGuards(AdminGuard)
     async getAll(@Query() getOrdersDto: GetOrdersDto): Promise<PaginatedApiResponse<any> | ApiResponse<any>> {
         const result = await this.ordersService.getAll(getOrdersDto);
-        
+
         if (result.page && result.limit && result.total) {
             return ResponseUtil.paginated(
                 result.orders,
@@ -67,7 +66,7 @@ export class OrdersController {
                 'Orders retrieved successfully'
             );
         }
-        
+
         return ResponseUtil.success(result.orders, 'Orders retrieved successfully');
     }
 
@@ -137,7 +136,7 @@ export class OrdersController {
     @Post('users/me/checkout')
     async createCheckoutSession(@Req() req: any): Promise<ApiResponse<any>> {
         const userId = req.user._id;
-        const sessionUrl = await this.ordersService.createCheckoutSession(userId);
-        return ResponseUtil.success({ url: sessionUrl }, 'Checkout session created successfully');
+        const order = await this.ordersService.createCheckoutSession(userId);
+        return ResponseUtil.success(order, 'Checkout session created successfully');
     }
 }

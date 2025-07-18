@@ -1,11 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { Subject, Observable } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 import { ICart, ICartItem } from '../../models/cart.model';
-import { CartFacadeService } from '../../services/cart-facade.service';
+import { CartState } from '../../store/cart.reducer';
+import { Subscription } from 'rxjs';
+import { CartDispatchService } from '../../services/cart-dispatch.service';
+import { LocalizationService } from '../../../../core/services/localization.service';
+import { OrderDispatchService } from '../../../orders/services/order-dispatch.service';
 
 @Component({
   selector: 'app-shopping-cart',
@@ -14,54 +16,86 @@ import { CartFacadeService } from '../../services/cart-facade.service';
   styleUrl: './shopping-cart.component.scss'
 })
 export class ShoppingCart implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>();
 
-  cart$!: Observable<ICart | null>;
-  loading$!: Observable<boolean>;
-  error$!: Observable<string | null>;
+  cartState?: CartState;
+  cartSubscription!: Subscription;
 
-  constructor(private cartFacade: CartFacadeService) {
-    this.cart$ = this.cartFacade.cart$;
-    this.loading$ = this.cartFacade.loading$;
-    this.error$ = this.cartFacade.error$;
+  constructor(
+    private cartDispatchService: CartDispatchService,
+    private orderDispatchService: OrderDispatchService,
+    private localizationService: LocalizationService,
+  ) {
+  }
+
+  get cartItems(): ICartItem[] {
+    return this.cartState?.cart?.items ?? [];
+  }
+
+  get totalPriceString() {
+    return this.localizationService.formatCurrency(this.cartState?.cart?.totalPrice ?? 0);
   }
 
   ngOnInit(): void {
-    this.cartFacade.loadCart();
+    this.subscribeNgRx();
   }
 
   ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    this.cartSubscription.unsubscribe();
   }
 
-  onUpdateQuantity(cartItem: ICartItem, quantity: number): void {
-    if (quantity <= 0) {
-      this.onRemoveItem(cartItem);
-      return;
+  subscribeNgRx() {
+    this.cartSubscription = this.cartDispatchService.subscription.subscribe((state) => {
+      this.cartState = state;
+    });
+  }
+
+  getItemPrice(cartItem: ICartItem) {
+    let unitPrice = cartItem._product?.price ?? 0;
+    if (cartItem.variantId && cartItem._product) {
+      const variantIndex = cartItem._product.variants.findIndex(v => v._id === cartItem.variantId);
+      if (variantIndex !== -1) {
+        const variantPrice = cartItem._product.variants[variantIndex].price;
+        if (variantPrice) unitPrice = variantPrice;
+      }
     }
 
-    this.cartFacade.updateCartItem({
-      cartItemId: cartItem._id,
-      quantity
-    });
+    const finalPrice = unitPrice * cartItem.quantity;
+    return finalPrice;
   }
 
-  onRemoveItem(cartItem: ICartItem): void {
-    this.cartFacade.removeFromCart({
-      cartItemId: cartItem._id
-    });
+  getItemPriceString(cartItem: ICartItem) {
+    const finalPrice = this.getItemPrice(cartItem);
+    return this.localizationService.formatCurrency(finalPrice);
   }
 
-  onClearCart(): void {
-    this.cartFacade.clearCart();
+  removeCartItem(cartItem: ICartItem): void {
+    const request = {
+      productId: cartItem.productId,
+      variantId: cartItem.variantId,
+      quantity: 0
+    };
+    this.cartDispatchService.updateCartItem(request);
   }
 
-  onRetryLoad(): void {
-    this.cartFacade.loadCart();
+  addToCart(cartItem: ICartItem): void {
+    const request = {
+      productId: cartItem.productId,
+      variantId: cartItem.variantId,
+      quantity: 1
+    };
+    this.cartDispatchService.addToCart(request);
   }
 
-  trackByCartItem(index: number, item: ICartItem): string {
-    return item._id;
+  removeFromCart(cartItem: ICartItem): void {
+    const request = {
+      productId: cartItem.productId,
+      variantId: cartItem.variantId,
+      quantity: 1
+    };
+    this.cartDispatchService.removeFromCart(request);
+  }
+
+  checkout(): void {
+    this.orderDispatchService.createCheckoutSession();
   }
 }

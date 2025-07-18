@@ -6,18 +6,23 @@
       <p class="success-message">
         Thank you for your purchase! Your order has been successfully processed and confirmed.
       </p>
-      
-      <div *ngIf="isLoading" class="loading">
+
+      @if (orderState?.loading) {
+      <div class="loading">
         <div class="spinner"></div>
         <p>Loading order details...</p>
       </div>
-      
-      <div *ngIf="error" class="error">
-        <p>{{ error }}</p>
+      }
+
+      @if (orderState?.error) {
+      <div class="error">
+        <p>{{ orderState?.error }}</p>
         <p>Don't worry, your payment was successful. You should receive an email confirmation shortly.</p>
       </div>
-      
-      <div *ngIf="order$ | async as order" class="order-details">
+      }
+
+      @if (order) {
+      <div class="order-details">
         <h2>Order Details</h2>
         <div class="order-info">
           <div class="info-row">
@@ -30,7 +35,7 @@
           </div>
           <div class="info-row">
             <span>Total Amount:</span>
-            <span class="value total-amount">${{ order.totalPrice | number:'1.2-2' }}</span>
+            <span class="value total-amount">${{ order._cart.totalPrice| number:'1.2-2' }}</span>
           </div>
           <div class="info-row">
             <span>Payment Status:</span>
@@ -38,10 +43,10 @@
           </div>
           <div class="info-row">
             <span>Order Status:</span>
-            <span class="value status-badge" [class]="order.orderStatus">{{ order.orderStatus | titlecase }}</span>
+            <span class="value status-badge" [class]="order.status">{{ order.status | titlecase }}</span>
           </div>
         </div>
-        
+
         <div class="shipping-info">
           <h3>Shipping Address</h3>
           <div class="address">
@@ -50,28 +55,25 @@
             <p>{{ order.shippingAddress.country }}</p>
           </div>
         </div>
-        
+
         <div class="order-items">
           <h3>Items Ordered</h3>
-          <div class="item" *ngFor="let item of order.items">
-            <img [src]="item.product?.imageUrls?.[0] || '/assets/no-image.jpg'" 
-                 [alt]="item.product?.name">
+          @for (item of order._cart.items; track item._id) {
+          <div class="item">
+            <img [src]="item._product?.imageUrls?.[0] || '/assets/no-image.jpg'" [alt]="item._product?.name">
             <div class="item-details">
-              <h4>{{ item.product?.name }}</h4>
+              <h4>{{ item._product?.name }}</h4>
               <p>Quantity: {{ item.quantity }}</p>
-              <div class="item-options" *ngIf="item.selectedOptions">
-                <span *ngFor="let option of item.selectedOptions | keyvalue" class="option-tag">
-                  {{ option.value }}
-                </span>
-              </div>
             </div>
             <div class="item-price">
               ${{ item.price * item.quantity | number:'1.2-2' }}
             </div>
           </div>
+          }
         </div>
       </div>
-      
+      }
+
       <div class="next-steps">
         <h3>What's Next?</h3>
         <ul>
@@ -81,7 +83,7 @@
           <li>📞 Contact us if you have any questions about your order</li>
         </ul>
       </div>
-      
+
       <div class="actions">
         <a routerLink="/" class="continue-shopping-btn">Continue Shopping</a>
         <button class="print-btn" onclick="window.print()">Print Confirmation</button>

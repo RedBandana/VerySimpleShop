@@ -9,7 +9,7 @@ export class MetadataService {
   constructor(
     private meta: Meta,
     private title: Title,
-    private translate: TranslateService,
+    private translateService: TranslateService,
   ) { }
 
   setMetadata(title: string, description: string, keywords: string) {
@@ -27,7 +27,7 @@ export class MetadataService {
       `${pageTranslationKey}.keywords`,
     ];
 
-    this.translate.get(translationKeys).subscribe((translations: any) => {
+    this.translateService.get(translationKeys).subscribe((translations: any) => {
       this.setMetadata(
         translations[`${pageTranslationKey}.title`] != `${pageTranslationKey}.title`
           ? translations[`${pageTranslationKey}.title`]

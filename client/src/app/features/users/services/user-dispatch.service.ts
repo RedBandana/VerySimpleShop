@@ -8,6 +8,7 @@ import { LogService } from '../../../core/services/log.service';
 import { UserPermissions } from '../../../core/enums/user-permissions.enum';
 import { UserState } from '../store/user.reducer';
 import { resetUserSuccessStates, startGetMe } from '../store/user.actions';
+import { CartDispatchService } from '../../carts/services/cart-dispatch.service';
 
 @Injectable({
   providedIn: 'root',
@@ -37,7 +38,10 @@ export class UserDispatchService {
     return this.store.select((state) => state.user);
   }
 
-  constructor(private store: Store<{ user: UserState }>) {
+  constructor(
+    private store: Store<{ user: UserState }>,
+    private cartDispatchService: CartDispatchService,
+  ) {
     this.subscribeNgRx();
     this.getMe();
   }
@@ -50,7 +54,7 @@ export class UserDispatchService {
         this.state = userState;
 
         if (this.state.getMeSuccess)
-          this.logService.log('Session already active');
+          this.cartDispatchService.getMyCart();
 
         this.resetUserSuccessStates(userState);
       });

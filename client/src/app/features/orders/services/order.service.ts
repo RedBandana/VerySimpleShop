@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../../../core/services/api.service';
-import { IOrder, ICreateOrderRequest, ICheckoutSessionResponse } from '../models/order.model';
-import { ApiResponse } from '../../../core/interfaces/api-response.interface';
+import { IOrder } from '../models/order.model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,23 +11,23 @@ export class OrderService {
 
   constructor(private apiService: ApiService) { }
 
-  createOrderFromCart(cartId: string, shippingAddress: any): Observable<ApiResponse<IOrder>> {
-    return this.apiService.post<ApiResponse<IOrder>>(`${this.endpoint}/from-cart/${cartId}`, { shippingAddress });
+  createOrderFromCart(cartId: string, shippingAddress: any): Observable<IOrder> {
+    return this.apiService.post<IOrder>(`${this.endpoint}/from-cart/${cartId}`, { shippingAddress });
   }
 
-  createCheckoutSession(): Observable<ApiResponse<ICheckoutSessionResponse>> {
-    return this.apiService.post<ApiResponse<ICheckoutSessionResponse>>(`${this.endpoint}/users/me/checkout`, {});
+  createCheckoutSession(): Observable<IOrder> {
+    return this.apiService.post<IOrder>(`${this.endpoint}/users/me/checkout`, {});
   }
 
-  getOrderByCartId(cartId: string): Observable<ApiResponse<IOrder>> {
-    return this.apiService.get<ApiResponse<IOrder>>(`${this.endpoint}/cart/${cartId}`);
+  getOrderByCartId(cartId: string): Observable<IOrder> {
+    return this.apiService.get<IOrder>(`${this.endpoint}/cart/${cartId}`);
   }
 
-  getOrder(orderId: string): Observable<ApiResponse<IOrder>> {
-    return this.apiService.get<ApiResponse<IOrder>>(`${this.endpoint}/${orderId}`);
+  getOrder(orderId: string): Observable<IOrder> {
+    return this.apiService.get<IOrder>(`${this.endpoint}/${orderId}`);
   }
 
-  cancelOrder(orderId: string): Observable<ApiResponse<IOrder>> {
-    return this.apiService.post<ApiResponse<IOrder>>(`${this.endpoint}/${orderId}/cancel`, {});
+  cancelOrder(orderId: string): Observable<IOrder> {
+    return this.apiService.post<IOrder>(`${this.endpoint}/${orderId}/cancel`, {});
   }
 }

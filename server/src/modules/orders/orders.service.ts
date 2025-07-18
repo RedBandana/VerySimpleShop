@@ -134,21 +134,21 @@ export class OrdersService extends DatabaseCollectionService {
         return await this.create(orderData);
     }
 
-    async createCheckoutSession(userId: ObjectId): Promise<any> {
+    async createCheckoutSession(userId: ObjectId): Promise<IOrder> {
         const cart = await this.cartsService.getByUserId(userId);
         if (!cart || cart.items.length === 0) {
             throw new Error('Cart is empty');
         }
 
-        if (cart._order?.sessionUrl) return cart._order.sessionUrl;
+        if (cart._order?.sessionUrl) return cart._order;
 
         const order = cart._order ? cart._order : await this.createOrderFromCart(cart._id);
         const items = this.cartItemsToStripeItems(cart.items);
         const metadata = { orderId: order._id.toString() };
         const session = await this.stripeService.createCheckoutSession(items, metadata);
 
-        await this.updateDocument(order._id, { sessionId: session.id, sessionUrl: session.url });
-        return session.url;
+        const updatedOrder = await this.updateDocument(order._id, { sessionId: session.id, sessionUrl: session.url });
+        return updatedOrder;
     }
 
     cartItemsToStripeItems(cartItems: ICartItem[]): IStripeItem[] {

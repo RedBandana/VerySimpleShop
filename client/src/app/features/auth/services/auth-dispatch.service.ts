@@ -9,6 +9,7 @@ import { AuthState } from '../store/auth.reducer';
 import { LogService } from '../../../core/services/log.service';
 import { UserPermissions } from '../../../core/enums/user-permissions.enum';
 import { UserDispatchService } from '../../users/services/user-dispatch.service';
+import { CartDispatchService } from '../../carts/services/cart-dispatch.service';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +24,7 @@ export class AuthDispatchService {
 
   constructor(
     private store: Store<{ auth: AuthState }>,
-    private userDispatchService: UserDispatchService
+    private userDispatchService: UserDispatchService,
   ) {
     this.subscribeNgRx();
   }
@@ -59,9 +60,9 @@ export class AuthDispatchService {
   }
 
   createGuestSession() {
-    this.logService.log('startGuestSession');
-    this.store.dispatch(startGuestSession());
     this.waitForLoadingToEnd().subscribe(() => {
+      this.logService.log('startGuestSession');
+      this.store.dispatch(startGuestSession());
     });
   }
 }

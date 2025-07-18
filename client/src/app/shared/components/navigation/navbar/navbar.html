@@ -20,12 +20,7 @@
         <button (click)="onSearchToggle()" class="search-toggle-btn remove">
             <i class="fa-solid fa-magnifying-glass"></i>
         </button>
-        <a class="navbar-action cart-link" routerLink="/cart">
-            <i class="fa-solid fa-cart-shopping"></i>
-            <span class="cart-counter" *ngIf="(cartItemCount$ | async) as count">
-                {{ count }}
-            </span>
-        </a>
+        <app-cart-icon></app-cart-icon>
         <a class="navbar-action remove" routerLink="/products">
             <i class="fa-solid fa-list"></i>
         </a>

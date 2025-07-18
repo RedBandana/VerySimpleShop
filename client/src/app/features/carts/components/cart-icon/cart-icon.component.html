@@ -1,0 +1,8 @@
+<a class="cart-icon-container" routerLink="/cart">
+    <i class="fa-solid fa-cart-shopping cart-icon-image"></i>
+    @if (cartItemCount > 0) {
+    <div class="cart-icon-counter">
+        {{ cartItemCount }}
+    </div>
+    }
+</a>
