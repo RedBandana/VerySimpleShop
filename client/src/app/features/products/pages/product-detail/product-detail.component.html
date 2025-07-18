@@ -1,19 +1,15 @@
-<!-- Loading State -->
 @if (productState?.loading) {
 <div class="product-detail-loading">
     <p>Loading product details...</p>
-    <!-- Add spinner/skeleton here if needed -->
 </div>
 }
 
-<!-- Error State -->
 @if (productState?.error) {
 <div class="product-detail-error">
     <p>Error loading product: {{ productState?.error }}</p>
 </div>
 }
 
-<!-- Product Content -->
 @if (product) {
 <div class="product-detail-container">
     <nav class="product-detail-navbar remove">
@@ -53,7 +49,7 @@
         <h1 class="product-detail-options-title">Select a {{ option.name }}</h1>
         <div class="product-detail-options-container">
             @for (choice of option.choices; track trackByChoice($index, choice)) {
-            <button class="product-detail-option-choice" [class.selected]="isOptionSelected(option._id || '', choice._id || '')" (click)="onOptionSelect(option._id || '', choice._id || '')">
+            <button class="product-detail-option-choice" [class.product-detail-option-choice-selected]="isOptionSelected(option.nameKey, choice.valueKey)" (click)="onOptionSelect(option.nameKey, choice.valueKey)">
                 @if (choice.imageUrl) {
                 <img class="product-detail-option-choice-content" [src]="choice.imageUrl" />
                 }

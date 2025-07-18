@@ -3,4 +3,5 @@ export interface IStripeItem {
     description: string;
     price: number;
     quantity: number;
+    imageUrl: string;
 }

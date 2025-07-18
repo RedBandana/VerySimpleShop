@@ -157,28 +157,36 @@ export class OrdersService extends DatabaseCollectionService {
             let name = '';
             let description = '';
             let price = 0;
+            let imageUrl = '';
 
             if (!product) {
                 name = 'Unknown Product';
-                description = '';
-                price = 0;
             } else if (item.variantId) {
                 const variant = product.variants.find(v => v._id.toString() === item.variantId?.toString());
-                name = product.name;
                 description = product.description;
                 price = variant?.price ?? product.price;
+
+                if (variant?.name) name = `${product.name} ${variant.name}`;
+                else name = product.name;
+
+                if (variant?.imageUrls && variant.imageUrls.length > 0) imageUrl = variant.imageUrls[0];
+                else imageUrl = product.imageUrls[0]
             } else {
                 name = product.name;
                 description = product.description;
                 price = product.price;
+                imageUrl = product.imageUrls[0]
             }
 
-            return {
+            const stripeItem: IStripeItem = {
                 name,
                 description,
                 price,
-                quantity: item.quantity,
+                imageUrl,
+                quantity: item.quantity
             };
+
+            return stripeItem;
         });
 
         return stripeItems;

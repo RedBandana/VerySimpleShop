@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { IProduct } from '../../models/product.model';
 import { ProductItem } from '../../components/product-item/product-item';
 import { ButtonToggle } from '../../../../shared/components/inputs/button-toggle/button-toggle';

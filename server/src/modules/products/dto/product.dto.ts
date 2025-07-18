@@ -7,6 +7,10 @@ export class ProductOptionChoiceDto {
     value: string;
 
     @IsString()
+    @IsNotEmpty()
+    valueKey: string;
+
+    @IsString()
     @IsOptional()
     imageUrl?: string;
 }
@@ -16,6 +20,10 @@ export class ProductOptionDto {
     @IsNotEmpty()
     name: string;
 
+    @IsString()
+    @IsNotEmpty()
+    nameKey: string;
+
     @IsArray()
     @ValidateNested({ each: true })
     @Type(() => ProductOptionChoiceDto)
@@ -23,6 +31,10 @@ export class ProductOptionDto {
 }
 
 export class ProductVariantDto {
+    @IsString()
+    @IsNotEmpty()
+    name: string;
+
     @IsString()
     @IsOptional()
     sku?: string;

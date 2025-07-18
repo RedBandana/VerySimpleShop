@@ -25,6 +25,7 @@ export class StripeService {
                     product_data: {
                         name: item.name,
                         description: item.description,
+                        images: [item.imageUrl],
                     },
                     unit_amount: Math.round(item.price * 100),
                 },
@@ -41,7 +42,7 @@ export class StripeService {
                 }
             },
             success_url: `${this.BASE_URL}/checkout-success?orderId=${metadata?.orderId ?? ''}`,
-            cancel_url: `${this.BASE_URL}/checkout-failure?orderId=${metadata?.orderId ?? ''}`,
+            cancel_url: `${this.BASE_URL}`,
             metadata
         });
 

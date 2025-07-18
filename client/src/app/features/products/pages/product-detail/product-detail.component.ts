@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { Subject, Observable, Subscription } from 'rxjs';
-import { takeUntil, map } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { FormsModule } from '@angular/forms';
 import { MarkdownModule } from 'ngx-markdown';
 
@@ -11,7 +11,6 @@ import { ProductDispatchService } from '../../services/product-dispatch.service'
 import { ProductState } from '../..';
 import { AuthDispatchService } from '../../../auth/services/auth-dispatch.service';
 import { AuthState } from '../../../auth/store/auth.reducer';
-import { TranslateService } from '@ngx-translate/core';
 import { UserDispatchService } from '../../../users/services/user-dispatch.service';
 import { CartDispatchService } from '../../../carts/services/cart-dispatch.service';
 import { LocalizationService } from '../../../../core/services/localization.service';
@@ -104,11 +103,12 @@ export class ProductDetail implements OnInit, OnDestroy {
     });
   }
 
-  onOptionSelect(optionId: string, choiceId: string): void {
+  onOptionSelect(nameKey: string, valueKey: string): void {
     this.selectedOptions = {
       ...this.selectedOptions,
-      [optionId]: choiceId
+      [nameKey]: valueKey
     };
+
     this.updateSelectedVariant();
   }
 
@@ -140,6 +140,7 @@ export class ProductDetail implements OnInit, OnDestroy {
   }
 
   isOptionSelected(optionId: string, choiceId: string): boolean {
+    if (!optionId && !choiceId) return false;
     return this.selectedOptions[optionId] === choiceId;
   }
 
@@ -148,7 +149,7 @@ export class ProductDetail implements OnInit, OnDestroy {
   }
 
   trackByImage(index: number, imageUrl: string): string {
-    return imageUrl;
+    return imageUrl || index.toString();
   }
 
   private loadProduct(productId: string): void {
@@ -158,10 +159,9 @@ export class ProductDetail implements OnInit, OnDestroy {
   private initializeSelectedOptions(product: IProduct): void {
     const initialOptions: { [optionId: string]: string } = {};
 
-    product.options?.forEach(option => {
-      if (option.choices && option.choices.length > 0) {
-        initialOptions[option._id || ''] = option.choices[0]._id || '';
-      }
+    product.options.forEach(option => {
+      if (option.choices && option.choices.length > 0)
+        initialOptions[option.nameKey] = option.choices[0].valueKey;
     });
 
     this.selectedOptions = initialOptions;
@@ -173,13 +173,12 @@ export class ProductDetail implements OnInit, OnDestroy {
     if (!product?.variants) return;
 
     this.selectedVariant = product.variants.find(variant => {
-      return Object.keys(this.selectedOptions).every(optionId => {
-        const selectedChoice = this.selectedOptions[optionId];
-        return variant.specifications?.[optionId] === selectedChoice;
+      return Object.keys(this.selectedOptions).every(option => {
+        const selectedChoice = this.selectedOptions[option];
+        return variant.specifications?.[option] === selectedChoice;
       });
     }) || null;
 
-    // Reset image selection when variant changes
     this.selectedImageIndex = 0;
   }
 }

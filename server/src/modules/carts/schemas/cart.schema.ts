@@ -66,7 +66,7 @@ function populateVirtualFields(obj: any) {
     obj.populate({
         path: "items._product",
         options: {
-            select: "name price imageUrls variants._id variants.price variants.stock variants.imageUrls",
+            select: "name price imageUrls variants._id variants.price variants.stock variants.imageUrls variants.name",
             _recursed: true,
         },
     });
