@@ -16,6 +16,7 @@ import { CartItemListComponent } from "../../../carts/components/cart-item-list/
 export class OrderDetail implements OnInit, OnDestroy {
   orderState?: OrderState;
   orderSubscription!: Subscription;
+  error: string = "";
 
   constructor(
     private route: ActivatedRoute,
@@ -52,6 +53,9 @@ export class OrderDetail implements OnInit, OnDestroy {
   subscribeNgRx() {
     this.orderSubscription = this.orderDispatchService.subscription.subscribe((state) => {
       this.orderState = state;
+
+      if (state.error !== "Unauthorized")
+        this.error = state.error ?? "";
     });
   }
 }

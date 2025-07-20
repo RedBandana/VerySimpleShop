@@ -1,6 +1,6 @@
 import { ApiResponse, PaginatedApiResponse } from '../interfaces/api-response.interface';
 
-export class ResponseUtil {
+export class ResponseUtils {
   static isSuccess<T>(response: ApiResponse<T>): boolean {
     return response.success;
   }

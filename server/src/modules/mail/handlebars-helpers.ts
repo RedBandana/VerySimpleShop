@@ -1,6 +1,7 @@
 import * as handlebars from 'handlebars';
 import { ICartItem } from '../carts/schemas/cart-item.schema';
 import { CartUtils } from '../carts/cart.utils';
+import { WEBSITE_URL } from 'src/common/constants/general.constant';
 
 export function registerHandlebarsHelpers() {
   handlebars.registerHelper('safeString', function (text: string) {
@@ -33,7 +34,9 @@ export function registerHandlebarsHelpers() {
   handlebars.registerHelper('cartItemList', function (cartItems: ICartItem[]) {
     return cartItems
       .map((item) => `
-      <div style="display: flex; gap: 6px">
+      <a href="${WEBSITE_URL}/products/${item.productId.toString()}" 
+        style="display: flex; gap: 6px; color: black; text-decoration: none;
+      ">
         <img style="width: 75px; height: 75px;" src="${CartUtils.getItemImageUrl(item)}" />
         <div style="display: flex; flex-direction: column; gap: 6px">
           <div style="
@@ -44,7 +47,7 @@ export function registerHandlebarsHelpers() {
           </div>
           <strong>$${CartUtils.getItemPrice(item).toFixed(2)} x ${item.quantity} = $${(CartUtils.getFullItemPrice(item)).toFixed(2)}</strong>
         </div>
-      </div>
+      </a>
       `)
       .join('');
   });

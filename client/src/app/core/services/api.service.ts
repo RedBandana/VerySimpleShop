@@ -164,11 +164,7 @@ export class ApiService {
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'An unknown error occurred';
 
-    if (error.error instanceof ErrorEvent) {
-      // Client-side error
-      errorMessage = `Client Error: ${error.error.message}`;
-    } else if (error.error && typeof error.error === 'object') {
-      // Server returned a structured error response
+    if (error.error && typeof error.error === 'object') {
       const serverError = error.error as ApiResponse<any>;
       if (serverError.message) {
         errorMessage = serverError.message;
@@ -176,7 +172,6 @@ export class ApiService {
         errorMessage = serverError.error.message;
       }
     } else if (error.status) {
-      // HTTP error with no structured response
       errorMessage = `Server Error: ${error.status} - ${error.message}`;
     }
 
@@ -187,7 +182,7 @@ export class ApiService {
       url: error.url
     });
 
-    return throwError(() => new Error(errorMessage));
+    return throwError(() => errorMessage);
   }
 
   private getHttpOptions() {

@@ -10,11 +10,11 @@
   </div>
   }
 
-  @if (orderState?.error) {
+  @if (error) {
   <div class="section-container">
-    <div class="order-detail-icon">🐞</div>
+    <div class="big-icon">🐞</div>
     <h2 class="subtitle">Error loading order</h2>
-    <p>{{ orderState?.error }}</p>
+    <p>{{ error }}</p>
     <p>Don't worry, your payment was successful. You should receive an email confirmation shortly.</p>
   </div>
   }

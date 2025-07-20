@@ -5,7 +5,7 @@
 
   @if(cartState?.error || orderState?.error) {
   <div class="section-container">
-    <div class="shopping-cart-icon">🐞</div>
+    <div class="big-icon">🐞</div>
     <h2 class="subtitle">Error loading cart</h2>
     <p>{{ cartState?.error || orderState?.error }}</p>
   </div>
@@ -13,7 +13,7 @@
 
   @if (!hasAnyItem) {
   <div class="section-container">
-    <div class="shopping-cart-icon">🛒</div>
+    <div class="big-icon">🛒</div>
     <h2 class="subtitle">Your cart is empty</h2>
     <p>Browse our products and add items to your cart</p>
     <a routerLink="/" class="button-container">Continue Shopping</a>
