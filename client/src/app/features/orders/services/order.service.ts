@@ -11,20 +11,24 @@ export class OrderService {
 
   constructor(private apiService: ApiService) { }
 
-  createOrderFromCart(cartId: string, shippingAddress: any): Observable<IOrder> {
-    return this.apiService.post<IOrder>(`${this.endpoint}/from-cart/${cartId}`, { shippingAddress });
+  createOrderFromCart(cartId: string): Observable<IOrder> {
+    return this.apiService.post<IOrder>(`${this.endpoint}/from-cart/${cartId}`);
   }
 
   createCheckoutSession(): Observable<IOrder> {
     return this.apiService.post<IOrder>(`${this.endpoint}/users/me/checkout`, {});
   }
 
+  getOrder(orderId: string): Observable<IOrder> {
+    return this.apiService.get<IOrder>(`${this.endpoint}/${orderId}`);
+  }
+
   getOrderByCartId(cartId: string): Observable<IOrder> {
     return this.apiService.get<IOrder>(`${this.endpoint}/cart/${cartId}`);
   }
 
-  getOrder(orderId: string): Observable<IOrder> {
-    return this.apiService.get<IOrder>(`${this.endpoint}/${orderId}`);
+  getOrderByNumber(orderNumber: string): Observable<IOrder> {
+    return this.apiService.get<IOrder>(`${this.endpoint}/number/${orderNumber}`);
   }
 
   cancelOrder(orderId: string): Observable<IOrder> {

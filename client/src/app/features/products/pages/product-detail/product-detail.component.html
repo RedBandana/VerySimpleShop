@@ -11,7 +11,7 @@
 }
 
 @if (product) {
-<div class="product-detail-container">
+<div class="product-detail-container page-container">
     <nav class="product-detail-navbar remove">
         <button class="product-detail-navbar-direction">
             <i class="fa-solid fa-chevron-left"></i>
@@ -24,7 +24,7 @@
     </nav>
 
     <div class="product-detail-header">
-        <h1 class="product-detail-header-title">{{ product.name }}</h1>
+        <h1 class="subtitle">{{ product.name }}</h1>
         <div class="product-detail-header-category">{{ collections }}</div>
         <div class="product-detail-header-price">{{ currentPriceString }}</div>
     </div>
@@ -46,7 +46,7 @@
 
     @for (option of product.options; track trackByChoice($index, option)) {
     <div class="product-detail-options">
-        <h1 class="product-detail-options-title">Select a {{ option.name }}</h1>
+        <h1 class="subtitle">Select a {{ option.name }}</h1>
         <div class="product-detail-options-container">
             @for (choice of option.choices; track trackByChoice($index, choice)) {
             <button class="product-detail-option-choice" [class.product-detail-option-choice-selected]="isOptionSelected(option.nameKey, choice.valueKey)" (click)="onOptionSelect(option.nameKey, choice.valueKey)">
@@ -81,3 +81,5 @@
     <p>Product not found</p>
 </div>
 }
+
+<app-cart-item-added></app-cart-item-added>

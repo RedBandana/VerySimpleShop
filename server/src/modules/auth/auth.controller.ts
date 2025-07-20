@@ -8,7 +8,7 @@ import { Response } from 'express';
 import { SESSION_COOKIE_NAME } from 'src/common/constants/general.constant';
 import { VerifyAccountRequestDto } from './dto/verify-account-request.dto';
 import { VerifyAccountDto } from './dto/verify-account.dto';
-import { ResponseUtil } from 'src/common/utils/response.util';
+import { ResponseUtils } from 'src/common/utils/response.utils';
 import { ApiResponse } from 'src/common/interfaces/api-response.interface';
 import { IAuthResponse } from './interfaces/auth.interface';
 
@@ -25,7 +25,7 @@ export class AuthController {
         const user = await this.authService.createGuest();
         const authCookie = this.authService.authenticate(user);
         const authResponse: IAuthResponse = { token: authCookie.token };
-        const response = ResponseUtil.success(authResponse, 'Guest session created successfully');
+        const response = ResponseUtils.success(authResponse, 'Guest session created successfully');
 
         res.cookie(authCookie.name, authCookie.token, authCookie.options);
         res.status(HttpStatus.OK).json(response);
@@ -37,12 +37,12 @@ export class AuthController {
             const user = await this.authService.login(loginDto);
             const authCookie = this.authService.authenticate(user);
             const authResponse: IAuthResponse = { token: authCookie.token };
-            const response = ResponseUtil.success(authResponse, 'Login successful');
+            const response = ResponseUtils.success(authResponse, 'Login successful');
 
             res.cookie(authCookie.name, authCookie.token, authCookie.options);
             res.status(HttpStatus.OK).json(response);
         } catch (error) {
-            const response = ResponseUtil.error(
+            const response = ResponseUtils.error(
                 'Login failed',
                 'LOGIN_FAILED',
                 HttpStatus.UNAUTHORIZED,
@@ -58,12 +58,12 @@ export class AuthController {
             const user = await this.authService.register(registerDto);
             const authCookie = this.authService.authenticate(user);
             const authResponse: IAuthResponse = { token: authCookie.token };
-            const response = ResponseUtil.success(authResponse, 'Registration successful');
+            const response = ResponseUtils.success(authResponse, 'Registration successful');
 
             res.cookie(authCookie.name, authCookie.token, authCookie.options);
             res.status(HttpStatus.OK).json(response);
         } catch (error) {
-            const response = ResponseUtil.error(
+            const response = ResponseUtils.error(
                 'Registration failed',
                 'REGISTRATION_FAILED',
                 HttpStatus.BAD_REQUEST,
@@ -77,9 +77,9 @@ export class AuthController {
     async requestPasswordReset(@Body() resetRequestDto: ResetPasswordRequestDto): Promise<ApiResponse<any>> {
         try {
             const result = await this.authService.requestPasswordReset(resetRequestDto);
-            return ResponseUtil.success(result, 'Password reset request sent');
+            return ResponseUtils.success(result, 'Password reset request sent');
         } catch (error) {
-            return ResponseUtil.error(
+            return ResponseUtils.error(
                 'Password reset request failed',
                 'PASSWORD_RESET_REQUEST_FAILED',
                 HttpStatus.BAD_REQUEST,
@@ -92,9 +92,9 @@ export class AuthController {
     async resetPassword(@Body() resetDto: ResetPasswordDto): Promise<ApiResponse<any>> {
         try {
             const result = await this.authService.resetPassword(resetDto);
-            return ResponseUtil.success(result, 'Password reset successful');
+            return ResponseUtils.success(result, 'Password reset successful');
         } catch (error) {
-            return ResponseUtil.error(
+            return ResponseUtils.error(
                 'Password reset failed',
                 'PASSWORD_RESET_FAILED',
                 HttpStatus.BAD_REQUEST,
@@ -107,9 +107,9 @@ export class AuthController {
     async verifyAccountRequest(@Body() verifyAccountRequestDto: VerifyAccountRequestDto): Promise<ApiResponse<any>> {
         try {
             const result = await this.authService.requestAccountVerification(verifyAccountRequestDto);
-            return ResponseUtil.success(result, 'Account verification request sent');
+            return ResponseUtils.success(result, 'Account verification request sent');
         } catch (error) {
-            return ResponseUtil.error(
+            return ResponseUtils.error(
                 'Account verification request failed',
                 'ACCOUNT_VERIFICATION_REQUEST_FAILED',
                 HttpStatus.BAD_REQUEST,
@@ -122,9 +122,9 @@ export class AuthController {
     async verifyAccount(@Body() verifyAccountDto: VerifyAccountDto): Promise<ApiResponse<any>> {
         try {
             const result = await this.authService.verifyAccount(verifyAccountDto);
-            return ResponseUtil.success(result, 'Account verified successfully');
+            return ResponseUtils.success(result, 'Account verified successfully');
         } catch (error) {
-            return ResponseUtil.error(
+            return ResponseUtils.error(
                 'Account verification failed',
                 'ACCOUNT_VERIFICATION_FAILED',
                 HttpStatus.BAD_REQUEST,
@@ -141,10 +141,10 @@ export class AuthController {
 
             res.clearCookie(SESSION_COOKIE_NAME);
 
-            const response = ResponseUtil.success(null, 'Logout successful');
+            const response = ResponseUtils.success(null, 'Logout successful');
             res.status(HttpStatus.OK).json(response);
         } catch (error) {
-            const response = ResponseUtil.error(
+            const response = ResponseUtils.error(
                 'Logout failed',
                 'LOGOUT_FAILED',
                 HttpStatus.INTERNAL_SERVER_ERROR,

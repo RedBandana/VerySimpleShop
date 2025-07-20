@@ -16,6 +16,9 @@ import { StripeService } from 'src/services/stripe/stripe.service';
 import { CartsService } from '../carts/carts.service';
 import { ICartItem } from '../carts/schemas/cart-item.schema';
 import { IStripeItem } from 'src/common/interfaces/stripe-item.interface';
+import { MailService } from '../mail/mail.service';
+import { LocalizationService } from 'src/services/localization/localization.service';
+import { WEBSITE_URL } from 'src/common/constants/general.constant';
 
 @Injectable()
 export class OrdersService extends DatabaseCollectionService {
@@ -24,7 +27,9 @@ export class OrdersService extends DatabaseCollectionService {
     constructor(
         @InjectModel(DatabaseModel.ORDER) protected readonly orderModel: Model<IOrder>,
         protected readonly cartsService: CartsService,
-        private readonly stripeService: StripeService
+        private readonly stripeService: StripeService,
+        private readonly mailService: MailService,
+        private readonly localizationService: LocalizationService,
     ) {
         super(orderModel);
     }
@@ -59,6 +64,11 @@ export class OrdersService extends DatabaseCollectionService {
 
     async get(orderId: ObjectId): Promise<IOrder> {
         const order = await this.getDocument(orderId);
+        return order;
+    }
+
+    async getByNumber(orderNumber: string): Promise<IOrder> {
+        const order = await this.filterOneBy({ number: orderNumber });
         return order;
     }
 
@@ -117,8 +127,7 @@ export class OrdersService extends DatabaseCollectionService {
         });
     }
 
-    async createOrderFromCart(cartId: ObjectId, shippingAddress?: any): Promise<IOrder> {
-        // Check if order already exists for this cart
+    async createOrderFromCart(cartId: ObjectId): Promise<IOrder> {
         const existingOrder = await this.findByCartId(cartId);
         if (existingOrder) {
             throw new Error('Order already exists for this cart');
@@ -128,7 +137,6 @@ export class OrdersService extends DatabaseCollectionService {
             cartId,
             status: OrderStatus.PENDING,
             paymentStatus: PaymentStatus.PENDING,
-            shippingAddress
         };
 
         return await this.create(orderData);
@@ -136,19 +144,46 @@ export class OrdersService extends DatabaseCollectionService {
 
     async createCheckoutSession(userId: ObjectId): Promise<IOrder> {
         const cart = await this.cartsService.getByUserId(userId);
-        if (!cart || cart.items.length === 0) {
+        if (!cart || cart.items.length === 0)
             throw new Error('Cart is empty');
-        }
 
-        if (cart._order?.sessionUrl) return cart._order;
+        const oldCartOrder = cart._order;
+        const order = oldCartOrder ? oldCartOrder : await this.createOrderFromCart(cart._id);
 
-        const order = cart._order ? cart._order : await this.createOrderFromCart(cart._id);
         const items = this.cartItemsToStripeItems(cart.items);
-        const metadata = { orderId: order._id.toString() };
+        const metadata = { orderId: order._id.toString(), orderNumber: order.number };
         const session = await this.stripeService.createCheckoutSession(items, metadata);
-
         const updatedOrder = await this.updateDocument(order._id, { sessionId: session.id, sessionUrl: session.url });
+
+        if (oldCartOrder?.sessionId)
+            await this.stripeService.expireCheckoutSession(oldCartOrder.sessionId);
+
         return updatedOrder;
+    }
+
+    async sendOrderCompletedEmail(order: IOrder) {
+        if (!order.shippingDetails)
+            throw new Error('Cannot send email, no shipping details or cart items');
+
+        const lang = this.localizationService.lang;
+        const subject = this.localizationService.translate('emails.orderCompleted.subject', { lang });
+        const mail = {
+            to: order.shippingDetails.email,
+            subject,
+            template: 'order-completed',
+            context: {
+                lang,
+                websiteUrl: WEBSITE_URL,
+                name: order.shippingDetails.name,
+                city: order.shippingDetails.address.city,
+                state: order.shippingDetails.address.state,
+                orderNumber: order.number,
+                total: this.localizationService.formatCurrency(order._cart?.totalPrice ?? 0),
+                cartItems: order._cart?.items
+            },
+        };
+
+        await this.mailService.sendMail(mail);
     }
 
     cartItemsToStripeItems(cartItems: ICartItem[]): IStripeItem[] {

@@ -8,7 +8,7 @@ import {
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ApiResponse } from '../interfaces/api-response.interface';
-import { ResponseUtil } from '../utils/response.util';
+import { ResponseUtils } from '../utils/response.utils';
 
 @Injectable()
 export class ResponseInterceptor<T> implements NestInterceptor<T, ApiResponse<T>> {
@@ -27,7 +27,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, ApiResponse<T>
         const status = response.statusCode || HttpStatus.OK;
         
         // Create standardized response
-        return ResponseUtil.success(
+        return ResponseUtils.success(
           data,
           'Success',
           status,

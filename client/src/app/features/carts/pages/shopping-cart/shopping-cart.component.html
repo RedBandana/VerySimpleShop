@@ -1,60 +1,25 @@
-<div class="shopping-cart-container">
+<div class="shopping-cart-container page-container">
   <div class="shopping-cart-header">
-    <h1 class="shopping-cart-header-title">Shopping Cart</h1>
+    <h1 class="title">Shopping Cart</h1>
   </div>
 
   @if(cartState?.error || orderState?.error) {
-  <div class="shopping-cart-section-container">
+  <div class="section-container">
     <div class="shopping-cart-icon">🐞</div>
-    <h2 class="shopping-cart-subtitle">Error loading cart</h2>
+    <h2 class="subtitle">Error loading cart</h2>
     <p>{{ cartState?.error || orderState?.error }}</p>
   </div>
   }
 
-  @if (cartItems.length == 0) {
-  <div class="shopping-cart-section-container">
+  @if (!hasAnyItem) {
+  <div class="section-container">
     <div class="shopping-cart-icon">🛒</div>
-    <h2 class="shopping-cart-subtitle">Your cart is empty</h2>
+    <h2 class="subtitle">Your cart is empty</h2>
     <p>Browse our products and add items to your cart</p>
-    <a routerLink="/" class="shopping-cart-button">Continue Shopping</a>
+    <a routerLink="/" class="button-container">Continue Shopping</a>
   </div>
   }
   @else {
-  <div class="shopping-cart-section-container">
-    <h2 class="shopping-cart-subtitle">Cart Items</h2>
-
-    <div class="shopping-cart-items-container">
-      @for (item of cartItems; track item._id){
-      <div class="shopping-cart-item">
-        <a [routerLink]="'/product/' + item._product?._id" class="shopping-cart-item-image">
-          <img [src]="getItemImageUrl(item)" [alt]="item._product?.name || 'Product'">
-        </a>
-
-        <div class="shopping-cart-item-details">
-          <a [routerLink]="'/product/' + item._product?._id" class="shopping-cart-item-name">
-            {{ item._product?.name }} {{ getVariantName(item) }}
-          </a>
-
-          <div class="shopping-cart-item-actions">
-            <div class="shopping-cart-item-quantity-container">
-              <button class="shopping-cart-item-quantity-button" (click)="onRemoveFromCart(item)">-</button>
-              <div class="shopping-cart-item-quantity">{{ item.quantity }}</div>
-              <button class="shopping-cart-item-quantity-button" (click)="onAddToCart(item)">+</button>
-            </div>
-            <button class="shopping-cart-item-remove-button" (click)="onRemoveCartItem(item)">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </div>
-
-          <div class="shopping-cart-item-price">{{ getItemPriceString(item) }}</div>
-        </div>
-
-      </div>
-      }
-    </div>
-
-    <div class="shopping-cart-item-price">Total: {{ totalPriceString }}</div>
-    <button class="shopping-cart-button" (click)="onProceedToCheckout()">Proceed to Checkout</button>
-  </div>
+    <app-cart-item-list></app-cart-item-list>
   }
 </div>

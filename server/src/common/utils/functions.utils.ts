@@ -1,5 +1,13 @@
 import * as fs from 'fs';
 
+export function generateRandomNumber(length: number): string {
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += Math.floor(Math.random() * 10);
+  }
+  return result;
+}
+
 export function emailValidator(email: string): boolean {
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
   return emailRegex.test(email);

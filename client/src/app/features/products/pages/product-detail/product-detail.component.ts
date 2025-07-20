@@ -12,12 +12,13 @@ import { ProductState } from '../..';
 import { AuthDispatchService } from '../../../auth/services/auth-dispatch.service';
 import { AuthState } from '../../../auth/store/auth.reducer';
 import { UserDispatchService } from '../../../users/services/user-dispatch.service';
-import { CartDispatchService } from '../../../carts/services/cart-dispatch.service';
 import { LocalizationService } from '../../../../core/services/localization.service';
+import { CartItemAddedComponent } from "../../../carts/components/cart-item-added/cart-item-added.component";
+import { CartDispatchService } from '../../../carts/services/cart-dispatch.service';
 
 @Component({
   selector: 'app-product',
-  imports: [CommonModule, FormsModule, MarkdownModule],
+  imports: [CommonModule, FormsModule, MarkdownModule, CartItemAddedComponent],
   templateUrl: './product-detail.component.html',
   styleUrl: './product-detail.component.scss'
 })
@@ -35,7 +36,15 @@ export class ProductDetail implements OnInit, OnDestroy {
   authState?: AuthState;
   authSubscription!: Subscription;
 
-  // Computed getters
+  constructor(
+    private productDispatchService: ProductDispatchService,
+    private userDispatchService: UserDispatchService,
+    private authDispatchService: AuthDispatchService,
+    private cartDispatchService: CartDispatchService,
+    private localizationService: LocalizationService,
+    private route: ActivatedRoute,
+  ) { }
+
   get product(): IProduct | undefined {
     return this.productState?.product;
   }
@@ -57,17 +66,6 @@ export class ProductDetail implements OnInit, OnDestroy {
       return this.selectedVariant.imageUrls;
     }
     return this.product?.imageUrls || [];
-  }
-
-  constructor(
-    private productDispatchService: ProductDispatchService,
-    private userDispatchService: UserDispatchService,
-    private authDispatchService: AuthDispatchService,
-    private cartDispatchService: CartDispatchService,
-    private localizationService: LocalizationService,
-    private route: ActivatedRoute,
-  ) {
-
   }
 
   ngOnInit(): void {

@@ -5,7 +5,7 @@ import { FeaturedProducts } from './features/products/pages/featured-products/fe
 import { ProductList } from './features/products/pages/product-list/product-list.component';
 import { ProductDetail } from './features/products/pages/product-detail/product-detail.component';
 import { ShoppingCart } from './features/carts/pages/shopping-cart/shopping-cart.component';
-import { CheckoutSuccess } from './features/orders/pages/checkout-success/checkout-success.component';
+import { OrderDetail } from './features/orders/pages/order-detail/order-detail.component';
 import { unsavedChangesGuard } from './core/guards/unsaved-changes.guard';
 import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
@@ -14,9 +14,9 @@ export const routes: Routes = [
     { path: 'privacy-policy', component: PrivacyPolicy },
     { path: 'terms-of-use', component: TermsOfUse },
     { path: 'products', component: ProductList },
-    { path: 'product/:id', component: ProductDetail },
+    { path: 'products/:id', component: ProductDetail },
     { path: 'cart', component: ShoppingCart },
-    { path: 'checkout-success', component: CheckoutSuccess },
+    { path: 'orders/:number', component: OrderDetail },
     {
         path: 'profile',
         component: ProductDetail,

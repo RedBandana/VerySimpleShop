@@ -7,12 +7,52 @@
     font-family: var(--font-family-text);
 }
 
+body {
+    background-color: white;
+    // overflow-x: hidden;
+}
+
 .remove {
     display: none !important;
 }
 
 .hide {
-    opacity: 0;
+    opacity: 0 !important;
+}
+
+.show {
+    opacity: 100 !important;
+}
+
+.page-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap04);
+    max-width: var(--width-page);
+    padding: var(--gap01) var(--gap02);
+    margin: auto;
+}
+
+.section-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap02);
+}
+
+.button-container {
+    border: 2px solid black;
+    border-radius: var(--radius-small);
+    text-align: center;
+    padding: var(--gap00);
+    font-weight: bold;
+}
+
+.title {
+    font-size: var(--font-size-h2);
+}
+
+.subtitle {
+    font-size: var(--font-size-h3);
 }
 
 .markdown-text {

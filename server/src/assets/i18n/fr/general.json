@@ -4,44 +4,6 @@
     "success": "L'operation s'est bien déroulée.",
     "hello": "Une entreprise est un projet de vie, VSS vous aide à le mener à bien."
   },
-  "enums": {
-    "businessTypes": {
-      "childcare": "Entreprise individuelle",
-      "coordinatingOffice": "Société anonyme"
-    },
-    "packageTypes": {
-      "none": "Aucun",
-      "starter": "Démarrage",
-      "pro": "Pro",
-      "premium": "Premium"
-    },
-    "productsCatalog": {
-      "none": "Aucun",
-      "spStarter": "Forfait Démarrage pour Entreprise Individuelle",
-      "spPro": "Forfait Pro pour Entreprise Individuelle",
-      "spPremium": "Forfait Premium pour Entreprise Individuelle",
-      "cStarter": "Forfait Démarrage pour Société Anonyme",
-      "cPro": "Forfait Pro pour Société Anonyme",
-      "cPremium": "Forfait Premium pour Société Anonyme",
-      "xPrioritySupport": "Assistance en 24 heures",
-      "xPriorityFilling": "Vitesse de Traitement la Plus Rapide",
-      "xGstQstRegistration": "Enregistrement TPS/TVQ",
-      "xClassShareCapital": "Capital-actions de catégories multiples",
-      "xShareholdersAgreement": "Convention d'actionnaires",
-      "xTransferAgreement": "Accord de Transfert de Propriété Intellectuelle"
-    },
-    "packageFeatures": {
-      "registration": "Formation Légale de l'Entreprise",
-      "gstQstRegistration": "Enregistrement TPS/TVQ",
-      "multipleClassShareCapital": "Capital-actions de catégories multiples",
-      "priorityFilling": "Vitesse de Traitement la Plus Rapide",
-      "prioritySupport": "Assistance en 24 heures",
-      "shareholdersAgreement": "Convention d'actionnaires",
-      "intellectualPropertyTransferAgreement": "Accord de Transfert de Propriété Intellectuelle",
-      "virtualOfficeAddress": "Adresse de Bureau Virtuel",
-      "virtualPhoneNumber": "Numéro de Téléphone Virtuel"
-    }
-  },
   "errors": {
     "invalidCredentials": "Les identifiants fournis sont invalides.",
     "invalidToken": "Le jeton fourni est invalide.",
@@ -50,17 +12,5 @@
     "badRequest": "Quelque chose s'est mal passé. Veuillez réessayer plus tard.",
     "internalError": "Une erreur interne du serveur s'est produite. Veuillez réessayer plus tard.",
     "notFound": "{model} n'a pas pu être trouvé."
-  },
-  "user": {
-    "forgotPasswordDone": "Si un utilisateur avec ce courriel existe, un courriel avec des instructions de réinitialisation du mot de passe lui a été envoyé.",
-    "invalidPassword": "Le mot de passe est invalide.",
-    "resetPasswordSuccess": "Réinitialisation du mot de passe réussie.",
-    "accountAlreadyVerified": "Votre compte a déjà été vérifié.",
-    "emailAlreadyExists": "Un compte avec ce courriel existe déjà.",
-    "verificationSuccess": "Compte vérifié avec succès.",
-    "verificationMailSent": "Un courriel de vérification a été envoyé."
-  },
-  "relationship": {
-    "alreadyExists": "Une personne en charge avec ce courriel est déjà liée à l'enfant."
   }
 }

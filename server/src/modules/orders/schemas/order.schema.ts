@@ -2,10 +2,11 @@ import mongoose, { Schema, Document } from "mongoose";
 import { OrderStatus } from "src/common/enums/order-status.enum";
 import { DatabaseModel } from "src/common/enums/database-model.enum";
 import { PaymentStatus } from "src/common/enums/payment-status.enum";
-import { IAddress, AddressSchema } from "src/common/schemas/address.schema";
 import { ObjectId } from "mongodb";
 import { ICart } from "src/modules/carts/schemas/cart.schema";
 import { IUser } from "src/modules/users/schemas/user.schema";
+import { IShippingDetails, ShippingDetailsSchema } from "./shipping-details.schema";
+import { generateRandomNumber } from "src/common/utils/functions.utils";
 
 export interface IOrder extends Document {
     _id: ObjectId;
@@ -14,9 +15,10 @@ export interface IOrder extends Document {
 
     userId: ObjectId;
     cartId: ObjectId;
+    number: string;
     status: OrderStatus;
     paymentStatus: PaymentStatus;
-    shippingAddress: IAddress;
+    shippingDetails?: IShippingDetails;
 
     sessionId?: string;
     sessionUrl?: string;
@@ -29,9 +31,10 @@ export const OrderSchema = new Schema<IOrder>(
     {
         userId: { type: Schema.Types.ObjectId, ref: DatabaseModel.USER, required: false },
         cartId: { type: Schema.Types.ObjectId, ref: DatabaseModel.CART, required: true, unique: true },
+        number: { type: String, required: false, unique: true, index: true },
         status: { type: String, required: true, enum: OrderStatus, default: OrderStatus.PENDING },
         paymentStatus: { type: String, required: true, enum: PaymentStatus, default: PaymentStatus.PENDING },
-        shippingAddress: { type: AddressSchema },
+        shippingDetails: { type: ShippingDetailsSchema },
         sessionId: { type: String, required: false },
         sessionUrl: { type: String, required: false },
     },
@@ -58,6 +61,20 @@ function populateVirtualFields(obj: any) {
     obj.populate({
         path: "_user",
         options: {
+            _recursed: true,
+        },
+    });
+
+    obj.populate({
+        path: "_cart",
+        options: {},
+    });
+}
+
+function populateVirtualFieldsLean(obj: any) {
+    obj.populate({
+        path: "_user",
+        options: {
             select: "firstName lastName email",
             _recursed: true,
         },
@@ -67,23 +84,6 @@ function populateVirtualFields(obj: any) {
         path: "_cart",
         options: {
             select: "userId items totalPrice",
-        },
-    });
-}
-
-function populateVirtualFieldsLean(obj: any) {
-    obj.populate({
-        path: "_user",
-        options: {
-            select: "email",
-            _recursed: true,
-        },
-    });
-
-    obj.populate({
-        path: "_cart",
-        options: {
-            select: "userId totalPrice",
             _recursed: true,
         },
     });
@@ -133,7 +133,12 @@ async function preSave(next: any) {
         if (this.isModified('cartId')) {
             const cartModel = this.constructor.db.model(DatabaseModel.CART);
 
-            if (this.isNew === false) {
+            if (this.isNew) {
+                const timestamp = Date.now();
+                const randomNumber = generateRandomNumber(5);
+                this['number'] = `${timestamp}-${randomNumber}`;
+            }
+            else {
                 const previousOrder = await this.constructor.findById(this._id).select('cartId');
                 if (previousOrder?.cartId?.toString() !== this.cartId.toString()) {
                     await cartModel.findByIdAndUpdate(previousOrder.cartId, { $unset: { orderId: "" } });

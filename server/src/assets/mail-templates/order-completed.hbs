@@ -1,30 +1,67 @@
-<html lang='{{i18nLang}}'>
+<html lang="{{lang}}">
 
-<head>
-  <meta charset='UTF-8' />
-  <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-  <title>{{t 'emails.orderCompleted.subject'}}</title>
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{t "emails.orderCompleted.subject"}}</title>
+  </head>
 
-<body style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 16px; color: #000; padding: 0; margin: 0;">
-  <div class='container' style="padding: 40px;">
-    <div class='main' style="padding: 0; margin: 0;">
-      <div class='header' style="font-size: 32px; margin-bottom: 20px;">{{t 'emails.orderCompleted.header'}}</div>
-      <p style="padding: 0; margin: 0 0 20px 0;">{{safeString
-          (t 'emails.orderCompleted.p1' (args companyName=companyName packageType=packageType product=product))
-        }}</p>
-      <p style="padding: 0; margin: 0 0 20px 0;">{{safeString (t 'emails.orderCompleted.p2')}}</p>
-      <ul class='list-bold' style="margin-left: 40px; font-weight: bold; padding: 0; margin: 0 0 20px 0;">
-        {{safeString (list packageFeatures)}}
-      </ul>
-    </div>
-
-    <div class='footer' style="margin-top: 20px;">
-      <a class='footer-title' href='{{t "emails.common.websiteUrl"}}' style="font-size: 24px; text-decoration: none; color: #000; padding: 0; margin: 0;">
-        {{t 'general.common.app'}}
+  <body
+    style="
+font-family: sans-serif; padding: 0 40px;
+display: flex; flex-direction: column; gap: 32px
+"
+  >
+    <header style="display: flex; flex-direction: column; align-items: center;">
+      <a
+        href="{{websiteUrl}}"
+        style="
+    font-size: 20px; font-weight: bold; 
+    text-decoration: none; color: black;
+    "
+      >
+        {{t "emails.orderCompleted.subject"}}
       </a>
-    </div>
-  </div>
-</body>
+      <p>{{t "emails.orderCompleted.subtitle"}}</p>
+    </header>
+
+    <section style="display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <div>
+          {{t
+            "emails.orderCompleted.customer"
+            (args name=name city=city state=state)
+          }}
+        </div>
+        <div>
+          {{t "emails.fields.orderNumber" (args orderNumber=orderNumber)}}
+        </div>
+      </div>
+      <a
+        href="{{websiteUrl}}/orders/{{orderNumber}}"
+        style="
+        width: fit-content; font-weight: bolder;
+        color: black; text-decoration: none;
+        border: 2px solid black; border-radius: 4px; padding: 6px;
+        "
+      >
+        {{t "emails.orderCompleted.viewOrder"}}
+      </a>
+    </section>
+
+    <section style="display: flex; flex-direction: column; gap: 12px">
+      <strong style="font-size: 20px;">
+        {{t "emails.orderCompleted.yourItems"}}
+      </strong>
+      {{safeString (cartItemList cartItems)}}
+      <strong>
+        {{t "emails.orderCompleted.total" (args total=total)}}
+      </strong>
+    </section>
+
+    <footer style="display: flex; flex-direction: column; align-items: center;">
+      <div style="padding: 20px;">{{t "emails.common.footer"}}</div>
+    </footer>
+  </body>
 
 </html>

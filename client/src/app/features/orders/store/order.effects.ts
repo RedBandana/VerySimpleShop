@@ -22,7 +22,6 @@ export class OrderEffects {
     ),
   );
 
-
   getOrder$ = createEffect(() =>
     this.actions$.pipe(
       ofType(OrderActions.startGetOrder),
@@ -30,6 +29,18 @@ export class OrderEffects {
         this.orderService.getOrder(orderId).pipe(
           map((order) => OrderActions.getOrderSuccess({ order })),
           catchError((error) => of(OrderActions.getOrderFailure({ error }))),
+        ),
+      ),
+    ),
+  );
+
+  getOrderByNumber$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(OrderActions.startGetOrderByNumber),
+      switchMap(({ orderNumber }) =>
+        this.orderService.getOrderByNumber(orderNumber).pipe(
+          map((order) => OrderActions.getOrderByNumberSuccess({ order })),
+          catchError((error) => of(OrderActions.getOrderByNumberFailure({ error }))),
         ),
       ),
     ),

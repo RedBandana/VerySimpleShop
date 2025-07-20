@@ -1,0 +1,43 @@
+<div class="cart-item-list-container">
+    <h2 class="subtitle">Cart Items</h2>
+
+    <div class="cart-item-list">
+        @for (item of cartItems; track item._id){
+        <div class="cart-item">
+            <a [routerLink]="'/products/' + item._product?._id" class="cart-item-image">
+                <img [src]="getItemImageUrl(item)" [alt]="item._product?.name || 'Product'">
+            </a>
+
+            <div class="cart-item-details">
+                <a [routerLink]="'/products/' + item._product?._id" class="cart-item-name">
+                    {{ getFullName(item) }}
+                </a>
+
+                @if (!isOrder) {
+                <div class="cart-item-actions">
+                    <div class="cart-item-quantity-container">
+                        <button class="cart-item-quantity-button" (click)="onRemoveFromCart(item)">-</button>
+                        <div class="cart-item-quantity">{{ item.quantity }}</div>
+                        <button class="cart-item-quantity-button" (click)="onAddToCart(item)">+</button>
+                    </div>
+                    <button class="cart-item-remove-button" (click)="onRemoveCartItem(item)">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+                <div class="cart-item-price">{{getItemFullPriceString(item)}}</div>
+                }
+                @else {
+                <div class="cart-item-price">{{ getItemPriceString(item) }} x {{ item.quantity }} = {{getItemFullPriceString(item)}}</div>
+                }
+
+            </div>
+
+        </div>
+        }
+    </div>
+
+    <div class="cart-item-price">Total: {{ totalPriceString }}</div>
+    @if (!isOrder) {
+    <button class="button-container" (click)="onProceedToCheckout()">Proceed to Checkout</button>
+    }
+</div>

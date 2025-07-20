@@ -6,7 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { ResponseUtil } from '../utils/response.util';
+import { ResponseUtils } from '../utils/response.utils';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -43,7 +43,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       message = exception.message;
     }
 
-    const errorResponse = ResponseUtil.error(
+    const errorResponse = ResponseUtils.error(
       message,
       code,
       status,

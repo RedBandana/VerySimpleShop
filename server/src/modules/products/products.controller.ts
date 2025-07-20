@@ -20,7 +20,7 @@ import { GetProductsDto } from './dto/get-products.dto';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ParseObjectIdPipe } from 'src/common/pipes/parse-object-id.pipe';
 import { ObjectId } from 'mongodb';
-import { ResponseUtil } from 'src/common/utils/response.util';
+import { ResponseUtils } from 'src/common/utils/response.utils';
 import { ApiResponse, PaginatedApiResponse } from 'src/common/interfaces/api-response.interface';
 
 @Controller('products')
@@ -35,7 +35,7 @@ export class ProductsController {
     @UseGuards(JwtAuthGuard, AdminGuard)
     async create(@Body() createProductDto: CreateProductDto): Promise<ApiResponse<any>> {
         const product = await this.productsService.createDocument(createProductDto);
-        return ResponseUtil.success(product, 'Product created successfully', HttpStatus.CREATED);
+        return ResponseUtils.success(product, 'Product created successfully', HttpStatus.CREATED);
     }
 
     @Get()
@@ -43,7 +43,7 @@ export class ProductsController {
         const result = await this.productsService.getAll(getProductsDto);
         
         if (result.page && result.limit && result.total) {
-            return ResponseUtil.paginated(
+            return ResponseUtils.paginated(
                 result.products,
                 result.page,
                 result.limit,
@@ -52,20 +52,20 @@ export class ProductsController {
             );
         }
         
-        return ResponseUtil.success(result.products, 'Products retrieved successfully');
+        return ResponseUtils.success(result.products, 'Products retrieved successfully');
     }
 
     @Get(':productId')
     async get(@Param('productId', ParseObjectIdPipe) productId: ObjectId): Promise<ApiResponse<any>> {
         const product = await this.productsService.get(productId);
-        return ResponseUtil.success(product, 'Product retrieved successfully');
+        return ResponseUtils.success(product, 'Product retrieved successfully');
     }
 
     @Put(':productId')
     @UseGuards(JwtAuthGuard, AdminGuard)
     async update(@Param('productId', ParseObjectIdPipe) productId: ObjectId, @Body() updateProductDto: UpdateProductDto): Promise<ApiResponse<any>> {
         const product = await this.productsService.updateDocument(productId, updateProductDto);
-        return ResponseUtil.success(product, 'Product updated successfully');
+        return ResponseUtils.success(product, 'Product updated successfully');
     }
 
     @Delete(':productId')
@@ -73,6 +73,6 @@ export class ProductsController {
     @HttpCode(HttpStatus.NO_CONTENT)
     async delete(@Param('productId', ParseObjectIdPipe) productId: ObjectId): Promise<ApiResponse<null>> {
         await this.productsService.delete(productId);
-        return ResponseUtil.success(null, 'Product deleted successfully', HttpStatus.NO_CONTENT);
+        return ResponseUtils.success(null, 'Product deleted successfully', HttpStatus.NO_CONTENT);
     }
 }

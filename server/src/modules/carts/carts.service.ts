@@ -11,6 +11,7 @@ import { RemoveFromCartDto } from './dto/remove-from-cart.dto';
 import { DatabaseCollectionService } from 'src/services/database-collection/database-collection.service';
 import { ObjectId } from 'mongodb';
 import { ProductsService } from '../products/products.service';
+import { OrderStatus } from 'src/common/enums/order-status.enum';
 
 @Injectable()
 export class CartsService extends DatabaseCollectionService {
@@ -58,7 +59,18 @@ export class CartsService extends DatabaseCollectionService {
     }
 
     async getByUserId(userId: ObjectId): Promise<ICart | null> {
-        return await this.filterOneBy({ userId, orderId: null }, false);
+        const latestCart: ICart | null = await this.filterOneBy({ userId }, false);
+        
+        if (!latestCart) return null;
+        if (!latestCart.orderId) return latestCart;
+
+        if (latestCart._order && (
+            latestCart._order.status === OrderStatus.PENDING ||
+            latestCart._order.status === OrderStatus.EXPIRED
+        ))
+            return latestCart;
+
+        return null;
     }
 
     async addToCart(userId: ObjectId, addToCartDto: AddToCartDto): Promise<ICart> {

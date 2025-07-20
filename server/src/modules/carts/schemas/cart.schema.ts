@@ -66,6 +66,29 @@ function populateVirtualFields(obj: any) {
     obj.populate({
         path: "items._product",
         options: {
+            _recursed: true,
+        },
+    });
+
+    obj.populate({
+        path: "_user",
+        options: {
+            _recursed: true,
+        },
+    });
+
+    obj.populate({
+        path: "_order",
+        options: {
+            _recursed: true,
+        },
+    });
+}
+
+function populateVirtualFieldsLean(obj: any) {
+    obj.populate({
+        path: "items._product",
+        options: {
             select: "name price imageUrls variants._id variants.price variants.stock variants.imageUrls variants.name",
             _recursed: true,
         },
@@ -82,33 +105,7 @@ function populateVirtualFields(obj: any) {
     obj.populate({
         path: "_order",
         options: {
-            select: "status paymentStatus shippingAddress",
-            _recursed: true,
-        },
-    });
-}
-
-function populateVirtualFieldsLean(obj: any) {
-    obj.populate({
-        path: "items._product",
-        options: {
-            select: "name price",
-            _recursed: true,
-        },
-    });
-
-    obj.populate({
-        path: "_user",
-        options: {
-            select: "email",
-            _recursed: true,
-        },
-    });
-
-    obj.populate({
-        path: "_order",
-        options: {
-            select: "status paymentStatus",
+            select: "status paymentStatus sessionUrl sessionId",
             _recursed: true,
         },
     });

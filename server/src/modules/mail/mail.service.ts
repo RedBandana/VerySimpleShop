@@ -10,12 +10,9 @@ export class MailService {
     constructor(private mailerService: MailerService) { }
 
     async sendMail(mail: ISendMailOptions) {
-        if (process.env.NODE_ENV === EnvironmentTypes.DEV) {
-            this.logger.verbose('sendMail dev', mail);
+        if (process.env.NODE_ENV === EnvironmentTypes.DEV)
             return;
-        }
 
-        this.logger.verbose('sendMail');
         await this.mailerService.sendMail(mail);
     }
 }

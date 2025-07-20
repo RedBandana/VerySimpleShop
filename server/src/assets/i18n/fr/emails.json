@@ -1,100 +1,17 @@
 {
   "common": {
-    "websiteUrl": "https://vss.bstarter.ca",
-    "footerImgSrc": "https://vss.bstarter.ca/assets/images/logoText.png",
-    "ignoreEmail": "Si vous n'avez pas de compte VSS, vous pouvez ignorer ce courriel. Il est possible que quelqu'un ait entré incorrectement votre adresse courriel.",
-    "possibleMistake": "Si vous pensez qu'il y a eu une erreur, veuillez contacter le support de VSS en répondant à ce courriel."
+    "footer": "© 2025 VSS"
   },
   "fields": {
-    "userName": "Nom d'utilisateur :",
-    "userId": "Identifiant de l'utilisateur :",
-    "userEmail": "Courriel de l'utilisateur :",
-    "companyName": "Nom de l'entreprise :",
-    "companyId": "Identifiant de l'entreprise :",
-    "companyType": "Type d'entreprise :",
-    "packageType": "Forfait :",
-    "packageFeatures": "Fonctionnalités du forfait :",
-    "product": "Produit :",
-    "ticketEmail": "Courriel du ticket :",
-    "subject": "Sujet :",
-    "firstName": "Prénom :",
-    "lastName": "Nom :",
-    "email": "Courriel :",
-    "phone": "Téléphone :",
-    "centerName": "Nom du centre :",
-    "centerAddress": "Adresse du centre :",
-    "annualPlan": "Forfait annuel :",
-    "numberOfChildren": "Nombre d'enfants :"
-  },
-  "passwordReset": {
-    "subject": "Réinitialisation du mot de passe VSS",
-    "header": "Réinitialisez votre mot de passe",
-    "callToAction": "Réinitialiser le mot de passe",
-    "p1": "Vous avez demandé à réinitialiser votre mot de passe VSS. Veuillez cliquer sur le bouton ci-dessous pour le faire."
-  },
-  "verifyAccount": {
-    "subject": "Vérification du compte VSS",
-    "header": "Vérifiez votre adresse courriel",
-    "callToAction": "Vérifier le compte",
-    "p1": "Pour finaliser la configuration de votre compte VSS, nous devons confirmer la propriété de cette adresse courriel. Veuillez cliquer sur le bouton ci-dessous."
-  },
-  "majorUpdate": {
-    "subject": "Mise à jour du compte VSS",
-    "header": "Votre compte a été mis à jour",
-    "p1": "Des mises à jour importantes ont été apportées à votre compte VSS. <b>Votre mot de passe ou votre adresse courriel ont été modifiés.</b> Si vous n'êtes pas à l'origine de ces modifications, veuillez contacter le support de VSS en répondant à ce courriel."
-  },
-  "majorUpdateVerify": {
-    "subject": "Mise à jour du compte VSS",
-    "header": "Votre compte a été mis à jour",
-    "callToAction": "Vérifier le compte",
-    "p1": "Des mises à jour importantes ont été apportées à votre compte VSS. <b>Votre mot de passe ou votre adresse courriel ont été modifiés.</b> Pour finaliser la configuration de votre compte VSS, nous devons confirmer la propriété de cette adresse courriel. Veuillez cliquer sur le bouton ci-dessous."
-  },
-  "contactSupport": {
-    "subject": "Demande de support VSS",
-    "header": "Demande de support de la part de {userName}"
+    "orderNumber": "Numéro de commande : {orderNumber}",
+    "quantity": "Quantité : {quantity}"
   },
   "orderCompleted": {
-    "subject": "Paiement réussi avec VSS",
-    "header": "Paiement réussi",
-    "p1": "Le paiement a été effectué avec succès pour votre entreprise VSS <b>{companyName}</b> avec le forfait <b>{packageType}</b>. Nous allons maintenant commencer à fournir les services <b>{product}</b>.",
-    "p2": "Voici un résumé de toutes les fonctionnalités dont vous bénéficiez :"
-  },
-  "orderPaymentFailed": {
-    "subject": "Paiement non reçu avec VSS",
-    "header": "Paiement non reçu",
-    "p1": "Le paiement pour votre entreprise VSS <b>{companyName}</b> n'a pas été reçu. Les services pour cette entreprise seront suspendus jusqu'à ce que le solde soit réglé."
-  },
-  "orderToProcess": {
-    "subject": "Nouvelle commande VSS",
-    "header": "Nouvelle commande de la part de {userName}"
-  },
-  "surveyStarts": {
-    "subject": "Nouveau sondage VSS",
-    "header": "Nouveau sondage à répondre",
-    "p1": "Vous avez été choisi(e) pour répondre à un sondage.",
-    "callToAction": "Répondre au sondage"
-  },
-  "surveyEnds": {
-    "subject": "Fin du sondage VSS",
-    "header": "Fin de la période de réponse du sondage",
-    "p1": "La période pour répondre à un sondage où vous étiez assigné(e) a été écoulée.",
-    "callToAction": "Voir mes réponses"
-  },
-  "relationshipAdded": {
-    "subject": "Ajout d'un enfant à votre compte VSS",
-    "header": "Ajout d'un enfant à votre compte VSS",
-    "callToAction": "Se connecter",
-    "p1": "Un enfant, <b>{childName}</b>, a été ajouté à votre compte VSS dans la garderie <b>{childcareCenterName}</b>. Vous pouvez vous connecter dès maintenant pour gérer les informations de l'enfant."
-  },
-  "relationshipAddedAndPassword": {
-    "subject": "Création de votre compte VSS",
-    "header": "Votre compte VSS a été créé",
-    "callToAction": "Se connecter",
-    "p1": "Un compte VSS a été créé pour vous dans la garderie <b>{childcareCenterName}</b> afin que vous puissiez gérer l'enfant <b>{childName}</b>.",
-    "p2": "Vous pouvez vous connecter dès maintenant en utilisant les informations de connexion suivantes:<br><br>Courriel : <b>{userMail}</b><br>Mot de passe : <b>{userPassword}</b>"
-  },
-  "demoRequest": {
-    "subject": "Demande d'essai VSS",
-    "header": "Demande d'essai de {firstName} {lastName}"
+    "title": "Confirmation de commande VSS",
+    "subtitle": "Merci pour votre achat ! Nous traitons votre commande.",
+    "customer": "{name} - {city}, {state}",
+    "viewOrder": "Voir la commande",
+    "yourItems": "Vos articles",
+    "total": "Total : {total}"
   }
 }

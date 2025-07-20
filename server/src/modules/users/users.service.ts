@@ -25,7 +25,7 @@ export class UsersService extends DatabaseCollectionService {
         return newUser;
     }
 
-    async findByEmail(email: string): Promise<IUser | null> {
+    async getByEmail(email: string): Promise<IUser | null> {
         const user = await this.userModel.findOne({ email }).exec();
         return user;
     }

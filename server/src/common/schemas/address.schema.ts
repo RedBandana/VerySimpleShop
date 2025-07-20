@@ -2,22 +2,22 @@ import { Schema } from "mongoose";
 import { INPUT_LENGTH } from "src/common/constants/input.constant";
 
 export interface IAddress {
-    streetAddress01: string;
-    streetAddress02: string;
     city: string;
-    province: string;
     country: string;
+    line1: string;
+    line2?: string;
+    state: string;
     postalCode: string;
 }
 
 export const AddressSchema = new Schema({
-    streetAddress01: {
+    line1: {
         type: String,
         required: true,
         minlength: INPUT_LENGTH.TEXT.MIN,
         maxlength: INPUT_LENGTH.TEXT.MAX,
     },
-    streetAddress02: {
+    line2: {
         type: String,
         required: false,
         minlength: INPUT_LENGTH.TEXT.MIN,
@@ -29,7 +29,7 @@ export const AddressSchema = new Schema({
         minlength: INPUT_LENGTH.TEXT.MIN,
         maxlength: INPUT_LENGTH.TEXT.MAX,
     },
-    province: {
+    state: {
         type: String,
         required: true,
         minlength: INPUT_LENGTH.TEXT.MIN,

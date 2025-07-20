@@ -1,0 +1,59 @@
+<div class="order-detail-container page-container">
+  <div class="order-detail-header">
+    <h1 class="title">Thank you!</h1>
+    <p>Thank you for your purchase! Your order has been successfully processed.</p>
+  </div>
+
+  @if (orderState?.loading) {
+  <div class="section-container">
+    <p>Loading order details...</p>
+  </div>
+  }
+
+  @if (orderState?.error) {
+  <div class="section-container">
+    <div class="order-detail-icon">🐞</div>
+    <h2 class="subtitle">Error loading order</h2>
+    <p>{{ orderState?.error }}</p>
+    <p>Don't worry, your payment was successful. You should receive an email confirmation shortly.</p>
+  </div>
+  }
+
+  @if (order) {
+  <div class="section-container">
+    <h2 class="subtitle">Order Details</h2>
+    <div class="order-detail-details-container">
+      <div class="order-detail-detail">Order Number: {{ order.number }}</div>
+      <div class="order-detail-detail">Order Status: {{ order.status | titlecase }}</div>
+      <div class="order-detail-detail">Payment Status: {{ order.paymentStatus | titlecase }}</div>
+    </div>
+    <div class="order-detail-details-container">
+      @if (order.shippingDetails) {
+      <div class="order-detail-detail">Deliver to: {{ order.shippingDetails.name }}</div>
+      <div class="order-detail-detail">Email: {{ order.shippingDetails.email }}</div>
+      <div class="order-detail-detail">Phone: {{ order.shippingDetails.phone || "Not provided" }}</div>
+      <div class="order-detail-detail">Shipping Address: {{ shippingAddress }}</div>
+      }
+      @else {
+      <div class="order-detail-detail">No shipping details provided.</div>
+      }
+    </div>
+  </div>
+
+  <app-cart-item-list [isOrder]="true"></app-cart-item-list>
+  }
+
+  <div class="section-container">
+    <h2 class="subtitle">What's Next?</h2>
+    <ul>
+      <li>You'll receive a confirmation email shortly</li>
+      <li>Your order will be processed and shipped within 2-3 weeks</li>
+      <li>Contact us if you have any questions about your order</li>
+    </ul>
+  </div>
+
+  <div class="section-container">
+    <a routerLink="/" class="button-container">Continue Shopping</a>
+    <button class="button-container" onclick="window.print()">Print Confirmation</button>
+  </div>
+</div>

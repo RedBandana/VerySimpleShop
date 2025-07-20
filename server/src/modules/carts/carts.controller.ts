@@ -25,7 +25,7 @@ import { RemoveFromCartDto } from './dto/remove-from-cart.dto';
 import { CartOwnerGuard } from 'src/common/guards/cart-owner.guard';
 import { ObjectId } from 'mongodb';
 import { ParseObjectIdPipe } from 'src/common/pipes/parse-object-id.pipe';
-import { ResponseUtil } from 'src/common/utils/response.util';
+import { ResponseUtils } from 'src/common/utils/response.utils';
 import { ApiResponse, PaginatedApiResponse } from 'src/common/interfaces/api-response.interface';
 
 @Controller('carts')
@@ -47,7 +47,7 @@ export class CartsController {
     @UseGuards(AdminGuard)
     async create(@Body() createCartDto: CreateCartDto): Promise<ApiResponse<any>> {
         const cart = await this.cartsService.createDocument(createCartDto);
-        return ResponseUtil.success(cart, 'Cart created successfully', HttpStatus.CREATED);
+        return ResponseUtils.success(cart, 'Cart created successfully', HttpStatus.CREATED);
     }
 
     @Get()
@@ -56,7 +56,7 @@ export class CartsController {
         const result = await this.cartsService.getAll(getCartsDto);
         
         if (result.page && result.limit && result.total) {
-            return ResponseUtil.paginated(
+            return ResponseUtils.paginated(
                 result.carts,
                 result.page,
                 result.limit,
@@ -65,62 +65,62 @@ export class CartsController {
             );
         }
         
-        return ResponseUtil.success(result.carts, 'Carts retrieved successfully');
+        return ResponseUtils.success(result.carts, 'Carts retrieved successfully');
     }
 
     @Get(':cartId')
     @UseGuards(CartOwnerGuard, AdminGuard)
     async get(@Param('cartId', ParseObjectIdPipe) cartId: ObjectId): Promise<ApiResponse<any>> {
         const cart = await this.cartsService.get(cartId);
-        return ResponseUtil.success(cart, 'Cart retrieved successfully');
+        return ResponseUtils.success(cart, 'Cart retrieved successfully');
     }
 
     @Put(':cartId')
     @UseGuards(CartOwnerGuard, AdminGuard)
     async update(@Param('cartId', ParseObjectIdPipe) cartId: ObjectId, @Body() updateCartDto: any): Promise<ApiResponse<any>> {
         const cart = await this.cartsService.updateDocument(cartId, updateCartDto);
-        return ResponseUtil.success(cart, 'Cart updated successfully');
+        return ResponseUtils.success(cart, 'Cart updated successfully');
     }
 
     @Delete(':cartId')
     @UseGuards(CartOwnerGuard, AdminGuard)
     async delete(@Param('cartId', ParseObjectIdPipe) cartId: ObjectId): Promise<ApiResponse<null>> {
         await this.cartsService.delete(cartId);
-        return ResponseUtil.success(null, 'Cart deleted successfully', HttpStatus.NO_CONTENT);
+        return ResponseUtils.success(null, 'Cart deleted successfully', HttpStatus.NO_CONTENT);
     }
 
     @Get('users/me')
     async getMyCart(@Req() req: any): Promise<ApiResponse<any>> {
         const userId = req.user._id;
         const cart = await this.cartsService.getByUserId(userId);
-        return ResponseUtil.success(cart, 'Cart retrieved successfully');
+        return ResponseUtils.success(cart, 'Cart retrieved successfully');
     }
 
     @Post('users/me/add')
     async addToCart(@Req() req: any, @Body() addToCartDto: AddToCartDto): Promise<ApiResponse<any>> {
         const userId = req.user._id;
         const cart = await this.cartsService.addToCart(userId, addToCartDto);
-        return ResponseUtil.success(cart, 'Item added to cart successfully');
+        return ResponseUtils.success(cart, 'Item added to cart successfully');
     }
 
     @Post('users/me/remove')
     async removeFromCart(@Req() req: any, @Body() removeFromCartDto: RemoveFromCartDto): Promise<ApiResponse<any>> {
         const userId = req.user._id;
         const cart = await this.cartsService.removeFromCart(userId, removeFromCartDto);
-        return ResponseUtil.success(cart, 'Item removed from cart successfully');
+        return ResponseUtils.success(cart, 'Item removed from cart successfully');
     }
 
     @Put('users/me/update')
     async updateCartItem(@Req() req: any, @Body() updateCartDto: UpdateCartDto): Promise<ApiResponse<any>> {
         const userId = req.user._id;
         const cart = await this.cartsService.updateCartItem(userId, updateCartDto);
-        return ResponseUtil.success(cart, 'Cart item updated successfully');
+        return ResponseUtils.success(cart, 'Cart item updated successfully');
     }
 
     @Delete('users/me/clear')
     async clearCart(@Req() req: any): Promise<ApiResponse<any>> {
         const userId = req.user._id;
         const cart = await this.cartsService.clearCart(userId);
-        return ResponseUtil.success(cart, 'Cart cleared successfully');
+        return ResponseUtils.success(cart, 'Cart cleared successfully');
     }
 }

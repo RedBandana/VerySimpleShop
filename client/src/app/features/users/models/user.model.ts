@@ -1,5 +1,6 @@
 import { UserPermissions } from "../../../core/enums/user-permissions.enum";
 import { UserTypes } from "../../../core/enums/user-types.enum";
+import { IAddress } from "../../../core/interfaces/address.interface";
 
 export interface IUser {
   _id: string;
@@ -9,17 +10,8 @@ export interface IUser {
   type: UserTypes;
   isVerified: boolean;
   permissions: UserPermissions[];
-  addresses?: IAddress[];
+  address?: IAddress;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface IAddress {
-  _id?: string;
-  street: string;
-  city: string;
-  state: string;
-  country: string;
-  zipCode: string;
-  isDefault?: boolean;
-}

@@ -9,12 +9,12 @@ import { INPUT_LENGTH } from 'src/common/constants/input.constant';
 export class AddressDto {
     @IsString()
     @Length(INPUT_LENGTH.TEXT.MIN, INPUT_LENGTH.TEXT.MAX)
-    readonly streetAddress01: string;
+    readonly line1: string;
 
     @IsOptional()
     @IsString()
     @Length(INPUT_LENGTH.TEXT.MIN, INPUT_LENGTH.TEXT.MAX)
-    readonly streetAddress02?: string;
+    readonly line2?: string;
 
     @IsString()
     @Length(INPUT_LENGTH.TEXT.MIN, INPUT_LENGTH.TEXT.MAX)
@@ -22,7 +22,7 @@ export class AddressDto {
 
     @IsString()
     @Length(INPUT_LENGTH.TEXT.MIN, INPUT_LENGTH.TEXT.MAX)
-    readonly province: string;
+    readonly state: string;
 
     @IsString()
     @Length(INPUT_LENGTH.TEXT.MIN, INPUT_LENGTH.TEXT.MAX)

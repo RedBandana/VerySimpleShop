@@ -21,7 +21,7 @@ export class StripeService {
             payment_method_types: ['card'],
             line_items: items.map(item => ({
                 price_data: {
-                    currency: 'usd',
+                    currency: 'cad',
                     product_data: {
                         name: item.name,
                         description: item.description,
@@ -36,38 +36,27 @@ export class StripeService {
             },
             mode: 'payment',
             payment_intent_data: {
-                metadata: {
-                    checkout_session_id: '{CHECKOUT_SESSION_ID}',
-                    ...metadata
-                }
+                metadata
             },
-            success_url: `${this.BASE_URL}/checkout-success?orderId=${metadata?.orderId ?? ''}`,
-            cancel_url: `${this.BASE_URL}`,
+            success_url: `${this.BASE_URL}/orders/${metadata?.orderNumber ?? ''}`,
+            cancel_url: `${this.BASE_URL}/cart`,
             metadata
         });
 
         return session;
     }
 
-    async retrieveCheckoutSession(sessionId: string) {
-        const session = await this.stripe.checkout.sessions.retrieve(
-            sessionId, { expand: ['line_items', 'shipping_details'] }
-        );
-
-        return session;
+    async expireCheckoutSession(sessionId: string): Promise<void> {
+        await this.stripe.checkout.sessions.expire(sessionId);
     }
 
-    async getSessionIdFromPaymentIntent(paymentIntentId: string) {
-        const paymentIntent = await this.stripe.paymentIntents.retrieve(paymentIntentId);
-        const sessionId = paymentIntent.metadata.checkout_session_id;
-        const session = await this.retrieveCheckoutSession(sessionId);
-
-        return session;
-    }
-
-    async updateSessionMetadata(sessionId: string, metadata: Stripe.Metadata) {
+    async retrieveCheckoutSession(sessionId: string): Promise<Stripe.Checkout.Session> {
         const session = await this.stripe.checkout.sessions.retrieve(sessionId);
+        return session;
+    }
 
+    async updatePaymentIntentMetadata(sessionId: string, metadata: Stripe.Metadata) {
+        const session = await this.retrieveCheckoutSession(sessionId);
         if (session.payment_intent) {
             const paymentIntentId = typeof session.payment_intent === 'string'
                 ? session.payment_intent
@@ -78,7 +67,7 @@ export class StripeService {
     }
 
     async updateSubscriptionMetadata(sessionId: string, metadata: Stripe.Metadata) {
-        const session = await this.stripe.checkout.sessions.retrieve(sessionId);
+        const session = await this.retrieveCheckoutSession(sessionId);
 
         if (session.subscription) {
             const subscriptionId = typeof session.subscription === 'string'

@@ -2,9 +2,10 @@ import { Controller, Logger, Post, Req, Res } from '@nestjs/common';
 import { StripeService } from 'src/services/stripe/stripe.service';
 import { Response } from 'express';
 import { OrdersService } from 'src/modules/orders/orders.service';
-import { ObjectId } from 'mongodb';
 import { PaymentStatus } from 'src/common/enums/payment-status.enum';
 import { OrderStatus } from 'src/common/enums/order-status.enum';
+import { ObjectId } from 'mongodb';
+import { IShippingDetails } from 'src/modules/orders/schemas/shipping-details.schema';
 
 @Controller('webhook')
 export class WebhookController {
@@ -22,9 +23,9 @@ export class WebhookController {
 
         try {
             event = this.stripeService.getEvent(req.rawBody ?? "", sig);
-            this.logger.log(event.type);
+            this.logger.log(`Event type: ${event.type} ${JSON.stringify(event.data.object.metadata)}`);
         } catch (err) {
-            console.error(`Webhook Error: ${err.message}`);
+            this.logger.error(`Webhook Error: ${err.message}`);
             return res.status(400).send(`Webhook Error: ${err.message}`);
         }
 
@@ -67,10 +68,19 @@ export class WebhookController {
             }
             case 'checkout.session.completed': {
                 const session = event.data.object;
+                const orderId = new ObjectId(session.metadata.orderId as string);
                 await this.orderService.updateOrderStatus(
-                    new ObjectId(session.metadata.orderId as string),
+                    orderId,
                     { status: OrderStatus.PROCESSING }
                 );
+
+                const shippingDetails: IShippingDetails = { ...session.shipping_details };
+                shippingDetails.email = session.customer_details.email;
+                shippingDetails.trackingNumber = session.shipping_details.tracking_number;
+                shippingDetails.address.postalCode = session.shipping_details.address.postal_code;
+
+                const updatedOrder = await this.orderService.update(orderId, { shippingDetails });
+                await this.orderService.sendOrderCompletedEmail(updatedOrder)
 
                 break;
             }
@@ -94,10 +104,14 @@ export class WebhookController {
             }
             case 'checkout.session.expired': {
                 const session = event.data.object;
-                await this.orderService.updateOrderStatus(
-                    new ObjectId(session.metadata.orderId as string),
-                    { status: OrderStatus.EXPIRED }
-                );
+                const order = await this.orderService.get(new ObjectId(session.metadata.orderId as string));
+
+                if (order.sessionId === session.id) {
+                    await this.orderService.updateOrderStatus(
+                        order._id,
+                        { status: OrderStatus.EXPIRED }
+                    );
+                }
 
                 break;
             }

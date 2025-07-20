@@ -48,7 +48,7 @@ export class AuthService {
     }
 
     async login(loginDto: LoginDto): Promise<IUser> {
-        const user = await this.usersService.findByEmail(loginDto.email);
+        const user = await this.usersService.getByEmail(loginDto.email);
         if (!user) {
             throw new UnauthorizedException('Invalid credentials');
         }
@@ -63,7 +63,7 @@ export class AuthService {
     }
 
     async register(registerDto: RegisterDto): Promise<IUser> {
-        const existingUser = await this.usersService.findByEmail(registerDto.email);
+        const existingUser = await this.usersService.getByEmail(registerDto.email);
         if (existingUser) {
             throw new BadRequestException('User already exists');
         }
@@ -80,7 +80,7 @@ export class AuthService {
     }
 
     async requestPasswordReset(dto: ResetPasswordRequestDto): Promise<{ message: string }> {
-        const user = await this.usersService.findByEmail(dto.email);
+        const user = await this.usersService.getByEmail(dto.email);
         if (!user) {
             return { message: 'If the email exists, a password reset link has been sent' };
         }
@@ -95,7 +95,7 @@ export class AuthService {
     }
 
     async requestAccountVerification(dto: VerifyAccountRequestDto): Promise<{ message: string }> {
-        const user = await this.usersService.findByEmail(dto.email);
+        const user = await this.usersService.getByEmail(dto.email);
         if (!user) {
             return { message: 'If the email exists, a verification link has been sent' };
         }

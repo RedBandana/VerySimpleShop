@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common';
-import { ApiResponse, ApiError, PaginatedApiResponse } from '../interfaces/api-response.interface';
+import { ApiResponse, PaginatedApiResponse } from '../interfaces/api-response.interface';
 
-export class ResponseUtil {
+export class ResponseUtils {
   static success<T>(
     data: T,
     message = 'Success',

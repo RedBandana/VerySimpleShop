@@ -14,3 +14,9 @@ export const startGetOrder = createAction('[Order] Start Get Order', props<{ ord
 export const getOrderSuccess = createAction('[Order] Get Order Success', props<{ order: IOrder }>());
 
 export const getOrderFailure = createAction('[Order] Get Order Failure', props<{ error: string }>());
+
+export const startGetOrderByNumber = createAction('[Order] Start Get Order By Number', props<{ orderNumber: string }>());
+
+export const getOrderByNumberSuccess = createAction('[Order] Get Order By Number Success', props<{ order: IOrder }>());
+
+export const getOrderByNumberFailure = createAction('[Order] Get Order By Number Failure', props<{ error: string }>());

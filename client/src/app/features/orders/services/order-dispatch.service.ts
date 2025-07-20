@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
-import { resetOrderSuccessStates, startCheckoutSession, startGetOrder } from '../store/order.actions';
+import { resetOrderSuccessStates, startCheckoutSession, startGetOrder, startGetOrderByNumber } from '../store/order.actions';
 import { OrderState } from '../store/order.reducer';
 import { LogService } from '../../../core/services/log.service';
 import { Router } from '@angular/router';
@@ -74,6 +74,13 @@ export class OrderDispatchService {
     this.waitForLoadingToEnd().subscribe(() => {
       this.logService.log('startGetOrder');
       this.store.dispatch(startGetOrder({ orderId }));
+    });
+  }
+
+  getOrderByNumber(orderNumber: string) {
+    this.waitForLoadingToEnd().subscribe(() => {
+      this.logService.log('startGetOrderByNumber');
+      this.store.dispatch(startGetOrderByNumber({ orderNumber }));
     });
   }
 }

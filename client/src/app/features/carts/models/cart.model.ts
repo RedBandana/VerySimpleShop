@@ -1,4 +1,6 @@
-import { IProduct } from "../../products";
+import { NO_IMAGE_URL } from "../../../core/constants/general.constant";
+import { LocalizationService } from "../../../core/services/localization.service";
+import { IProduct, IProductVariant } from "../../products";
 
 export interface ICart {
   _id: string;
