@@ -32,6 +32,11 @@ export const orderReducer = createReducer(
     getSuccess: false,
   })),
 
+  on(OrderActions.resetOrderError, (state) => ({
+    ...state,
+    error: undefined,
+  })),
+
   on(OrderActions.startCheckoutSession, (state) => ({
     ...state,
     checkoutSessionSuccess: false,

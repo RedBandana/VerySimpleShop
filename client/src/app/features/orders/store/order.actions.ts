@@ -1,7 +1,9 @@
 import { createAction, props } from '@ngrx/store';
 import { IOrder } from '../models/order.model';
 
-export const resetOrderSuccessStates = createAction('[Order] Reset User Success State');
+export const resetOrderSuccessStates = createAction('[Order] Reset Order Success State');
+
+export const resetOrderError = createAction('[Order] Reset Order Error');
 
 export const startCheckoutSession = createAction('[Order] Start Checkout Sesion');
 

@@ -35,6 +35,7 @@ export class ShoppingCart implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscribeNgRx();
+    this.orderDispatchService.resetOrderError();
   }
 
   ngOnDestroy(): void {

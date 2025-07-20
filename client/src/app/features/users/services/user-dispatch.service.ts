@@ -56,12 +56,12 @@ export class UserDispatchService {
         if (this.state.getMeSuccess)
           this.cartDispatchService.getMyCart();
 
-        this.resetUserSuccessStates(userState);
+        this.resetUserSuccessStates();
       });
   }
 
-  private resetUserSuccessStates(state: UserState) {
-    if (state.success) {
+  private resetUserSuccessStates() {
+    if (this.state?.success) {
       this.logService.log('resetUserSuccessStates');
       this.store.dispatch(resetUserSuccessStates());
     }

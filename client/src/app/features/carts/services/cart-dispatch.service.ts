@@ -30,12 +30,12 @@ export class CartDispatchService {
         if (!cartState) return;
         this.state = cartState;
 
-        this.resetCartSuccessStates(cartState);
+        this.resetCartSuccessStates();
       });
   }
 
-  private resetCartSuccessStates(state: CartState) {
-    if (state.success) {
+  private resetCartSuccessStates() {
+    if (this.state?.success) {
       this.logService.log('resetCartSuccessStates');
       this.store.dispatch(resetCartSuccessStates());
     }

@@ -27,12 +27,12 @@ export class ProductDispatchService {
       .subscribe((productState) => {
         if (!productState) return;
         this.state = productState;
-        this.resetProductSuccessStates(productState);
+        this.resetProductSuccessStates();
       });
   }
 
-  private resetProductSuccessStates(state: ProductState) {
-    if (state.success) {
+  private resetProductSuccessStates() {
+    if (this.state?.success) {
       this.logService.log('resetProductSuccessStates');
       this.store.dispatch(resetProductSuccessStates());
     }

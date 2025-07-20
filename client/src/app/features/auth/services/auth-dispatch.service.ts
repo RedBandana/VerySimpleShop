@@ -39,12 +39,12 @@ export class AuthDispatchService {
         if (this.state.guestSessionSuccess)
           this.userDispatchService.getMe();
 
-        this.resetAuthSuccessStates(authState);
+        this.resetAuthSuccessStates();
       });
   }
 
-  private resetAuthSuccessStates(state: AuthState) {
-    if (state.success) {
+  private resetAuthSuccessStates() {
+    if (this.state?.success) {
       this.logService.log('resetAuthSuccessStates');
       this.store.dispatch(resetAuthSuccessStates());
     }
