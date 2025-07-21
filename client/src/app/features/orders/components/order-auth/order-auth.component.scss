@@ -1,0 +1,14 @@
+.order-auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap00);
+}
+
+.order-auth-form-input {
+    display: flex;
+    gap: var(--gap00);
+}
+
+.order-auth-input {
+    flex-grow: 1;
+}

@@ -12,8 +12,6 @@ export class CartOwnerGuard implements CanActivate {
     ) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        return true;
-        
         const request = context.switchToHttp().getRequest();
         const cartId = request.params.cartId;
         const userId = request.user._id;

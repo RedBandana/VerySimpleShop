@@ -28,9 +28,9 @@ import { CartOwnerGuard } from 'src/common/guards/cart-owner.guard';
 import { OrderOwnerGuard } from 'src/common/guards/order-owner.guard';
 import { ResponseUtils } from 'src/common/utils/response.utils';
 import { ApiResponse, PaginatedApiResponse } from 'src/common/interfaces/api-response.interface';
+import { GetOrderByAuthDto } from './dto/get-order-by-auth.dto';
 
 @Controller('orders')
-@UseGuards(JwtAuthGuard)
 @UsePipes(
     new ValidationPipe({
         whitelist: true,
@@ -46,14 +46,14 @@ export class OrdersController {
     ) { }
 
     @Post()
-    @UseGuards(AdminGuard)
+    @UseGuards(JwtAuthGuard, AdminGuard)
     async create(@Body() createOrderDto: CreateOrderDto): Promise<ApiResponse<any>> {
         const order = await this.ordersService.createDocument(createOrderDto);
         return ResponseUtils.success(order, 'Order created successfully', HttpStatus.CREATED);
     }
 
     @Get()
-    @UseGuards(AdminGuard)
+    @UseGuards(JwtAuthGuard, AdminGuard)
     async getAll(@Query() getOrdersDto: GetOrdersDto): Promise<PaginatedApiResponse<any> | ApiResponse<any>> {
         const result = await this.ordersService.getAll(getOrdersDto);
 
@@ -71,76 +71,83 @@ export class OrdersController {
     }
 
     @Get(':orderId')
-    @UseGuards(OrderOwnerGuard, AdminGuard)
+    @UseGuards(JwtAuthGuard, OrderOwnerGuard, AdminGuard)
     async get(@Param('orderId', ParseObjectIdPipe) orderId: ObjectId): Promise<ApiResponse<any>> {
         const order = await this.ordersService.get(orderId);
         return ResponseUtils.success(order, 'Order retrieved successfully');
     }
 
     @Get('number/:orderNumber')
-    @UseGuards(OrderOwnerGuard, AdminGuard)
+    @UseGuards(JwtAuthGuard, OrderOwnerGuard, AdminGuard)
     async getByNumber(@Param('orderNumber') orderNumber: string): Promise<ApiResponse<any>> {
         const order = await this.ordersService.getByNumber(orderNumber);
         return ResponseUtils.success(order, 'Order retrieved successfully');
     }
 
+    @Post('auth')
+    async getByAuth(@Body() getOrderByAuthDto: GetOrderByAuthDto): Promise<ApiResponse<any>> {
+        const order = await this.ordersService.getByAuth(getOrderByAuthDto.orderNumber, getOrderByAuthDto.postalCode);
+        return ResponseUtils.success(order, 'Order retrieved successfully');
+    }
+
     @Put(':orderId')
-    @UseGuards(AdminGuard)
+    @UseGuards(JwtAuthGuard, AdminGuard)
     async update(@Param('orderId', ParseObjectIdPipe) orderId: ObjectId, @Body() updateOrderDto: UpdateOrderDto): Promise<ApiResponse<any>> {
         const order = await this.ordersService.updateDocument(orderId, updateOrderDto);
         return ResponseUtils.success(order, 'Order updated successfully');
     }
 
     @Delete(':orderId')
-    @UseGuards(AdminGuard)
+    @UseGuards(JwtAuthGuard, AdminGuard)
     async delete(@Param('orderId', ParseObjectIdPipe) orderId: ObjectId): Promise<ApiResponse<null>> {
         await this.ordersService.delete(orderId);
         return ResponseUtils.success(null, 'Order deleted successfully', HttpStatus.NO_CONTENT);
     }
 
     @Put(':orderId/status')
-    @UseGuards(AdminGuard)
+    @UseGuards(JwtAuthGuard, AdminGuard)
     async updateOrderStatus(@Param('orderId', ParseObjectIdPipe) orderId: ObjectId, @Body() updateOrderStatusDto: UpdateOrderStatusDto): Promise<ApiResponse<any>> {
         const order = await this.ordersService.updateOrderStatus(orderId, updateOrderStatusDto);
         return ResponseUtils.success(order, 'Order status updated successfully');
     }
 
     @Put(':orderId/payment-status')
-    @UseGuards(AdminGuard)
+    @UseGuards(JwtAuthGuard, AdminGuard)
     async updatePaymentStatus(@Param('orderId', ParseObjectIdPipe) orderId: ObjectId, @Body() updatePaymentStatusDto: UpdatePaymentStatusDto): Promise<ApiResponse<any>> {
         const order = await this.ordersService.updatePaymentStatus(orderId, updatePaymentStatusDto);
         return ResponseUtils.success(order, 'Payment status updated successfully');
     }
 
     @Post(':orderId/cancel')
-    @UseGuards(OrderOwnerGuard, AdminGuard)
+    @UseGuards(JwtAuthGuard, OrderOwnerGuard, AdminGuard)
     async cancelOrder(@Param('orderId', ParseObjectIdPipe) orderId: ObjectId): Promise<ApiResponse<any>> {
         const order = await this.ordersService.cancelOrder(orderId);
         return ResponseUtils.success(order, 'Order cancelled successfully');
     }
 
     @Post(':orderId/complete')
-    @UseGuards(AdminGuard)
+    @UseGuards(JwtAuthGuard, AdminGuard)
     async completeOrder(@Param('orderId', ParseObjectIdPipe) orderId: ObjectId): Promise<ApiResponse<any>> {
         const order = await this.ordersService.completeOrder(orderId);
         return ResponseUtils.success(order, 'Order completed successfully');
     }
 
     @Post('from-cart/:cartId')
-    @UseGuards(CartOwnerGuard, AdminGuard)
+    @UseGuards(JwtAuthGuard, CartOwnerGuard, AdminGuard)
     async createOrderFromCart(@Param('cartId', ParseObjectIdPipe) cartId: ObjectId): Promise<ApiResponse<any>> {
         const order = await this.ordersService.createOrderFromCart(cartId);
         return ResponseUtils.success(order, 'Order created from cart successfully');
     }
 
     @Get('cart/:cartId')
-    @UseGuards(CartOwnerGuard, AdminGuard)
+    @UseGuards(JwtAuthGuard, CartOwnerGuard, AdminGuard)
     async getOrderByCartId(@Param('cartId', ParseObjectIdPipe) cartId: ObjectId): Promise<ApiResponse<any>> {
         const order = await this.ordersService.findByCartId(cartId);
         return ResponseUtils.success(order, 'Order retrieved successfully');
     }
 
     @Post('users/me/checkout')
+    @UseGuards(JwtAuthGuard)
     async createCheckoutSession(@Req() req: any): Promise<ApiResponse<any>> {
         const userId = req.user._id;
         const order = await this.ordersService.createCheckoutSession(userId);

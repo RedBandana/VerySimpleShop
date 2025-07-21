@@ -38,7 +38,7 @@ export class StripeService {
             payment_intent_data: {
                 metadata
             },
-            success_url: `${this.BASE_URL}/orders/${metadata?.orderNumber ?? ''}`,
+            success_url: `${this.BASE_URL}/order-details?number=${metadata?.orderNumber ?? ''}`,
             cancel_url: `${this.BASE_URL}/cart`,
             metadata
         });

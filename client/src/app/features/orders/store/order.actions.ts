@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { IOrder } from '../models/order.model';
+import { IGetOrderByAuthRequest } from '../models/order-request.model';
 
 export const resetOrderSuccessStates = createAction('[Order] Reset Order Success State');
 
@@ -22,3 +23,9 @@ export const startGetOrderByNumber = createAction('[Order] Start Get Order By Nu
 export const getOrderByNumberSuccess = createAction('[Order] Get Order By Number Success', props<{ order: IOrder }>());
 
 export const getOrderByNumberFailure = createAction('[Order] Get Order By Number Failure', props<{ error: string }>());
+
+export const startGetOrderByAuth = createAction('[Order] Start Get Order By Auth', props<{ request: IGetOrderByAuthRequest }>());
+
+export const getOrderByAuthSuccess = createAction('[Order] Get Order By Auth Success', props<{ order: IOrder }>());
+
+export const getOrderByAuthFailure = createAction('[Order] Get Order By Auth Failure', props<{ error: string }>());

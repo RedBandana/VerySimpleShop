@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
-import { resetOrderError, resetOrderSuccessStates, startCheckoutSession, startGetOrder, startGetOrderByNumber } from '../store/order.actions';
+import { resetOrderError, resetOrderSuccessStates, startCheckoutSession, startGetOrder, startGetOrderByAuth, startGetOrderByNumber } from '../store/order.actions';
 import { OrderState } from '../store/order.reducer';
 import { LogService } from '../../../core/services/log.service';
 import { Router } from '@angular/router';
 import { CartDispatchService } from '../../carts/services/cart-dispatch.service';
+import { IGetOrderByAuthRequest } from '../models/order-request.model';
 
 @Injectable({
   providedIn: 'root',
@@ -88,6 +89,13 @@ export class OrderDispatchService {
     this.waitForLoadingToEnd().subscribe(() => {
       this.logService.log('startGetOrderByNumber');
       this.store.dispatch(startGetOrderByNumber({ orderNumber }));
+    });
+  }
+
+  getOrderByAuth(request: IGetOrderByAuthRequest) {
+    this.waitForLoadingToEnd().subscribe(() => {
+      this.logService.log('startGetOrderByAuth', request);
+      this.store.dispatch(startGetOrderByAuth({ request }));
     });
   }
 }

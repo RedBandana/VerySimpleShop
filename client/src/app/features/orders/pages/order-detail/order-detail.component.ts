@@ -4,58 +4,52 @@ import { RouterModule, ActivatedRoute } from '@angular/router';
 import { map, Subscription } from 'rxjs';
 import { OrderDispatchService } from '../../services/order-dispatch.service';
 import { OrderState } from '../../store/order.reducer';
-import { IOrder } from '../../models/order.model';
 import { CartItemListComponent } from "../../../carts/components/cart-item-list/cart-item-list.component";
+import { UserDispatchService } from '../../../users/services/user-dispatch.service';
+import { OrderAuthComponent } from "../../components/order-auth/order-auth.component";
+import { OrderSummaryComponent } from "../../components/order-summary/order-summary.component";
+import { OrderStatus } from '../../models/order.model';
 
 @Component({
   selector: 'app-order-detail',
-  imports: [CommonModule, RouterModule, CartItemListComponent],
+  imports: [CommonModule, RouterModule, CartItemListComponent, OrderAuthComponent, OrderSummaryComponent],
   templateUrl: './order-detail.component.html',
   styleUrl: './order-detail.component.scss'
 })
 export class OrderDetail implements OnInit, OnDestroy {
   orderState?: OrderState;
   orderSubscription!: Subscription;
-  error: string = "";
+  userSubscription!: Subscription;
+  orderNumber: string = "";
 
   constructor(
     private route: ActivatedRoute,
+    private userDispatchService: UserDispatchService,
     private orderDispatchService: OrderDispatchService,
   ) { }
 
-  get order(): IOrder | undefined {
-    return this.orderState?.order;
-  }
-
-  get shippingAddress() {
-    if (!this.order?.shippingDetails?.address) return "";
-
-    const { line1, line2, city, state, postalCode, country } = this.order.shippingDetails.address;
-    const address = `${line1},${line2 ? ` ${line2}` : ``} ${city}, ${state}, ${postalCode}, ${country}`;
-    return address;
+  get isPending() {
+    return this.orderState?.order?.status === OrderStatus.PENDING;
   }
 
   ngOnInit(): void {
     this.subscribeNgRx();
-
-    this.route.paramMap.pipe(
-      map(params => params.get('number'))
-    ).subscribe(orderNumber => {
-      if (orderNumber)
-        this.orderDispatchService.getOrderByNumber(orderNumber);
-    });
+    this.orderNumber = this.route.snapshot.queryParamMap.get("number") ?? "";
   }
 
   ngOnDestroy(): void {
     this.orderSubscription.unsubscribe();
+    this.userSubscription.unsubscribe();
   }
 
   subscribeNgRx() {
     this.orderSubscription = this.orderDispatchService.subscription.subscribe((state) => {
       this.orderState = state;
-
-      if (state.error !== "Unauthorized")
-        this.error = state.error ?? "";
     });
+
+    this.userSubscription = this.userDispatchService.subscription.subscribe((_) => {
+      if (this.orderNumber && this.userDispatchService.hasAnActiveSession)
+        this.orderDispatchService.getOrderByNumber(this.orderNumber);
+    })
   }
 }

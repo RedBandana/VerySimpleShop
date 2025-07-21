@@ -1,0 +1,20 @@
+<div class="order-summary-container section-container">
+    <h2 class="subtitle">Order Details</h2>
+    <div class="order-summary-fields-container">
+        <div class="order-summary-field">Order Number: {{ order.number }}</div>
+        <div class="order-summary-field">Order Status: {{ order.status | titlecase }}</div>
+    </div>
+    <div class="order-summary-fields-container">
+        @if (order.shippingDetails) {
+        <div class="order-summary-field">Delivering to: {{ order.shippingDetails.name }}</div>
+        <div class="order-summary-field">Email: {{ order.shippingDetails.email }}</div>
+        <div class="order-summary-field">Phone: {{ order.shippingDetails.phone || "Not provided" }}</div>
+        <div class="order-summary-field">Shipping Address: {{ shippingAddress }}</div>
+        }
+        @else {
+        <div class="order-summary-field">
+            No shipping details provided. Please contact support at <a class="bold" href="mailto:contact@vss.com">contact&#64;vss.com</a>.
+        </div>
+        }
+    </div>
+</div>

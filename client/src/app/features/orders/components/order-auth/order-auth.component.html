@@ -1,0 +1,15 @@
+<div class="order-auth-container section-container">
+    <h2 class="subtitle">Order Details</h2>
+    <p>To retrieve your order information please fill this form.</p>
+    <form class="order-auth-form">
+        <div class="order-auth-form-input">
+            <label class="order-auth-label" for="order-auth-number">Order Number:</label>
+            <input [(ngModel)]="orderNumber" type="text" class="order-auth-input" id="order-auth-number" name="order-auth-number" />
+        </div>
+        <div class="order-auth-form-input">
+            <label class="order-auth-label" for="order-auth-postal-code">Postal Code:</label>
+            <input [(ngModel)]="postalCode" type="text" class="order-auth-input" id="order-auth-postal-code" name="order-auth-postal-code" />
+        </div>
+    </form>
+    <button class="button-container" (click)="authOrder()">Retrieve Order</button>
+</div>

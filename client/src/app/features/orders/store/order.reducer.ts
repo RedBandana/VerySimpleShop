@@ -9,6 +9,7 @@ export interface OrderState {
   checkoutSessionSuccess: boolean;
   getSuccess: boolean;
   getByNumberSuccess: boolean;
+  getByAuthSuccess: boolean;
   success: boolean;
 }
 
@@ -19,6 +20,7 @@ export const initialState: OrderState = {
   checkoutSessionSuccess: false,
   getSuccess: false,
   getByNumberSuccess: false,
+  getByAuthSuccess: false,
   success: false
 }
 
@@ -107,5 +109,29 @@ export const orderReducer = createReducer(
     loading: false,
     success: false,
     getByNumberSuccess: false,
+  })),
+
+  on(OrderActions.startGetOrderByAuth, (state) => ({
+    ...state,
+    getByAuthSuccess: false,
+    loading: true,
+    error: undefined,
+  })),
+
+  on(OrderActions.getOrderByAuthSuccess, (state, { order }) => ({
+    ...state,
+    order,
+    loading: false,
+    error: undefined,
+    success: true,
+    getByAuthSuccess: true,
+  })),
+
+  on(OrderActions.getOrderByAuthFailure, (state, { error }) => ({
+    ...state,
+    error,
+    loading: false,
+    success: false,
+    getByAuthSuccess: false,
   })),
 );

@@ -12,18 +12,17 @@ export class OrderOwnerGuard implements CanActivate {
     ) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        return true;
-        
         const request = context.switchToHttp().getRequest();
         const orderId = request.params.orderId;
+        const orderNumber = request.params.orderNumber;
         const userId = request.user._id;
 
-        if (!orderId) {
+        if (!orderId && !orderNumber) {
             const unauthorized = this.i18n.translate("general.errors.unauthorized", { lang: I18nContext.current()?.lang });
             throw new UnauthorizedException(unauthorized);
         }
 
-        const order = await this.ordersService.get(orderId);
+        const order = orderId ? await this.ordersService.get(orderId) : await this.ordersService.getByNumber(orderNumber);
         if (!order || order.userId.toString() != userId.toString()) {
             const unauthorized = this.i18n.translate("general.errors.unauthorized", { lang: I18nContext.current()?.lang });
             throw new UnauthorizedException(unauthorized);

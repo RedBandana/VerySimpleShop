@@ -175,12 +175,14 @@ export class ApiService {
       errorMessage = `Server Error: ${error.status} - ${error.message}`;
     }
 
-    console.error('API Error:', {
-      status: error.status,
-      message: errorMessage,
-      error: error.error,
-      url: error.url
-    });
+    if (error.error.path !== "/users/me" || errorMessage !== "Unauthorized") {
+      console.error('API Error:', {
+        status: error.status,
+        message: errorMessage,
+        error: error.error,
+        url: error.url
+      });
+    }
 
     return throwError(() => errorMessage);
   }

@@ -45,4 +45,16 @@ export class OrderEffects {
       ),
     ),
   );
+
+  getOrderByAuth$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(OrderActions.startGetOrderByAuth),
+      switchMap(({ request }) =>
+        this.orderService.getOrderByAuth(request).pipe(
+          map((order) => OrderActions.getOrderByAuthSuccess({ order })),
+          catchError((error) => of(OrderActions.getOrderByAuthFailure({ error }))),
+        ),
+      ),
+    ),
+  );
 }

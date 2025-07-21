@@ -72,6 +72,18 @@ export class OrdersService extends DatabaseCollectionService {
         return order;
     }
 
+    async getByAuth(orderNumber: string, postalCode: string): Promise<IOrder> {
+        const order = await this.getByNumber(orderNumber);
+        if (!order || !order.shippingDetails)
+            throw new Error('Cannot retrieve an order with provided information.');
+
+        const orderPostalCode = order.shippingDetails.address.postalCode.toLowerCase().replace(/\s+/g, '');
+        if (orderPostalCode != postalCode.toLowerCase().replace(/\s+/g, ''))
+            throw new Error('Cannot retrieve an order with provided information.');
+
+        return order;
+    }
+
     async update(orderId: ObjectId, updateOrderDto: UpdateOrderDto): Promise<IOrder> {
         const order = await this.updateDocument(orderId, updateOrderDto);
         return order;

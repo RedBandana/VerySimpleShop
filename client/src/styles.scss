@@ -9,7 +9,15 @@
 
 body {
     background-color: white;
-    // overflow-x: hidden;
+    overflow-x: hidden;
+}
+
+input {
+    border-bottom: 1px solid black;
+}
+
+.bold {
+    font-weight: bold;
 }
 
 .remove {
@@ -36,7 +44,7 @@ body {
 .section-container {
     display: flex;
     flex-direction: column;
-    gap: var(--gap02);
+    gap: var(--gap01);
 }
 
 .button-container {
