@@ -1,0 +1,24 @@
+<div class="login-container page-container" (keydown)="handleKeydown($event)">
+    <h2 class="subtitle">Log in to VSS</h2>
+    <form class="form">
+        <div class="form-input-container">
+            <label class="form-label" for="login-email">Email:</label>
+            <input [(ngModel)]="email" type="email" placeholder="Email" class="form-input" id="login-email" name="login-email" />
+        </div>
+        <div class="form-input-container">
+            <label class="form-label" for="login-password">Password:</label>
+            <input [(ngModel)]="password" [type]="passwordVisible ? 'text' : 'password'" placeholder="Password" class="form-input" id="login-password" name="login-password" />
+            <div class="form-icon" (click)="togglePasswordVisibility()">
+                <i class="fa-regular" [class.fa-eye]="!passwordVisible" [class.fa-eye-slash]="passwordVisible"></i>
+            </div>
+        </div>
+    </form>
+    <button class="button-container" (click)="login()">Log In</button>
+    <p>Don't have an account? <a class="bold" routerLink="/register">Register</a></p>
+    @if (loading) {
+    <p>Loading...</p>
+    }
+    @if (error) {
+    <p>{{ error }}</p>
+    }
+</div>

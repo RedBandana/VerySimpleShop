@@ -11,8 +11,6 @@ export class AdminGuard implements CanActivate {
     ) { }
 
     canActivate(context: ExecutionContext): boolean {
-        return true;
-        
         const request = context.switchToHttp().getRequest();
         const isAdmin = request.user?.permissions?.includes(UserPermissions.ADMINISTRATOR) ?? false;
 

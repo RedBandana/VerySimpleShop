@@ -9,11 +9,40 @@
 
 body {
     background-color: white;
-    overflow-x: hidden;
 }
 
-input {
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap01);
+}
+
+.form-input-container {
+    display: flex;
+    gap: var(--gap00);
+}
+
+.form-label {
+    display: none;
+}
+
+.form-icon {
+    cursor: pointer;
+    width: 22px;
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-input::placeholder {
+  opacity: 0.4;
+}
+
+.form-input {
     border-bottom: 1px solid black;
+    flex-grow: 1;
+    width: 0;
 }
 
 .bold {
@@ -22,6 +51,10 @@ input {
 
 .remove {
     display: none !important;
+}
+
+.display {
+    display: block;
 }
 
 .hide {
@@ -53,6 +86,12 @@ input {
     text-align: center;
     padding: var(--gap00);
     font-weight: bold;
+}
+
+.button-container:hover,
+.button-container:focus-visible,
+.button-container:focus {
+    transform: scale(1.01);
 }
 
 .title {

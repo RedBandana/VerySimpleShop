@@ -1,0 +1,31 @@
+<div class="register-container page-container" (keydown)="handleKeydown($event)">
+    <h2 class="subtitle">Register to VSS</h2>
+    <form class="form">
+        <div class="form-input-container">
+            <label class="form-label" for="register-email">Email:</label>
+            <input [(ngModel)]="email" type="email" placeholder="Email" class="form-input" id="register-email" name="register-email" />
+        </div>
+        <div class="form-input-container">
+            <label class="form-label" for="register-password">Password:</label>
+            <input [(ngModel)]="password" [type]="passwordVisible ? 'text' : 'password'" placeholder="Password" class="form-input" id="register-password" name="register-password" />
+            <button class="form-icon" (click)="togglePasswordVisibility()">
+                <i class="fa-regular" [class.fa-eye]="!passwordVisible" [class.fa-eye-slash]="passwordVisible"></i>
+            </button>
+        </div>
+        <div class="form-input-container">
+            <label class="form-label" for="register-confirm-password">Confirm password:</label>
+            <input [(ngModel)]="confirmPassword" [type]="confirmPasswordVisible ? 'text' : 'password'" placeholder="Confirm password" class="form-input" id="register-confirm-password" name="register-confirm-password" />
+            <button class="form-icon" (click)="toggleConfirmPasswordVisibility()">
+                <i class="fa-regular" [class.fa-eye]="!confirmPasswordVisible" [class.fa-eye-slash]="confirmPasswordVisible"></i>
+            </button>
+        </div>
+    </form>
+    <button class="button-container" (click)="register()">Register</button>
+    <p>Already have an account? <a class="bold" routerLink="/login">Log in</a></p>
+    @if (loading) {
+    <p>Loading...</p>
+    }
+    @if (error) {
+    <p>{{ error }}</p>
+    }
+</div>

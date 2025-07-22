@@ -14,12 +14,12 @@ export interface IUser extends Document {
     createdAt: Date;
     updatedAt: Date;
 
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
-    address: IAddress;
-    password: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    phone?: string;
+    address?: IAddress;
+    password?: string;
     type: UserTypes;
     isVerified: boolean;
     permissions: UserPermissions[];
@@ -55,7 +55,7 @@ export const UserSchema = new Schema(
         lastName: { type: String, minlength: INPUT_LENGTH.NAME.MIN, maxlength: INPUT_LENGTH.NAME.MAX },
         phone: { type: String, minlength: INPUT_LENGTH.PHONE.MIN, maxlength: INPUT_LENGTH.PHONE.MAX },
         address: { type: AddressSchema },
-        isVerified: { type: Boolean },
+        isVerified: { type: Boolean, default: false },
         permissions: { type: [String], enum: UserPermissions, default: [] },
     },
     {

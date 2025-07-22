@@ -69,21 +69,21 @@ export class CartsController {
     }
 
     @Get(':cartId')
-    @UseGuards(CartOwnerGuard, AdminGuard)
+    @UseGuards(CartOwnerGuard)
     async get(@Param('cartId', ParseObjectIdPipe) cartId: ObjectId): Promise<ApiResponse<any>> {
         const cart = await this.cartsService.get(cartId);
         return ResponseUtils.success(cart, 'Cart retrieved successfully');
     }
 
     @Put(':cartId')
-    @UseGuards(CartOwnerGuard, AdminGuard)
+    @UseGuards(CartOwnerGuard)
     async update(@Param('cartId', ParseObjectIdPipe) cartId: ObjectId, @Body() updateCartDto: any): Promise<ApiResponse<any>> {
         const cart = await this.cartsService.updateDocument(cartId, updateCartDto);
         return ResponseUtils.success(cart, 'Cart updated successfully');
     }
 
     @Delete(':cartId')
-    @UseGuards(CartOwnerGuard, AdminGuard)
+    @UseGuards(CartOwnerGuard)
     async delete(@Param('cartId', ParseObjectIdPipe) cartId: ObjectId): Promise<ApiResponse<null>> {
         await this.cartsService.delete(cartId);
         return ResponseUtils.success(null, 'Cart deleted successfully', HttpStatus.NO_CONTENT);

@@ -21,4 +21,28 @@ export class AuthEffects {
       ),
     ),
   );
+
+  login$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.startLogin),
+      switchMap(({ request }) =>
+        this.authService.login(request).pipe(
+          map((authResponse) => AuthActions.loginSuccess({ authResponse })),
+          catchError((error) => of(AuthActions.loginFailure({ error }))),
+        ),
+      ),
+    ),
+  );
+  
+  register$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.startRegister),
+      switchMap(({ request }) =>
+        this.authService.register(request).pipe(
+          map((authResponse) => AuthActions.registerSuccess({ authResponse })),
+          catchError((error) => of(AuthActions.registerFailure({ error }))),
+        ),
+      ),
+    ),
+  );
 }

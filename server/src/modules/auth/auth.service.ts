@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, BadRequestException, NotFoundException, Logger } from '@nestjs/common';
 import { IUser } from '../users/schemas/user.schema';
 import { UserTypes } from 'src/common/enums/user-types.enum';
 import { CookieOptions } from 'express';
@@ -19,6 +19,8 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
+
+    private readonly logger = new Logger(AuthService.name);
 
     constructor(
         protected jwtService: JwtService,
@@ -48,8 +50,8 @@ export class AuthService {
     }
 
     async login(loginDto: LoginDto): Promise<IUser> {
-        const user = await this.usersService.getByEmail(loginDto.email);
-        if (!user) {
+        const user = await this.usersService.getByEmail(loginDto.email.trim().toLowerCase());
+        if (!user || !user.password) {
             throw new UnauthorizedException('Invalid credentials');
         }
 
@@ -58,25 +60,44 @@ export class AuthService {
             throw new UnauthorizedException('Invalid credentials');
         }
 
-        const { password, ...userWithoutPassword } = user;
-        return userWithoutPassword as IUser;
+        delete user.password;
+        return user;
     }
 
     async register(registerDto: RegisterDto): Promise<IUser> {
         const existingUser = await this.usersService.getByEmail(registerDto.email);
         if (existingUser) {
-            throw new BadRequestException('User already exists');
+            throw new BadRequestException('A user with this email already exists');
         }
 
-        const hashedPassword = await bcrypt.hash(registerDto.password, 10);
-        const user = await this.usersService.createDocument({
-            ...registerDto,
-            password: hashedPassword,
+        const { guestId, ...update } = registerDto;
+        update.email = update.email.trim().toLowerCase();
+
+        if (guestId) {
+            const guestUser = await this.usersService.filterOneBy({
+                _id: guestId,
+                type: UserTypes.GUEST
+            });
+            
+            if (!guestUser)
+                throw new NotFoundException("No valid guest session associated with the login");
+
+            const updatedUser = await this.usersService.updateDocument(guestId, {
+                ...update,
+                type: UserTypes.REGISTERED,
+            });
+
+            delete updatedUser.password;
+            return updatedUser;
+        }
+
+        const newUser = await this.usersService.createDocument({
+            ...update,
             type: UserTypes.REGISTERED,
         });
 
-        const { password, ...userWithoutPassword } = user;
-        return userWithoutPassword;
+        delete newUser.password;
+        return newUser;
     }
 
     async requestPasswordReset(dto: ResetPasswordRequestDto): Promise<{ message: string }> {
@@ -89,8 +110,6 @@ export class AuthService {
     }
 
     async resetPassword(dto: ResetPasswordDto): Promise<{ message: string }> {
-        const hashedPassword = await bcrypt.hash(dto.password, 10);
-
         return { message: 'Password reset successfully' };
     }
 

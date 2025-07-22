@@ -10,7 +10,7 @@ export class UserEffects {
   private actions$ = inject(Actions);
   private userService = inject(UserService);
 
-  createGuestSession$ = createEffect(() =>
+  getMe$ = createEffect(() =>
     this.actions$.pipe(
       ofType(UserActions.startGetMe),
       mergeMap((_) =>

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { firstValueFrom, lastValueFrom, Observable } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 import { IUser } from '../models/user.model';
 import { UserTypes } from '../../../core/enums/user-types.enum';
@@ -31,6 +31,7 @@ export class UserDispatchService {
   }
 
   get isAnAdmin() {
+    this.logService.log('this.user?.permissions', this.state?.user);
     return this.user?.permissions.includes(UserPermissions.ADMINISTRATOR);
   }
 
@@ -67,7 +68,7 @@ export class UserDispatchService {
     }
   }
 
-  private waitForLoadingToEnd(): Observable<boolean> {
+  waitForLoadingToEnd(): Observable<boolean> {
     return this.store
       .select((state) => state.user.loading)
       .pipe(
@@ -77,9 +78,9 @@ export class UserDispatchService {
   }
 
   getMe() {
-    this.logService.log('startGetMe');
-    this.store.dispatch(startGetMe());
     this.waitForLoadingToEnd().subscribe(() => {
+      this.logService.log('startGetMe');
+      this.store.dispatch(startGetMe());
     });
   }
 }

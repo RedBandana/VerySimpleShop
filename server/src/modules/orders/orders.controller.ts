@@ -71,14 +71,14 @@ export class OrdersController {
     }
 
     @Get(':orderId')
-    @UseGuards(JwtAuthGuard, OrderOwnerGuard, AdminGuard)
+    @UseGuards(JwtAuthGuard, OrderOwnerGuard)
     async get(@Param('orderId', ParseObjectIdPipe) orderId: ObjectId): Promise<ApiResponse<any>> {
         const order = await this.ordersService.get(orderId);
         return ResponseUtils.success(order, 'Order retrieved successfully');
     }
 
     @Get('number/:orderNumber')
-    @UseGuards(JwtAuthGuard, OrderOwnerGuard, AdminGuard)
+    @UseGuards(JwtAuthGuard, OrderOwnerGuard)
     async getByNumber(@Param('orderNumber') orderNumber: string): Promise<ApiResponse<any>> {
         const order = await this.ordersService.getByNumber(orderNumber);
         return ResponseUtils.success(order, 'Order retrieved successfully');
@@ -119,7 +119,7 @@ export class OrdersController {
     }
 
     @Post(':orderId/cancel')
-    @UseGuards(JwtAuthGuard, OrderOwnerGuard, AdminGuard)
+    @UseGuards(JwtAuthGuard, OrderOwnerGuard)
     async cancelOrder(@Param('orderId', ParseObjectIdPipe) orderId: ObjectId): Promise<ApiResponse<any>> {
         const order = await this.ordersService.cancelOrder(orderId);
         return ResponseUtils.success(order, 'Order cancelled successfully');
@@ -133,14 +133,14 @@ export class OrdersController {
     }
 
     @Post('from-cart/:cartId')
-    @UseGuards(JwtAuthGuard, CartOwnerGuard, AdminGuard)
+    @UseGuards(JwtAuthGuard, CartOwnerGuard)
     async createOrderFromCart(@Param('cartId', ParseObjectIdPipe) cartId: ObjectId): Promise<ApiResponse<any>> {
         const order = await this.ordersService.createOrderFromCart(cartId);
         return ResponseUtils.success(order, 'Order created from cart successfully');
     }
 
     @Get('cart/:cartId')
-    @UseGuards(JwtAuthGuard, CartOwnerGuard, AdminGuard)
+    @UseGuards(JwtAuthGuard, CartOwnerGuard)
     async getOrderByCartId(@Param('cartId', ParseObjectIdPipe) cartId: ObjectId): Promise<ApiResponse<any>> {
         const order = await this.ordersService.findByCartId(cartId);
         return ResponseUtils.success(order, 'Order retrieved successfully');

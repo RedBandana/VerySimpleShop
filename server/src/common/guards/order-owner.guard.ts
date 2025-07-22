@@ -2,6 +2,7 @@ import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from
 import { Reflector } from '@nestjs/core';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { OrdersService } from 'src/modules/orders/orders.service';
+import { UserPermissions } from '../enums/user-permissions.enum';
 
 @Injectable()
 export class OrderOwnerGuard implements CanActivate {
@@ -13,6 +14,10 @@ export class OrderOwnerGuard implements CanActivate {
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
+        const isAdmin = request.user?.permissions?.includes(UserPermissions.ADMINISTRATOR) ?? false;
+        if (isAdmin) return true;
+
+
         const orderId = request.params.orderId;
         const orderNumber = request.params.orderNumber;
         const userId = request.user._id;

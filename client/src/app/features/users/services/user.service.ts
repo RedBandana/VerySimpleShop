@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ApiService } from '../../../core/services/api.service';
 import { IUser } from '../models/user.model';
 
@@ -13,6 +13,6 @@ export class UserService {
   constructor(private apiService: ApiService) { }
 
   getMe(): Observable<IUser> {
-    return this.apiService.get<IUser>(`${this.endpoint}/me`, {});
+    return this.apiService.get<IUser>(`${this.endpoint}/me`);
   }
 }
